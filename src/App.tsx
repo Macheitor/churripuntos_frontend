@@ -1,5 +1,6 @@
-import { Grid, GridItem, Show } from "@chakra-ui/react";
+import { Center, Grid, GridItem, Show } from "@chakra-ui/react";
 import NavBar from "./components/NavBar";
+import SpacesGrid from "./components/SpacesGrid";
 
 // Grid breakpoints: base, sm, md, lg, xl
 
@@ -8,22 +9,22 @@ function App() {
     <Grid
       templateAreas={{
         base: `"nav" "main"`,
-        lg: `"nav nav" "aside main"`,
+        // lg: `"nav nav nav" "aside main section"`,
       }}
     >
       <GridItem area="nav">
         <NavBar />
       </GridItem>
 
-      <Show above="lg">
-        <GridItem area="aside">
-          aside
-        </GridItem>
-      </Show>
+      {/* <Show above="lg">
+        <GridItem area="aside">aside</GridItem>
+      </Show> */}
 
-      <GridItem area="main">
-        main
-      </GridItem>
+      <Center>
+        <GridItem area="main" width={700}>
+          <SpacesGrid />
+        </GridItem>
+      </Center>
     </Grid>
   );
 }
