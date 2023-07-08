@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import apiClient from "../services/api-client";
 import { Text } from "@chakra-ui/react";
-// import { useLocalStorage } from "../hooks/useLocalStorage";
-// import useLocalStorage from "../hooks/useLocalStorage";
 
 interface Task {
   taskname: string;
@@ -18,7 +16,6 @@ interface User {
 }
 
 interface Space {
-  // activities: todo[],
   spacename: string;
   tasks: Task[];
   users: User[];
