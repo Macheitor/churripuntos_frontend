@@ -43,6 +43,16 @@ const UserMenu = () => {
     localStorage.clear();
   };
 
+  const getSpaces = () => {
+    console.log("get spaces");
+    apiClient
+      .get(`/users/${localStorage.getItem("userId")}`)
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => console.log(err.response.data));
+  };
+
   return (
     <>
       {/* <Icon as={AiOutlineUser} boxSize={6}></Icon> */}
@@ -57,6 +67,7 @@ const UserMenu = () => {
           <MenuItem onClick={loginTest}>Login test</MenuItem>
           <MenuItem onClick={registerTest}>Register tets</MenuItem>
           <MenuItem onClick={deleteStorage}>Delete storage</MenuItem>
+          <MenuItem onClick={getSpaces}>Get Spaces</MenuItem>
         </MenuList>
       </Menu>
     </>
