@@ -1,7 +1,8 @@
-import { Box, HStack, Image, Text } from "@chakra-ui/react";
+import { HStack, Image, Text } from "@chakra-ui/react";
 import logo from "../assets/logo.webp";
-import { AiOutlineUser } from "react-icons/ai";
+
 import ColorModeSwitch from "./ColorModeSwitch";
+import UserMenu from "./UserMenu";
 
 const NavBar = () => {
   return (
@@ -10,8 +11,8 @@ const NavBar = () => {
       <Text>Churripuntos</Text>
       <HStack>
         <ColorModeSwitch />
-        <AiOutlineUser size="30" />
-      </HStack  >
+        <UserMenu></UserMenu>
+      </HStack>
     </HStack>
   );
 };
