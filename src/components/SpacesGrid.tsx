@@ -1,42 +1,8 @@
-import { useEffect, useState } from "react";
-import apiClient from "../services/api-client";
 import { Text } from "@chakra-ui/react";
-
-interface Task {
-  taskname: string;
-  points: number;
-  _id: string;
-}
-
-interface User {
-  isAdmin: boolean;
-  username: string;
-  color: string;
-  _id: string;
-}
-
-interface Space {
-  spacename: string;
-  tasks: Task[];
-  users: User[];
-  _id: string;
-}
-
-interface FetchGetSpacesResponse {
-  status: string;
-  spaces: Space[];
-}
+import useSpaces from "../hooks/useSpaces";
 
 const SpacesGrid = () => {
-  const [spaces, setSpaces] = useState<Space[]>([]);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    apiClient
-      .get<FetchGetSpacesResponse>(`/users/${localStorage.getItem("userId")}`)
-      .then((res) => setSpaces(res.data.spaces))
-      .catch((err) => setError(err.message));
-  }, []);
+  const {spaces, error} = useSpaces();
 
   return (
     <>
