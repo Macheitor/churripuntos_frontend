@@ -1,14 +1,42 @@
-import { Center, Grid, GridItem, Show } from "@chakra-ui/react";
-import NavBar from "./components/NavBar";
-import SpacesGrid from "./components/SpacesGrid";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import Home from "./components/Home";
 import Login from "./components/Login";
 import Register from "./components/Register";
-
-// Grid breakpoints: base, sm, md, lg, xl
+import { useEffect } from "react";
+import apiClient from "./services/api-client";
+import { CanceledError } from "axios";
 
 function App() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const user = {
+      username: localStorage.getItem("username"),
+      userId: localStorage.getItem("userId"),
+    };
+
+    apiClient
+      .post("/verifySession", user, {
+        signal: controller.signal,
+      })
+      .then(() => {
+        if (["/", "/login", "/register"].includes(location.pathname)) {
+          navigate("/spaces", { replace: true });
+        }
+      })
+      .catch((err) => {
+        if (err instanceof CanceledError) return;
+        if (!["/", "/login", "/register"].includes(location.pathname)) {
+          navigate("/login", { replace: true });
+        }
+      });
+
+    return () => controller.abort();
+  }, []);
+
   return (
     <>
       <Routes>

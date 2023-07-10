@@ -12,16 +12,38 @@ import {
   Avatar,
   FormControl,
   FormHelperText,
+  Text,
+  Center,
 } from "@chakra-ui/react";
+import { FieldValues, useForm } from "react-hook-form";
 import { FaUserAlt, FaLock } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import apiClient from "../services/api-client";
+import { useState } from "react";
+import { CanceledError } from "axios";
 
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
 
 const Register = () => {
+  const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { register, handleSubmit, reset } = useForm();
+
+  const onSubmit = (data: FieldValues) => {
+    apiClient
+      .post("/register", data)
+      .then(() => {
+        navigate("/login");
+      })
+      .catch((err) => {
+        if (err instanceof CanceledError) return;
+        setError(err.response.data.message);
+      });
+    reset();
+  };
+
   return (
     <Flex
       flexDirection="column"
@@ -29,6 +51,7 @@ const Register = () => {
       height="100vh"
       justifyContent="center"
       alignItems="center"
+      userSelect={"none"}
     >
       <Stack
         flexDir="column"
@@ -37,11 +60,9 @@ const Register = () => {
         alignItems="center"
       >
         <Avatar bg="teal.500" />
-        <Heading color="teal.400" userSelect={"none"}>
-          Churripuntos
-        </Heading>
+        <Heading color="teal.400">Churripuntos</Heading>
         <Box minW={{ base: "90%", md: "468px" }}>
-          <form>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <Stack spacing={4} p="1rem" boxShadow="md">
               <FormControl>
                 <InputGroup>
@@ -49,7 +70,11 @@ const Register = () => {
                     pointerEvents="none"
                     children={<CFaUserAlt color="gray.300" />}
                   />
-                  <Input type="text" placeholder="Username" />
+                  <Input
+                    {...register("username")}
+                    type="text"
+                    placeholder="Username"
+                  />
                 </InputGroup>
               </FormControl>
               <FormControl>
@@ -58,7 +83,11 @@ const Register = () => {
                     pointerEvents="none"
                     children={<MdEmail color="gray.300" />}
                   />
-                  <Input type="email" placeholder="Email address" />
+                  <Input
+                    {...register("email")}
+                    type="email"
+                    placeholder="Email address"
+                  />
                 </InputGroup>
               </FormControl>
               <FormControl>
@@ -68,8 +97,19 @@ const Register = () => {
                     color="gray.300"
                     children={<CFaLock color="gray.300" />}
                   />
-                  <Input type="password" placeholder="Password" />
+                  <Input
+                    {...register("password")}
+                    type="password"
+                    placeholder="Password"
+                  />
                 </InputGroup>
+                <Center>
+                  {error && (
+                    <Text as="i" color="red">
+                      {error}
+                    </Text>
+                  )}
+                </Center>
                 <FormHelperText textAlign="right">
                   <Link>Forgot password?</Link>
                 </FormHelperText>
