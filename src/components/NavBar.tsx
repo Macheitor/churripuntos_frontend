@@ -15,12 +15,6 @@ const NavBar = () => {
         <Text>Churripuntos</Text>
       </HStack>
       <HStack>
-        <Button colorScheme="blue" onClick={() => navigate("/login")}>
-          Login
-        </Button>
-        <Button colorScheme="blue" onClick={() => navigate("/register")}>
-          Register
-        </Button>
         <ColorModeSwitch />
         <UserMenu></UserMenu>
       </HStack>

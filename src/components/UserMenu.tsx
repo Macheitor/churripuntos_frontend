@@ -7,40 +7,15 @@ import {
 } from "@chakra-ui/react";
 import { HamburgerIcon } from "@chakra-ui/icons";
 import apiClient from "../services/api-client";
+import { useNavigate } from "react-router-dom";
 
 const UserMenu = () => {
-  const loginTest = () => {
-    console.log("login");
-    apiClient
-      .post("/login", {
-        username: "test",
-        password: "test",
-      })
-      .then((res) => {
-        console.log(res.data);
-        localStorage.setItem("userId", res.data.user._id);
-        localStorage.setItem("username", res.data.user.username);
-        localStorage.setItem("accessToken", res.data.user.accessToken);
-      })
-      .catch((err) => console.log(err.response.data));
-  };
+  const navigate = useNavigate();
 
-  const registerTest = () => {
-    console.log("register");
-    apiClient
-      .post("/register", {
-        username: "test",
-        password: "test",
-        email: "test@test.com",
-      })
-      .then((res) => {
-        console.log(res.data);
-      })
-      .catch((err) => console.log(err.response.data));
-  };
-  const deleteStorage = () => {
+  const logout = () => {
     console.log("delete");
     localStorage.clear();
+    navigate("/login");
   };
 
   const getSpaces = () => {
@@ -64,9 +39,7 @@ const UserMenu = () => {
           variant="outline"
         />
         <MenuList>
-          <MenuItem onClick={loginTest}>Login test</MenuItem>
-          <MenuItem onClick={registerTest}>Register tets</MenuItem>
-          <MenuItem onClick={deleteStorage}>Delete storage</MenuItem>
+          <MenuItem onClick={logout}>Logout</MenuItem>
           <MenuItem onClick={getSpaces}>Get Spaces</MenuItem>
         </MenuList>
       </Menu>
