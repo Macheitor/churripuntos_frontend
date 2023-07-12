@@ -51,7 +51,6 @@ const Register = () => {
       height="100vh"
       justifyContent="center"
       alignItems="center"
-      userSelect={"none"}
     >
       <Stack
         flexDir="column"
