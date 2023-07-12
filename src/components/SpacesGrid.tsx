@@ -3,7 +3,7 @@ import NavBar from "./NavBar";
 import useSpaces from "../hooks/useSpaces";
 import SpaceCard from "./SpaceCard";
 
-const Spaces = () => {
+const SpacesGrid = () => {
   const { spaces, error } = useSpaces();
   return (
     <Grid
@@ -18,7 +18,11 @@ const Spaces = () => {
       <Center>
         <GridItem area="main" width={700}>
           {error && <Text>{error}</Text>}
-          <SimpleGrid columns={{sm: 1, md: 1, lg: 1, xl: 1}} padding="10px" spacing={10}>
+          <SimpleGrid
+            columns={{ sm: 1, md: 1, lg: 1, xl: 1 }}
+            padding="10px"
+            spacing={10}
+          >
             {spaces.map((space) => (
               <SpaceCard key={space._id} space={space}></SpaceCard>
             ))}
@@ -29,4 +33,4 @@ const Spaces = () => {
   );
 };
 
-export default Spaces;
+export default SpacesGrid;
