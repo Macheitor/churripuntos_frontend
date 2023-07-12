@@ -15,20 +15,18 @@ const BoardsGrid = () => {
         <NavBar />
       </GridItem>
 
-      <Center>
-        <GridItem area="main" width={700}>
-          {error && <Text>{error}</Text>}
-          <SimpleGrid
-            columns={{ sm: 1, md: 1, lg: 1, xl: 1 }}
-            padding="10px"
-            spacing={10}
-          >
-            {spaces.map((space) => (
-              <BoardCard key={space._id} space={space}></BoardCard>
-            ))}
-          </SimpleGrid>
-        </GridItem>
-      </Center>
+      <GridItem area="main">
+        {error && <Text>{error}</Text>}
+        <SimpleGrid
+          columns={{ sm: 1, md: 1, lg: 1, xl: 1 }}
+          padding="10px"
+          spacing={10}
+        >
+          {spaces.map((space) => (
+            <BoardCard key={space._id} space={space}></BoardCard>
+          ))}
+        </SimpleGrid>
+      </GridItem>
     </Grid>
   );
 };
