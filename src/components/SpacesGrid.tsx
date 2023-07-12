@@ -2,9 +2,12 @@ import { Center, Grid, GridItem, SimpleGrid, Text } from "@chakra-ui/react";
 import NavBar from "./NavBar";
 import useSpaces from "../hooks/useSpaces";
 import SpaceCard from "./SpaceCard";
+import { useNavigate } from "react-router-dom";
 
 const SpacesGrid = () => {
   const { spaces, error } = useSpaces();
+  const navigate = useNavigate();
+
   return (
     <Grid
       templateAreas={{
@@ -24,7 +27,11 @@ const SpacesGrid = () => {
             spacing={10}
           >
             {spaces.map((space) => (
-              <SpaceCard key={space._id} space={space}></SpaceCard>
+              <SpaceCard
+                key={space._id}
+                space={space}
+                onSelect={(spaceId) => navigate(`/spaces/${spaceId}`)}
+              ></SpaceCard>
             ))}
           </SimpleGrid>
         </GridItem>

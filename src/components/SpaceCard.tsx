@@ -1,15 +1,16 @@
 import { Space } from "../hooks/useSpaces";
-import { Card, CardBody, Stack, Heading, Text, HStack } from "@chakra-ui/react";
+import { Card, CardBody, Heading, Text, HStack } from "@chakra-ui/react";
 import Score from "./Score";
 
 interface Props {
   space: Space;
+  onSelect: (spaceId: string) => void;
 }
-const SpaceCard = ({ space }: Props) => {
+const SpaceCard = ({ space, onSelect }: Props) => {
   return (
     <Card borderRadius={10} overflow="hidden">
       {/* <Image src='' */}
-      <CardBody>
+      <CardBody onClick={() => onSelect(space._id)}>
         <Heading fontSize="2xl">{space.spacename}</Heading>
         {space.users.map((u) => (
           <HStack key={u._id}>
