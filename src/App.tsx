@@ -7,6 +7,7 @@ import apiClient from "./services/api-client";
 import { CanceledError } from "axios";
 import SpacesGrid from "./components/SpacesGrid";
 import Space from "./components/Space";
+import { Text } from "@chakra-ui/react";
 
 function App() {
   const navigate = useNavigate();
@@ -55,6 +56,7 @@ function App() {
         <Route path="/space/{ID}/tasks" element={<Products />} />
         <Route path="/space/{ID}/tasks/add" element={<Products />} />
         <Route path="/space/{ID}/summary" element={<Products />} /> */}
+        <Route path="*" element={<Text>404 PAGE NOT</Text>} />
       </Routes>
     </>
   );
