@@ -5,7 +5,7 @@ import Score from "./Score";
 interface Props {
   space: Space;
 }
-const SpaceCard = ({ space }: Props) => {
+const BoardCard = ({ space }: Props) => {
   return (
     <Card borderRadius={10} overflow="hidden">
       {/* <Image src='' */}
@@ -24,4 +24,4 @@ const SpaceCard = ({ space }: Props) => {
   );
 };
 
-export default SpaceCard;
+export default BoardCard;

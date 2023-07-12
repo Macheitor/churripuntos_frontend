@@ -1,9 +1,9 @@
 import { Center, Grid, GridItem, SimpleGrid, Text } from "@chakra-ui/react";
 import NavBar from "./NavBar";
 import useSpaces from "../hooks/useSpaces";
-import SpaceCard from "./SpaceCard";
+import BoardCard from "./BoardCard";
 
-const SpacesGrid = () => {
+const BoardsGrid = () => {
   const { spaces, error } = useSpaces();
   return (
     <Grid
@@ -24,7 +24,7 @@ const SpacesGrid = () => {
             spacing={10}
           >
             {spaces.map((space) => (
-              <SpaceCard key={space._id} space={space}></SpaceCard>
+              <BoardCard key={space._id} space={space}></BoardCard>
             ))}
           </SimpleGrid>
         </GridItem>
@@ -33,4 +33,4 @@ const SpacesGrid = () => {
   );
 };
 
-export default SpacesGrid;
+export default BoardsGrid;

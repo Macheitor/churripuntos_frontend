@@ -5,7 +5,7 @@ import Register from "./components/Register";
 import { useEffect } from "react";
 import apiClient from "./services/api-client";
 import { CanceledError } from "axios";
-import SpacesGrid from "./components/SpacesGrid";
+import BoardsGrid from "./components/BoardsGrid";
 
 function App() {
   const navigate = useNavigate();
@@ -44,7 +44,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/Login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/spaces" element={<SpacesGrid />} />
+        <Route path="/spaces" element={<BoardsGrid />} />
         {/*<Route path="/spaces/create" element={<Products />} />
         <Route path="/space/{ID}" element={<Products />} />
         <Route path="/space/{ID}/members" element={<Products />} />
