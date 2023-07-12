@@ -1,4 +1,5 @@
 import {
+  Icon,
   IconButton,
   Menu,
   MenuButton,
@@ -8,6 +9,7 @@ import {
 import { HamburgerIcon } from "@chakra-ui/icons";
 import apiClient from "../services/api-client";
 import { useNavigate } from "react-router-dom";
+import { AiOutlineUser } from "react-icons/ai";
 
 const UserMenu = () => {
   const navigate = useNavigate();
@@ -30,13 +32,13 @@ const UserMenu = () => {
 
   return (
     <>
-      {/* <Icon as={AiOutlineUser} boxSize={6}></Icon> */}
       <Menu>
         <MenuButton
           as={IconButton}
           aria-label="Options"
-          icon={<HamburgerIcon />}
+          icon={<Icon as={AiOutlineUser} boxSize={6}></Icon>}
           variant="outline"
+          borderRadius={20}
         />
         <MenuList>
           <MenuItem onClick={logout}>Logout</MenuItem>
