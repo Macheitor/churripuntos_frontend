@@ -15,7 +15,7 @@ interface User {
   _id: string;
 }
 
-interface Space {
+export interface Space {
   spacename: string;
   tasks: Task[];
   users: User[];

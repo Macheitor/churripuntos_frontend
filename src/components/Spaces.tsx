@@ -1,6 +1,7 @@
-import { Center, Grid, GridItem, Text } from "@chakra-ui/react";
+import { Center, Grid, GridItem, SimpleGrid, Text } from "@chakra-ui/react";
 import NavBar from "./NavBar";
 import useSpaces from "../hooks/useSpaces";
+import SpaceCard from "./SpaceCard";
 
 const Spaces = () => {
   const { spaces, error } = useSpaces();
@@ -17,11 +18,11 @@ const Spaces = () => {
       <Center>
         <GridItem area="main" width={700}>
           {error && <Text>{error}</Text>}
-          <ul>
+          <SimpleGrid columns={{sm: 1, md: 1, lg: 1, xl: 1}} padding="10px" spacing={10}>
             {spaces.map((space) => (
-              <li key={space._id}>{space.spacename}</li>
+              <SpaceCard key={space._id} space={space}></SpaceCard>
             ))}
-          </ul>
+          </SimpleGrid>
         </GridItem>
       </Center>
     </Grid>
