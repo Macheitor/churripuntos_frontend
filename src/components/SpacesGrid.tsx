@@ -5,7 +5,7 @@ import SpaceCard from "./SpaceCard";
 import { useNavigate } from "react-router-dom";
 
 const SpacesGrid = () => {
-  const { spaces, error } = useSpaces();
+  const { spaces, error } = useSpaces(); // TODO: Get only necessary data of spaces, not all of them!
   const navigate = useNavigate();
 
   return (
