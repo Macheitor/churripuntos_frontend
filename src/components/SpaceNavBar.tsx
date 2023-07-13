@@ -1,7 +1,5 @@
-import { Button, HStack, Icon, Image, Text } from "@chakra-ui/react";
-import logo from "../assets/logo.webp";
+import { HStack, Text } from "@chakra-ui/react";
 
-import UserMenu from "./UserMenu";
 import { useNavigate } from "react-router-dom";
 import { ChevronLeftIcon, EditIcon } from "@chakra-ui/icons";
 
@@ -15,7 +13,7 @@ const SpaceNavBar = ({ spacename }: Props) => {
     <HStack justify={"space-between"} padding={5}>
       <ChevronLeftIcon boxSize={10} onClick={() => navigate(-1)} />
       <Text fontSize="xl">{spacename}</Text>
-      <EditIcon boxSize={6}/>
+      <EditIcon boxSize={6} />
     </HStack>
   );
 };

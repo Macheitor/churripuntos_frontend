@@ -6,7 +6,6 @@ import {
   MenuItem,
   MenuList,
 } from "@chakra-ui/react";
-import { HamburgerIcon } from "@chakra-ui/icons";
 import apiClient from "../services/api-client";
 import { useNavigate } from "react-router-dom";
 import { AiOutlineUser } from "react-icons/ai";

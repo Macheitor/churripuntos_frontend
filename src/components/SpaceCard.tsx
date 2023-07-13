@@ -9,7 +9,6 @@ interface Props {
 const SpaceCard = ({ space, onSelect }: Props) => {
   return (
     <Card borderRadius={10} overflow="hidden">
-      {/* <Image src='' */}
       <CardBody onClick={() => onSelect(space._id)}>
         <Heading fontSize="2xl">{space.spacename}</Heading>
         {space.users.map((u) => (

@@ -1,4 +1,4 @@
-import { Grid, GridItem, Text } from "@chakra-ui/react";
+import { Grid, GridItem } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
 import SpaceNavBar from "./SpaceNavBar";
 import useSpace from "../hooks/useSpace";
@@ -8,7 +8,7 @@ const SpacesGrid = () => {
   const currentSpaceId = localStorage.getItem("currentSpaceId")!;
   const navigate = useNavigate();
   const { spaceId } = useParams();
-  const { space, error } = useSpace(currentSpaceId);
+  const { space } = useSpace(currentSpaceId);
 
   useEffect(() => {
     if (spaceId && spaceId !== currentSpaceId) {
