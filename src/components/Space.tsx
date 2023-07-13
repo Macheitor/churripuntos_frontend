@@ -1,6 +1,7 @@
 import { Grid, GridItem, Text } from "@chakra-ui/react";
 import NavBar from "./NavBar";
 import { useParams } from "react-router-dom";
+import SpaceNavBar from "./SpaceNavBar";
 
 const SpacesGrid = () => {
   const { spaceId } = useParams();
@@ -13,7 +14,7 @@ const SpacesGrid = () => {
       }}
     >
       <GridItem area="nav">
-        <NavBar />
+        <SpaceNavBar spacename="TODO"/>
       </GridItem>
 
       <GridItem area="main" width={700}>
