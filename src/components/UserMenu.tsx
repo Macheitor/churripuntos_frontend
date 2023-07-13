@@ -15,7 +15,6 @@ const UserMenu = () => {
   const navigate = useNavigate();
 
   const logout = () => {
-    console.log("delete");
     localStorage.clear();
     navigate("/login");
   };
