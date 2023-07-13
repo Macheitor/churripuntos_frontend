@@ -1,12 +1,21 @@
 import { Grid, GridItem, Text } from "@chakra-ui/react";
-import NavBar from "./NavBar";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import SpaceNavBar from "./SpaceNavBar";
+import useSpace from "../hooks/useSpace";
+import { useEffect } from "react";
 
 const SpacesGrid = () => {
+  const currentSpaceId = localStorage.getItem("currentSpaceId")!;
+  const navigate = useNavigate();
   const { spaceId } = useParams();
+  const { space, error } = useSpace(currentSpaceId);
 
-  console.log("hey");
+  useEffect(() => {
+    if (spaceId && spaceId !== currentSpaceId) {
+      navigate("/spaces");
+    }
+  }, [spaceId, currentSpaceId]);
+
   return (
     <Grid
       templateAreas={{
@@ -14,12 +23,10 @@ const SpacesGrid = () => {
       }}
     >
       <GridItem area="nav">
-        <SpaceNavBar spacename="TODO"/>
+        <SpaceNavBar spacename={space.spacename} />
       </GridItem>
 
-      <GridItem area="main" width={700}>
-        <Text>Space id: {spaceId}</Text>
-      </GridItem>
+      <GridItem area="main" width={700}></GridItem>
     </Grid>
   );
 };

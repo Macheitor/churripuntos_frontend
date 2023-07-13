@@ -1,32 +1,14 @@
 import { useEffect, useState } from "react";
 import apiClient from "../services/api-client";
 import { CanceledError } from "axios";
+import { Space } from "./useSpace";
 
-interface Task {
-  taskname: string;
-  points: number;
-  _id: string;
-}
-
-interface User {
-  isAdmin: boolean;
-  username: string;
-  color: string;
-  _id: string;
-}
-
-export interface Space {
-  spacename: string;
-  tasks: Task[];
-  users: User[];
-  _id: string;
-}
 
 interface FetchGetSpacesResponse {
   status: string;
   spaces: Space[];
 }
-const useSpaces = () => {
+const useUserSpaces = () => {
   const [spaces, setSpaces] = useState<Space[]>([]);
   const [error, setError] = useState("");
 
@@ -48,4 +30,4 @@ const useSpaces = () => {
   return { spaces, error };
 };
 
-export default useSpaces;
+export default useUserSpaces;
