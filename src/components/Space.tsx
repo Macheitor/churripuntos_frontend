@@ -26,7 +26,7 @@ const SpacesGrid = () => {
         <SpaceNavBar spacename={space.spacename} />
       </GridItem>
 
-      <GridItem area="main" width={700}></GridItem>
+      <GridItem area="main"></GridItem>
     </Grid>
   );
 };

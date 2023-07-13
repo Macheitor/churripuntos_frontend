@@ -12,10 +12,10 @@ const SpaceNavBar = ({ spacename }: Props) => {
   const navigate = useNavigate();
 
   return (
-    <HStack justify={"space-between"} padding={1}>
-      <ChevronLeftIcon boxSize={2} onClick={() => navigate(-1)} />
+    <HStack justify={"space-between"} padding={5}>
+      <ChevronLeftIcon boxSize={10} onClick={() => navigate(-1)} />
       <Text fontSize="xl">{spacename}</Text>
-      <EditIcon boxSize={2}/>
+      <EditIcon boxSize={6}/>
     </HStack>
   );
 };

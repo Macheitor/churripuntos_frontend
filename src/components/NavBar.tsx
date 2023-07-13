@@ -10,10 +10,8 @@ const NavBar = () => {
 
   return (
     <HStack justify={"space-between"} padding={2}>
-      <HStack>
-        <Image src={logo} boxSize="60px" onClick={() => navigate("/")} />
-        <Text>Churripuntos</Text>
-      </HStack>
+      <Image src={logo} boxSize="60px" />
+      <Text>Churripuntos</Text>
       <UserMenu></UserMenu>
     </HStack>
   );

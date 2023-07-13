@@ -19,10 +19,9 @@ const SpacesGrid = () => {
       </GridItem>
 
       <Center>
-        <GridItem area="main" width={700}>
+        <GridItem area="main">
           {error && <Text>{error}</Text>}
           <SimpleGrid
-            columns={{ sm: 1, md: 1, lg: 1, xl: 1 }}
             padding="10px"
             spacing={10}
           >
