@@ -9,7 +9,7 @@ interface User {
   _id: string;
 }
 
-interface Task {
+export interface Task {
   taskname: string;
   points: number;
   _id: string;

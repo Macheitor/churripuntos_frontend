@@ -32,7 +32,7 @@ const SpacesGrid = () => {
 
       <GridItem area="main" margin={3}>
         {section === "Ranking" && <Ranking/>}
-        {section === "Tasks" && <Tasks/>}
+        {section === "Tasks" && <Tasks tasks={space.tasks}/>}
         {section === "Summary" && <Summary/>}
       </GridItem>
     </Grid>
