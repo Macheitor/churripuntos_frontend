@@ -30,7 +30,7 @@ const SpacesGrid = () => {
         <SpaceNavBar spacename={space.spacename} onClick={(section) => setSection(section)} />
       </GridItem>
 
-      <GridItem area="main">
+      <GridItem area="main" margin={3}>
         {section === "Ranking" && <Ranking/>}
         {section === "Tasks" && <Tasks/>}
         {section === "Summary" && <Summary/>}

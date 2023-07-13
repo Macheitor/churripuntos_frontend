@@ -2,12 +2,6 @@ import { useEffect, useState } from "react";
 import apiClient from "../services/api-client";
 import { CanceledError } from "axios";
 
-interface Task {
-  taskname: string;
-  points: number;
-  _id: string;
-}
-
 interface User {
   isAdmin: boolean;
   username: string;
@@ -15,10 +9,28 @@ interface User {
   _id: string;
 }
 
+interface Task {
+  taskname: string;
+  points: number;
+  _id: string;
+}
+
+export interface Activity {
+  username: string;
+  userId: string;
+  color: string;
+  taskId: string;
+  taskname: string;
+  points: number;
+  date: string;
+  validated: boolean;
+}
+
 export interface Space {
   spacename: string;
-  tasks: Task[];
   users: User[];
+  tasks: Task[];
+  activities: Activity[];
   _id: string;
 }
 
@@ -27,7 +39,13 @@ interface FetchGetSpaceResponse {
   space: Space;
 }
 const useSpace = (spaceId: string) => {
-  const [space, setSpaces] = useState<Space>({spacename: "", tasks: [], users: [], _id: ""});
+  const [space, setSpaces] = useState<Space>({
+    spacename: "",
+    tasks: [],
+    users: [],
+    activities: [],
+    _id: "",
+  });
   const [error, setError] = useState("");
 
   useEffect(() => {
