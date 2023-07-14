@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import apiClient from "../services/api-client";
 import { CanceledError } from "axios";
 
-interface User {
+export interface User {
   isAdmin: boolean;
   username: string;
   color: string;
