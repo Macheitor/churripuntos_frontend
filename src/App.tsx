@@ -47,14 +47,6 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/spaces" element={<SpacesGrid />} />
         <Route path="/spaces/:spaceId" element={<Space />} />
-        {/*<Route path="/spaces/create" element={<Products />} />
-        <Route path="/space/{ID}" element={<Products />} />
-        <Route path="/space/{ID}/members" element={<Products />} />
-        <Route path="/space/{ID}/edit" element={<Products />} />
-        <Route path="/space/{ID}/ranking" element={<Products />} />
-        <Route path="/space/{ID}/tasks" element={<Products />} />
-        <Route path="/space/{ID}/tasks/add" element={<Products />} />
-        <Route path="/space/{ID}/summary" element={<Products />} /> */}
         <Route path="*" element={<Text>404 PAGE NOT</Text>} />
       </Routes>
     </>
