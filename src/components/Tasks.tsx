@@ -3,6 +3,7 @@ import TaskCard from "./TaskCard";
 import {
   Button,
   Center,
+  HStack,
   Heading,
   Popover,
   PopoverArrow,
@@ -38,9 +39,9 @@ const Tasks = ({ tasks, onAddTask, onDeleteTask }: Props) => {
           closeOnBlur={false}
         >
           <PopoverTrigger>
-            <Button float={"right"} width={"fit-content"} isDisabled={isOpen}>
-              Add task
-            </Button>
+            <HStack justify={"right"}>
+              <Button isDisabled={isOpen}>Add task</Button>
+            </HStack>
           </PopoverTrigger>
           <PopoverContent>
             <FocusLock returnFocus persistentFocus={false}>
