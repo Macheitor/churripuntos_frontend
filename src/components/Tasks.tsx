@@ -1,48 +1,68 @@
-import React, { useEffect, useState } from "react";
-import { Task } from "../hooks/useSpace";
+import { Task } from "./Space";
 import TaskCard from "./TaskCard";
 import {
-  Box,
   Button,
+  Center,
   Heading,
-  SimpleGrid,
-  TagRightIcon,
+  Popover,
+  PopoverArrow,
+  PopoverBody,
+  PopoverContent,
+  PopoverTrigger,
+  Stack,
+  useDisclosure,
 } from "@chakra-ui/react";
-import { useNavigate } from "react-router-dom";
 import TaskAdd from "./TaskAdd";
+import FocusLock from "react-focus-lock";
 
 interface Props {
   tasks: Task[];
+  onAddTask: () => void;
+  onDeleteTask: (id: string) => void;
 }
-const Tasks = ({ tasks }: Props) => {
-  const [addTask, setAddTask] = useState(false);
-  const navigate = useNavigate();
+const Tasks = ({ tasks, onAddTask, onDeleteTask }: Props) => {
+  const { onOpen, onClose, isOpen } = useDisclosure();
 
   return (
     <>
-      {addTask ? (
-        <TaskAdd onGoBack={() => console.log("go back")} />
-      ) : (
-        <>
-          <SimpleGrid spacing={1}>
-            <Heading size={"lg"}>TASK LIST</Heading>
-            {tasks.map((task) => (
-              <TaskCard
-                taskName={task.taskname}
-                taskPoints={task.points}
-                key={task._id}
-              />
-            ))}
-          </SimpleGrid>
-          <Button float={"right"} marginY={1} onClick={() => setAddTask(true)}>
-            {" "}
-            Add task
-          </Button>
-        </>
-      )}
-      {/* 
+      <Stack>
+        <Center>
+          <Heading size={"lg"}>TASKS</Heading>
+        </Center>
 
-       */}
+        <Popover
+          isOpen={isOpen}
+          onOpen={onOpen}
+          onClose={onClose}
+          placement="bottom"
+          closeOnBlur={false}
+        >
+          <PopoverTrigger>
+            <Button float={"right"} width={"fit-content"} isDisabled={isOpen}>
+              Add task
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent>
+            <FocusLock returnFocus persistentFocus={false}>
+              <PopoverArrow />
+              <PopoverBody>
+                <TaskAdd onClose={onClose} onAddTask={onAddTask} />
+              </PopoverBody>
+            </FocusLock>
+          </PopoverContent>
+        </Popover>
+
+        {!isOpen &&
+          tasks.map((task) => (
+            <TaskCard
+              taskName={task.taskname}
+              taskPoints={task.points}
+              taskId={task._id}
+              key={task._id}
+              onDeleteTask={(taskId) => onDeleteTask(taskId)}
+            />
+          ))}
+      </Stack>
     </>
   );
 };

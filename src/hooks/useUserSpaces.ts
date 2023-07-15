@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import apiClient from "../services/api-client";
 import { CanceledError } from "axios";
-import { Space } from "./useSpace";
-
+import { Space } from "../components/Space";
 
 interface FetchGetSpacesResponse {
   status: string;

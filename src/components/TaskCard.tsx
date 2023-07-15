@@ -1,19 +1,23 @@
 import { Card, CardBody, Text, HStack } from "@chakra-ui/react";
 
-import { ChevronRightIcon } from "@chakra-ui/icons";
+import { CloseIcon } from "@chakra-ui/icons";
 
 interface Props {
+  taskId: string;
   taskName: string;
   taskPoints: number;
+  onDeleteTask: (id: string) => void;
 }
-const TaskCard = ({ taskName, taskPoints }: Props) => {
+const TaskCard = ({ taskName, taskPoints, taskId, onDeleteTask }: Props) => {
   return (
     <Card borderRadius={10}>
       <CardBody>
-        <HStack justify={"space-around"}>
+        <HStack justify={"space-between"}>
           <Text>{taskName}</Text>
-          <Text>{taskPoints} points</Text>
-          <ChevronRightIcon />
+          <HStack>
+            <Text marginRight={3}>{taskPoints} points</Text>
+            <CloseIcon onClick={() => onDeleteTask(taskId)} />
+          </HStack>
         </HStack>
       </CardBody>
     </Card>

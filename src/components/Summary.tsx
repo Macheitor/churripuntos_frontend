@@ -1,9 +1,9 @@
-import React from 'react'
+import { Center, Heading } from "@chakra-ui/react";
 
-const Summary = () => {
-  return (
-    <div>Summary</div>
-  )
-}
+const Summary = () => (
+  <Center>
+    <Heading size={"lg"}>SUMMARY</Heading>
+  </Center>
+);
 
-export default Summary
+export default Summary;

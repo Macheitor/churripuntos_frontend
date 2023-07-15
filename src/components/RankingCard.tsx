@@ -1,6 +1,4 @@
 import { Card, CardBody, Heading, Text, HStack } from "@chakra-ui/react";
-import Score from "./Score";
-import { Activity, Space } from "../hooks/useSpace";
 
 interface Props {
   position: number;
