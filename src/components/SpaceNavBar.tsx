@@ -19,7 +19,7 @@ const SpaceNavBar = ({ spacename, onClick }: Props) => {
       </HStack>
       <HStack justifyContent="center">
         <Button onClick={() => onClick("Ranking")}>Ranking</Button>
-        <Button onClick={() => onClick("Tasks")}>Tasks</Button>
+        <Button onClick={() => onClick("Tasks")}>Tasks List</Button>
         <Button onClick={() => onClick("Summary")}>Summary</Button>
       </HStack>
     </Stack>

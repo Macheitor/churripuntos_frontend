@@ -28,7 +28,7 @@ const Tasks = ({ tasks, onAddTask, onDeleteTask }: Props) => {
     <>
       <Stack>
         <Center>
-          <Heading size={"lg"}>TASKS</Heading>
+          <Heading size={"lg"}>TASKS LIST</Heading>
         </Center>
 
         <Popover
