@@ -38,11 +38,11 @@ const Tasks = ({ tasks, users, onUpdateSpace }: Props) => {
           placement="bottom"
           closeOnBlur={false}
         >
-          <PopoverTrigger>
-            <HStack justify={"right"}>
+          <HStack justify={"right"}>
+            <PopoverTrigger>
               <Button isDisabled={isOpen}>Add task</Button>
-            </HStack>
-          </PopoverTrigger>
+            </PopoverTrigger>
+          </HStack>
           <PopoverContent>
             <FocusLock returnFocus persistentFocus={false}>
               <PopoverBody>
