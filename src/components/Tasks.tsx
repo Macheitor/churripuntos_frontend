@@ -15,14 +15,39 @@ import {
 } from "@chakra-ui/react";
 import TaskAdd from "./TaskAdd";
 import FocusLock from "react-focus-lock";
+import { useEffect, useState } from "react";
+import apiClient from "../services/api-client";
+import { CanceledError } from "axios";
 
 interface Props {
   tasks: Task[];
   onAddTask: () => void;
-  onDeleteTask: (id: string) => void;
+  onUpdateSpace: () => void;
 }
-const Tasks = ({ tasks, onAddTask, onDeleteTask }: Props) => {
+const Tasks = ({ tasks, onAddTask, onUpdateSpace }: Props) => {
   const { onOpen, onClose, isOpen } = useDisclosure();
+  const [deleteTaskId, setDeleteTaskId] = useState("");
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (deleteTaskId) {
+      apiClient
+        .delete(
+          `/spaces/${localStorage.getItem(
+            "currentSpaceId"
+          )}/tasks/${deleteTaskId}`
+        )
+        .then(() => {
+          onUpdateSpace();
+          setDeleteTaskId("");
+        })
+        .catch((err) => {
+          if (err instanceof CanceledError) return;
+          setError(err.response.data.message);
+          setDeleteTaskId("");
+        });
+    }
+  }, [deleteTaskId]);
 
   return (
     <>
@@ -60,7 +85,7 @@ const Tasks = ({ tasks, onAddTask, onDeleteTask }: Props) => {
               taskPoints={task.points}
               taskId={task._id}
               key={task._id}
-              onDeleteTask={(taskId) => onDeleteTask(taskId)}
+              onDeleteTask={(taskId) => setDeleteTaskId(taskId)}
             />
           ))}
       </Stack>

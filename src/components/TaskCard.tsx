@@ -1,12 +1,11 @@
 import { Card, CardBody, Text, HStack } from "@chakra-ui/react";
-
 import { CloseIcon } from "@chakra-ui/icons";
 
 interface Props {
   taskId: string;
   taskName: string;
   taskPoints: number;
-  onDeleteTask: (id: string) => void;
+  onDeleteTask: (taskId: string) => void;
 }
 const TaskCard = ({ taskName, taskPoints, taskId, onDeleteTask }: Props) => {
   return (

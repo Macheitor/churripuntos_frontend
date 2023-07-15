@@ -58,7 +58,6 @@ const SpacesGrid = () => {
     _id: "",
   });
   const [error, setError] = useState("");
-  const [deleteTaskId, setDeleteTaskId] = useState("");
 
   const currentSpaceId = localStorage.getItem("currentSpaceId");
 
@@ -86,24 +85,6 @@ const SpacesGrid = () => {
     }
   }, [spaceId, updateSpace]); // TODO: is spaceId needed here?
 
-  useEffect(() => {
-    if (deleteTaskId) {
-      apiClient
-        .delete<FetchGetSpaceResponse>(
-          `/spaces/${currentSpaceId}/tasks/${deleteTaskId}`
-        )
-        .then((res) => {
-          setUpdateSpace(true);
-          setDeleteTaskId("");
-        })
-        .catch((err) => {
-          if (err instanceof CanceledError) return;
-          setError(err.response.data.message);
-          setDeleteTaskId("");
-        });
-    }
-  }, [deleteTaskId]);
-
   return (
     <Stack margin={2}>
       <SpaceNavBar
@@ -115,7 +96,7 @@ const SpacesGrid = () => {
       {section === "Tasks" && (
         <Tasks
           onAddTask={() => setUpdateSpace(true)}
-          onDeleteTask={(taskId) => setDeleteTaskId(taskId)}
+          onUpdateSpace={() => setUpdateSpace(true)}
           tasks={space.tasks}
         />
       )}
