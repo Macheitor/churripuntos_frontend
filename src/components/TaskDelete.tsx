@@ -28,7 +28,7 @@ interface FormInput {
   points: number;
 }
 
-const TaskAdd = ({ onClose }: Props) => {
+const TaskDelete = ({ onClose }: Props) => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { register, handleSubmit, reset } = useForm<FormInput>();
@@ -106,4 +106,4 @@ const TaskAdd = ({ onClose }: Props) => {
   );
 };
 
-export default TaskAdd;
+export default TaskDelete;

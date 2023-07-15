@@ -1,4 +1,4 @@
-import { Task } from "./Space";
+import { Task, User } from "./Space";
 import TaskCard from "./TaskCard";
 import {
   Button,
@@ -15,39 +15,14 @@ import {
 } from "@chakra-ui/react";
 import TaskAdd from "./TaskAdd";
 import FocusLock from "react-focus-lock";
-import { useEffect, useState } from "react";
-import apiClient from "../services/api-client";
-import { CanceledError } from "axios";
 
 interface Props {
   tasks: Task[];
-  onAddTask: () => void;
+  users: User[];
   onUpdateSpace: () => void;
 }
-const Tasks = ({ tasks, onAddTask, onUpdateSpace }: Props) => {
+const Tasks = ({ tasks, users, onUpdateSpace }: Props) => {
   const { onOpen, onClose, isOpen } = useDisclosure();
-  const [deleteTaskId, setDeleteTaskId] = useState("");
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    if (deleteTaskId) {
-      apiClient
-        .delete(
-          `/spaces/${localStorage.getItem(
-            "currentSpaceId"
-          )}/tasks/${deleteTaskId}`
-        )
-        .then(() => {
-          onUpdateSpace();
-          setDeleteTaskId("");
-        })
-        .catch((err) => {
-          if (err instanceof CanceledError) return;
-          setError(err.response.data.message);
-          setDeleteTaskId("");
-        });
-    }
-  }, [deleteTaskId]);
 
   return (
     <>
@@ -70,9 +45,13 @@ const Tasks = ({ tasks, onAddTask, onUpdateSpace }: Props) => {
           </PopoverTrigger>
           <PopoverContent>
             <FocusLock returnFocus persistentFocus={false}>
-              <PopoverArrow />
               <PopoverBody>
-                <TaskAdd onClose={onClose} onAddTask={onAddTask} />
+                <TaskAdd
+                  onClose={() => {
+                    onUpdateSpace();
+                    onClose();
+                  }}
+                />
               </PopoverBody>
             </FocusLock>
           </PopoverContent>
@@ -81,11 +60,12 @@ const Tasks = ({ tasks, onAddTask, onUpdateSpace }: Props) => {
         {!isOpen &&
           tasks.map((task) => (
             <TaskCard
+              users={users}
               taskName={task.taskname}
               taskPoints={task.points}
               taskId={task._id}
               key={task._id}
-              onDeleteTask={(taskId) => setDeleteTaskId(taskId)}
+              onUpdateSpace={() => onUpdateSpace()}
             />
           ))}
       </Stack>

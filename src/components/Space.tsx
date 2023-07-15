@@ -95,9 +95,9 @@ const SpacesGrid = () => {
       {section === "Ranking" && <Ranking />}
       {section === "Tasks" && (
         <Tasks
-          onAddTask={() => setUpdateSpace(true)}
           onUpdateSpace={() => setUpdateSpace(true)}
           tasks={space.tasks}
+          users={space.users}
         />
       )}
       {section === "Summary" && <Summary />}
