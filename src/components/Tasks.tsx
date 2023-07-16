@@ -46,8 +46,11 @@ const Tasks = ({ tasks, onUpdateSpace }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const btnRef = useRef(null);
+  const [drawerType, setDrawerType] = useState("");
 
   const { register, handleSubmit, reset } = useForm<FormInput>();
+
+  const [deleteTaskId, setDeleteTaskId] = useState("");
 
   // Create task
   const onSubmit = (task: FieldValues) => {
@@ -75,10 +78,12 @@ const Tasks = ({ tasks, onUpdateSpace }: Props) => {
       )
       .then(() => {
         onUpdateSpace();
+        setDeleteTaskId("");
       })
       .catch((err) => {
         if (err instanceof CanceledError) return;
         setError(err.response.data.message);
+        setDeleteTaskId("");
       });
   };
 
@@ -89,7 +94,14 @@ const Tasks = ({ tasks, onUpdateSpace }: Props) => {
       </Center>
 
       <HStack justify={"right"}>
-        <Button ref={btnRef} colorScheme="blue" onClick={onOpen}>
+        <Button
+          ref={btnRef}
+          colorScheme="blue"
+          onClick={() => {
+            setDrawerType("createTask");
+            onOpen();
+          }}
+        >
           Create task
         </Button>
       </HStack>
@@ -102,7 +114,9 @@ const Tasks = ({ tasks, onUpdateSpace }: Props) => {
               <Text marginRight={3}>{task.points} points</Text>
               <CloseIcon
                 onClick={() => {
-                  deleteTask(task._id);
+                  setDrawerType("deleteTask");
+                  setDeleteTaskId(task._id);
+                  onOpen();
                 }}
               />
             </HStack>
@@ -120,72 +134,104 @@ const Tasks = ({ tasks, onUpdateSpace }: Props) => {
         finalFocusRef={btnRef}
       >
         <DrawerOverlay />
-        <DrawerContent>
-          <DrawerHeader>Create new task</DrawerHeader>
+        {drawerType === "createTask" && (
+          <DrawerContent>
+            <DrawerHeader>Create new task</DrawerHeader>
 
-          <DrawerBody>
-            <form id="taskAddForm" onSubmit={handleSubmit(onSubmit)}>
-              <Stack spacing={4} p={1} boxShadow="md">
-                <FormControl>
-                  <InputGroup>
-                    <InputLeftElement
-                      pointerEvents="none"
-                      children={<CFaUserAlt color="gray.300" />}
-                    />
-                    <Input
-                      {...register("taskname")}
-                      type="text"
-                      placeholder="Task name"
-                    />
-                  </InputGroup>
-                </FormControl>
-                <FormControl>
-                  <InputGroup>
-                    <InputLeftElement
-                      pointerEvents="none"
-                      color="gray.300"
-                      children={<CFaLock color="gray.300" />}
-                    />
-                    <Input
-                      {...register("points", { valueAsNumber: true })}
-                      type="number"
-                      placeholder="Points"
-                    />
-                  </InputGroup>
-                  <Center>
-                    {error && (
-                      <Text as="i" color="red">
-                        {error}
-                      </Text>
-                    )}
-                  </Center>
-                </FormControl>
-              </Stack>
-            </form>
-          </DrawerBody>
+            <DrawerBody>
+              <form id="taskAddForm" onSubmit={handleSubmit(onSubmit)}>
+                <Stack spacing={4} p={1} boxShadow="md">
+                  <FormControl>
+                    <InputGroup>
+                      <InputLeftElement
+                        pointerEvents="none"
+                        children={<CFaUserAlt color="gray.300" />}
+                      />
+                      <Input
+                        {...register("taskname")}
+                        type="text"
+                        placeholder="Task name"
+                      />
+                    </InputGroup>
+                  </FormControl>
+                  <FormControl>
+                    <InputGroup>
+                      <InputLeftElement
+                        pointerEvents="none"
+                        color="gray.300"
+                        children={<CFaLock color="gray.300" />}
+                      />
+                      <Input
+                        {...register("points", { valueAsNumber: true })}
+                        type="number"
+                        placeholder="Points"
+                      />
+                    </InputGroup>
+                    <Center>
+                      {error && (
+                        <Text as="i" color="red">
+                          {error}
+                        </Text>
+                      )}
+                    </Center>
+                  </FormControl>
+                </Stack>
+              </form>
+            </DrawerBody>
 
-          <DrawerFooter>
-            <Button
-              variant="outline"
-              mr={3}
-              onClick={() => {
-                onClose();
-                reset();
-                setError("");
-              }}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              form="taskAddForm"
-              isLoading={isLoading}
-              colorScheme="blue"
-            >
-              Create
-            </Button>
-          </DrawerFooter>
-        </DrawerContent>
+            <DrawerFooter>
+              <Button
+                variant="outline"
+                mr={3}
+                onClick={() => {
+                  onClose();
+                  reset();
+                  setError("");
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                form="taskAddForm"
+                isLoading={isLoading}
+                colorScheme="blue"
+              >
+                Create
+              </Button>
+            </DrawerFooter>
+          </DrawerContent>
+        )}
+        {drawerType === "deleteTask" && (
+          <DrawerContent>
+            <DrawerHeader>Delete this task?</DrawerHeader>
+
+            <DrawerBody></DrawerBody>
+
+            <DrawerFooter>
+              <Button
+                variant="outline"
+                mr={3}
+                onClick={() => {
+                  onClose();
+                  reset();
+                  setError("");
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={() => {
+                  deleteTask(deleteTaskId);
+                  onClose();
+                }}
+                colorScheme="red"
+              >
+                Delete
+              </Button>
+            </DrawerFooter>
+          </DrawerContent>
+        )}
       </Drawer>
     </>
   );
