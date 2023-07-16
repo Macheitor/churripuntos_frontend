@@ -45,7 +45,7 @@ interface FetchGetSpaceResponse {
   space: Space;
 }
 
-const SpacesGrid = () => {
+const Space = () => {
   const navigate = useNavigate();
   const { spaceId } = useParams();
   const [section, setSection] = useState("Ranking");
@@ -105,4 +105,4 @@ const SpacesGrid = () => {
   );
 };
 
-export default SpacesGrid;
+export default Space;
