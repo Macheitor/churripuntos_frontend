@@ -1,74 +1,192 @@
 import { Task, User } from "./Space";
-import TaskCard from "./TaskCard";
 import {
   Button,
   Center,
-  HStack,
+  Drawer,
+  DrawerBody,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
   Heading,
-  Popover,
-  PopoverArrow,
-  PopoverBody,
-  PopoverContent,
-  PopoverTrigger,
   Stack,
   useDisclosure,
+  HStack,
+  Input,
+  Card,
+  CardBody,
+  Text,
+  FormControl,
+  InputGroup,
+  InputLeftElement,
+  chakra,
 } from "@chakra-ui/react";
-import TaskAdd from "./TaskAdd";
-import FocusLock from "react-focus-lock";
+import { useRef, useState } from "react";
+import { CloseIcon } from "@chakra-ui/icons";
+import apiClient from "../services/api-client";
+import { CanceledError } from "axios";
+import { FieldValues, useForm } from "react-hook-form";
+
+import { FaUserAlt, FaLock } from "react-icons/fa";
+const CFaUserAlt = chakra(FaUserAlt);
+const CFaLock = chakra(FaLock);
 
 interface Props {
   tasks: Task[];
   users: User[];
   onUpdateSpace: () => void;
 }
-const Tasks = ({ tasks, users, onUpdateSpace }: Props) => {
+
+interface FormInput {
+  taskname: string;
+  points: number;
+}
+const Tasks = ({ tasks, onUpdateSpace }: Props) => {
   const { onOpen, onClose, isOpen } = useDisclosure();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const btnRef = useRef(null);
+
+  const { register, handleSubmit, reset } = useForm<FormInput>();
+
+  // Create task
+  const onSubmit = (task: FieldValues) => {
+    setIsLoading(true);
+    apiClient
+      .post(`/spaces/${localStorage.getItem("currentSpaceId")}/tasks`, task)
+      .then(() => {
+        onClose();
+        onUpdateSpace();
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        if (err instanceof CanceledError) return;
+        setIsLoading(false);
+        setError(err.response.data.message);
+      });
+    reset();
+  };
+
+  // Delete task
+  const deleteTask = (taskId: string) => {
+    apiClient
+      .delete(
+        `/spaces/${localStorage.getItem("currentSpaceId")}/tasks/${taskId}`
+      )
+      .then(() => {
+        onUpdateSpace();
+      })
+      .catch((err) => {
+        if (err instanceof CanceledError) return;
+        setError(err.response.data.message);
+      });
+  };
 
   return (
     <>
-      <Stack>
-        <Center>
-          <Heading size={"lg"}>TASKS LIST</Heading>
-        </Center>
+      <Center>
+        <Heading size={"lg"}>TASKS LIST</Heading>
+      </Center>
 
-        <Popover
-          isOpen={isOpen}
-          onOpen={onOpen}
-          onClose={onClose}
-          placement="bottom"
-          closeOnBlur={false}
-        >
-          <HStack justify={"right"}>
-            <PopoverTrigger>
-              <Button isDisabled={isOpen}>Add task</Button>
-            </PopoverTrigger>
-          </HStack>
-          <PopoverContent>
-            <FocusLock returnFocus persistentFocus={false}>
-              <PopoverBody>
-                <TaskAdd
-                  onClose={() => {
-                    onUpdateSpace();
-                    onClose();
-                  }}
-                />
-              </PopoverBody>
-            </FocusLock>
-          </PopoverContent>
-        </Popover>
+      <HStack justify={"right"}>
+        <Button ref={btnRef} colorScheme="blue" onClick={onOpen}>
+          Create task
+        </Button>
+      </HStack>
 
-        {!isOpen &&
-          tasks.map((task) => (
-            <TaskCard
-              users={users}
-              taskName={task.taskname}
-              taskPoints={task.points}
-              taskId={task._id}
-              key={task._id}
-              onUpdateSpace={() => onUpdateSpace()}
-            />
-          ))}
-      </Stack>
+      {tasks.map((task) => (
+        <Card key={task._id}>
+          <CardBody>
+            <HStack justify={"space-between"}>
+              <Text>{task.taskname}</Text>
+              <Text marginRight={3}>{task.points} points</Text>
+              <CloseIcon
+                onClick={() => {
+                  deleteTask(task._id);
+                }}
+              />
+            </HStack>
+          </CardBody>
+        </Card>
+      ))}
+
+      <Drawer
+        isOpen={isOpen}
+        placement="bottom"
+        onClose={() => {
+          reset();
+          onClose();
+        }}
+        finalFocusRef={btnRef}
+      >
+        <DrawerOverlay />
+        <DrawerContent>
+          <DrawerHeader>Create new task</DrawerHeader>
+
+          <DrawerBody>
+            <form id="taskAddForm" onSubmit={handleSubmit(onSubmit)}>
+              <Stack spacing={4} p={1} boxShadow="md">
+                <FormControl>
+                  <InputGroup>
+                    <InputLeftElement
+                      pointerEvents="none"
+                      children={<CFaUserAlt color="gray.300" />}
+                    />
+                    <Input
+                      {...register("taskname")}
+                      type="text"
+                      placeholder="Task name"
+                    />
+                  </InputGroup>
+                </FormControl>
+                <FormControl>
+                  <InputGroup>
+                    <InputLeftElement
+                      pointerEvents="none"
+                      color="gray.300"
+                      children={<CFaLock color="gray.300" />}
+                    />
+                    <Input
+                      {...register("points", { valueAsNumber: true })}
+                      type="number"
+                      placeholder="Points"
+                    />
+                  </InputGroup>
+                  <Center>
+                    {error && (
+                      <Text as="i" color="red">
+                        {error}
+                      </Text>
+                    )}
+                  </Center>
+                </FormControl>
+              </Stack>
+            </form>
+          </DrawerBody>
+
+          <DrawerFooter>
+            <Button
+              variant="outline"
+              mr={3}
+              onClick={() => {
+                onClose();
+                reset();
+                setError("");
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              form="taskAddForm"
+              isLoading={isLoading}
+              colorScheme="blue"
+            >
+              Create
+            </Button>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
     </>
   );
 };
