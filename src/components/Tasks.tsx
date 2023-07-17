@@ -2,12 +2,6 @@ import { Task, User } from "./Space";
 import {
   Button,
   Center,
-  Drawer,
-  DrawerBody,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerOverlay,
-  DrawerContent,
   Heading,
   Stack,
   useDisclosure,
@@ -15,11 +9,18 @@ import {
   Input,
   Card,
   CardBody,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
   Text,
   FormControl,
   InputGroup,
   InputLeftElement,
   chakra,
+  Select,
 } from "@chakra-ui/react";
 import { useRef, useState } from "react";
 import { CloseIcon } from "@chakra-ui/icons";
@@ -41,12 +42,12 @@ interface FormInput {
   taskname: string;
   points: number;
 }
-const Tasks = ({ tasks, onUpdateSpace }: Props) => {
+const Tasks = ({ tasks, users, onUpdateSpace }: Props) => {
   const { onOpen, onClose, isOpen } = useDisclosure();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const btnRef = useRef(null);
-  const [drawerType, setDrawerType] = useState("");
+  const [modalType, setModalType] = useState("");
 
   const { register, handleSubmit, reset } = useForm<FormInput>();
 
@@ -98,7 +99,7 @@ const Tasks = ({ tasks, onUpdateSpace }: Props) => {
           ref={btnRef}
           colorScheme="blue"
           onClick={() => {
-            setDrawerType("createTask");
+            setModalType("createTask");
             onOpen();
           }}
         >
@@ -107,16 +108,25 @@ const Tasks = ({ tasks, onUpdateSpace }: Props) => {
       </HStack>
 
       {tasks.map((task) => (
-        <Card key={task._id}>
+        <Card
+          key={task._id}
+          onClick={() => {
+            setModalType("taskDone");
+            console.log("taskdone");
+            onOpen();
+          }}
+        >
           <CardBody>
             <HStack justify={"space-between"}>
               <Text>{task.taskname}</Text>
               <Text marginRight={3}>{task.points} points</Text>
               <CloseIcon
-                onClick={() => {
-                  setDrawerType("deleteTask");
+                onClick={(e) => {
+                  setModalType("deleteTask");
                   setDeleteTaskId(task._id);
                   onOpen();
+                  // now this part stops the click from propagating
+                  e.stopPropagation();
                 }}
               />
             </HStack>
@@ -124,21 +134,21 @@ const Tasks = ({ tasks, onUpdateSpace }: Props) => {
         </Card>
       ))}
 
-      <Drawer
+      <Modal
         isOpen={isOpen}
-        placement="bottom"
         onClose={() => {
           reset();
           onClose();
         }}
-        finalFocusRef={btnRef}
+        isCentered
       >
-        <DrawerOverlay />
-        {drawerType === "createTask" && (
-          <DrawerContent>
-            <DrawerHeader>Create new task</DrawerHeader>
+        <ModalOverlay />
 
-            <DrawerBody>
+        {modalType === "createTask" && (
+          <ModalContent>
+            <ModalHeader>Create new task</ModalHeader>
+
+            <ModalBody>
               <form id="taskAddForm" onSubmit={handleSubmit(onSubmit)}>
                 <Stack spacing={4} p={1} boxShadow="md">
                   <FormControl>
@@ -177,9 +187,9 @@ const Tasks = ({ tasks, onUpdateSpace }: Props) => {
                   </FormControl>
                 </Stack>
               </form>
-            </DrawerBody>
+            </ModalBody>
 
-            <DrawerFooter>
+            <ModalFooter>
               <Button
                 variant="outline"
                 mr={3}
@@ -199,16 +209,16 @@ const Tasks = ({ tasks, onUpdateSpace }: Props) => {
               >
                 Create
               </Button>
-            </DrawerFooter>
-          </DrawerContent>
+            </ModalFooter>
+          </ModalContent>
         )}
-        {drawerType === "deleteTask" && (
-          <DrawerContent>
-            <DrawerHeader>Delete this task?</DrawerHeader>
+        {modalType === "deleteTask" && (
+          <ModalContent>
+            <ModalHeader>Delete this task?</ModalHeader>
 
-            <DrawerBody></DrawerBody>
+            <ModalBody></ModalBody>
 
-            <DrawerFooter>
+            <ModalFooter>
               <Button
                 variant="outline"
                 mr={3}
@@ -229,10 +239,44 @@ const Tasks = ({ tasks, onUpdateSpace }: Props) => {
               >
                 Delete
               </Button>
-            </DrawerFooter>
-          </DrawerContent>
+            </ModalFooter>
+          </ModalContent>
         )}
-      </Drawer>
+        {modalType === "taskDone" && (
+          <ModalContent>
+            <ModalHeader>WHO DID THE TASK?</ModalHeader>
+
+            <ModalBody>
+              <Select placeholder='Select user'>
+                {users.map((user) => (
+                  <option value={user._id}>{user.username}</option>
+                ))}
+              </Select>
+            </ModalBody>
+            <ModalFooter>
+              <Button
+                variant="outline"
+                mr={3}
+                onClick={() => {
+                  onClose();
+                  reset();
+                  setError("");
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                form="taskAddForm"
+                isLoading={isLoading}
+                colorScheme="blue"
+              >
+                Create
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        )}
+      </Modal>
     </>
   );
 };
