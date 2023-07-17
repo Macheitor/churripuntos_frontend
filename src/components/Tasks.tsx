@@ -21,12 +21,13 @@ import {
   InputLeftElement,
   chakra,
   Select,
+  FormLabel,
 } from "@chakra-ui/react";
 import { useRef, useState } from "react";
 import { CloseIcon } from "@chakra-ui/icons";
 import apiClient from "../services/api-client";
 import { CanceledError } from "axios";
-import { FieldValues, useForm } from "react-hook-form";
+import { FieldValues, Form, useForm } from "react-hook-form";
 
 import { FaUserAlt, FaLock } from "react-icons/fa";
 const CFaUserAlt = chakra(FaUserAlt);
@@ -42,16 +43,27 @@ interface FormInput {
   taskname: string;
   points: number;
 }
+
+interface TaskDone {
+  taskId: string;
+  userId: string;
+}
+
 const Tasks = ({ tasks, users, onUpdateSpace }: Props) => {
   const { onOpen, onClose, isOpen } = useDisclosure();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const btnRef = useRef(null);
+
   const [modalType, setModalType] = useState("");
 
   const { register, handleSubmit, reset } = useForm<FormInput>();
 
   const [deleteTaskId, setDeleteTaskId] = useState("");
+
+  const [taskDone, setTaskDone] = useState<TaskDone>({
+    taskId: "",
+    userId: "",
+  });
 
   // Create task
   const onSubmit = (task: FieldValues) => {
@@ -62,13 +74,14 @@ const Tasks = ({ tasks, users, onUpdateSpace }: Props) => {
         onClose();
         onUpdateSpace();
         setIsLoading(false);
+        reset();
       })
       .catch((err) => {
         if (err instanceof CanceledError) return;
         setIsLoading(false);
         setError(err.response.data.message);
+        reset();
       });
-    reset();
   };
 
   // Delete task
@@ -88,6 +101,35 @@ const Tasks = ({ tasks, users, onUpdateSpace }: Props) => {
       });
   };
 
+  // Task done
+  const onTaskDoneSubmit = () => {
+    // console.log(taskDoneUserId);
+    // spaces/:spaceId/activities
+    // const taskId = req.body.taskId;
+    // const userActivityId = req.body.userId;
+    // post
+
+    console.log(taskDone);
+    setIsLoading(true);
+    apiClient
+      .post(
+        `/spaces/${localStorage.getItem("currentSpaceId")}/activities`,
+        taskDone
+      )
+      .then(() => {
+        onClose();
+        onUpdateSpace();
+        setIsLoading(false);
+        reset();
+      })
+      .catch((err) => {
+        if (err instanceof CanceledError) return;
+        setIsLoading(false);
+        setError(err.response.data.message);
+        reset();
+      });
+  };
+
   return (
     <>
       <Center>
@@ -96,7 +138,6 @@ const Tasks = ({ tasks, users, onUpdateSpace }: Props) => {
 
       <HStack justify={"right"}>
         <Button
-          ref={btnRef}
           colorScheme="blue"
           onClick={() => {
             setModalType("createTask");
@@ -112,7 +153,7 @@ const Tasks = ({ tasks, users, onUpdateSpace }: Props) => {
           key={task._id}
           onClick={() => {
             setModalType("taskDone");
-            console.log("taskdone");
+            setTaskDone({ ...taskDone, taskId: task._id });
             onOpen();
           }}
         >
@@ -244,12 +285,18 @@ const Tasks = ({ tasks, users, onUpdateSpace }: Props) => {
         )}
         {modalType === "taskDone" && (
           <ModalContent>
-            <ModalHeader>WHO DID THE TASK?</ModalHeader>
-
+            <ModalHeader>WHO DID THIS TASK?</ModalHeader>
             <ModalBody>
-              <Select placeholder='Select user'>
+              <Select
+                onChange={(choice) =>
+                  setTaskDone({ ...taskDone, userId: choice.target.value })
+                }
+                placeholder="Select user"
+              >
                 {users.map((user) => (
-                  <option value={user._id}>{user.username}</option>
+                  <option key={user._id} value={user._id}>
+                    {user.username}
+                  </option>
                 ))}
               </Select>
             </ModalBody>
@@ -266,12 +313,11 @@ const Tasks = ({ tasks, users, onUpdateSpace }: Props) => {
                 Cancel
               </Button>
               <Button
-                type="submit"
-                form="taskAddForm"
                 isLoading={isLoading}
                 colorScheme="blue"
+                onClick={() => onTaskDoneSubmit()}
               >
-                Create
+                Mark as Done
               </Button>
             </ModalFooter>
           </ModalContent>
