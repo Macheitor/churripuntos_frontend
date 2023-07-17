@@ -30,6 +30,7 @@ export interface Activity {
   points: number;
   date: string;
   validated: boolean;
+  _id: string
 }
 
 export interface Space {
@@ -100,7 +101,7 @@ const Space = () => {
           users={space.users}
         />
       )}
-      {section === "Summary" && <Summary />}
+      {section === "Summary" && <Summary tasksDone={space.activities} />}
     </Stack>
   );
 };
