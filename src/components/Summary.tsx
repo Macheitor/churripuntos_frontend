@@ -11,7 +11,7 @@ const Summary = ({ tasksDone }: Props) => (
       <Heading size={"lg"}>SUMMARY</Heading>
     </Center>
     {tasksDone.map((t) => (
-      <Box w="100%" bg={"gray.700"} borderRadius={10}>
+      <Box w="100%" bg={"gray.700"} borderRadius={10} key={t._id}>
         <HStack justify={"space-between"} p={2}>
           <Text>{t.taskname}</Text>
           <Text>{t.points} points</Text>

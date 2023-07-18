@@ -93,7 +93,7 @@ const Space = () => {
         onClick={(section) => setSection(section)}
       />
 
-      {section === "Ranking" && <Ranking />}
+      {section === "Ranking" && <Ranking tasksDone={space.activities}/>}
       {section === "Tasks" && (
         <Tasks
           onUpdateSpace={() => setUpdateSpace(true)}
