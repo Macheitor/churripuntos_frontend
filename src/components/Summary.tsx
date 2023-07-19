@@ -113,9 +113,9 @@ const Summary = ({ tasksDone, onUpdateSpace }: Props) => {
         } 
 
         return (
-          <Stack>
+          <Stack key={t._id}>
             {printDate && <Heading size={"md"}>{getMyDate(t.date)}</Heading>}
-            <Box w="100%" bg={"gray.700"} borderRadius={10} key={t._id}>
+            <Box w="100%" bg={"gray.700"} borderRadius={10} >
               <HStack justify={"space-between"} p={2}>
                 <Text>{t.taskname}</Text>
                 <Text>{t.points} points</Text>
