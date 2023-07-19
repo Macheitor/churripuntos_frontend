@@ -90,7 +90,9 @@ const Space = () => {
     <Stack margin={2}>
       <SpaceNavBar
         spacename={space.spacename}
+        spaceId={space._id}
         onClick={(section) => setSection(section)}
+        onUpdateSpace={() => setUpdateSpace(true)}
       />
 
       {section === "Ranking" && <Ranking tasksDone={space.activities}/>}
@@ -101,7 +103,7 @@ const Space = () => {
           users={space.users}
         />
       )}
-      {section === "Summary" && <Summary tasksDone={space.activities} />}
+      {section === "Summary" && <Summary onUpdateSpace={() => setUpdateSpace(true)} tasksDone={space.activities} />}
     </Stack>
   );
 };
