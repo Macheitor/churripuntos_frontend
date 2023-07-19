@@ -22,6 +22,7 @@ import {
   chakra,
   Select,
   FormLabel,
+  Box,
 } from "@chakra-ui/react";
 import { useRef, useState } from "react";
 import { CloseIcon } from "@chakra-ui/icons";
@@ -161,15 +162,27 @@ const Tasks = ({ tasks, users, onUpdateSpace }: Props) => {
             <HStack justify={"space-between"}>
               <Text>{task.taskname}</Text>
               <Text marginRight={3}>{task.points} points</Text>
-              <CloseIcon
-                onClick={(e) => {
-                  setModalType("deleteTask");
-                  setDeleteTaskId(task._id);
-                  onOpen();
-                  // now this part stops the click from propagating
-                  e.stopPropagation();
-                }}
-              />
+
+              <Box
+                bg="gray.600"
+                border="3px"
+                borderRadius={20}
+                borderColor="gray.700"
+              >
+                <CloseIcon
+                  fontSize={8}
+                  mb={1}
+                  mr={2}
+                  ml={2}
+                  color="gray.700"
+                  onClick={(e) => {
+                    setModalType("deleteTask");
+                    setDeleteTaskId(task._id);
+                    onOpen();
+                    e.stopPropagation(); // stops the click from propagating
+                  }}
+                />
+              </Box>
             </HStack>
           </CardBody>
         </Card>
