@@ -104,13 +104,6 @@ const Tasks = ({ tasks, users, onUpdateSpace }: Props) => {
 
   // Task done
   const onTaskDoneSubmit = () => {
-    // console.log(taskDoneUserId);
-    // spaces/:spaceId/activities
-    // const taskId = req.body.taskId;
-    // const userActivityId = req.body.userId;
-    // post
-
-    console.log(taskDone);
     setIsLoading(true);
     apiClient
       .post(
