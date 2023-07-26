@@ -30,7 +30,7 @@ export interface Activity {
   points: number;
   date: string;
   validated: boolean;
-  _id: string
+  _id: string;
 }
 
 export interface Space {
@@ -95,7 +95,13 @@ const Space = () => {
         onUpdateSpace={() => setUpdateSpace(true)}
       />
 
-      {section === "Ranking" && <Ranking tasksDone={space.activities}/>}
+      {section === "Ranking" && (
+        <Ranking
+          onUpdateSpace={() => setUpdateSpace(true)}
+          users={space.users}
+          tasksDone={space.activities}
+        />
+      )}
       {section === "Tasks" && (
         <Tasks
           onUpdateSpace={() => setUpdateSpace(true)}
@@ -103,7 +109,12 @@ const Space = () => {
           users={space.users}
         />
       )}
-      {section === "Summary" && <Summary onUpdateSpace={() => setUpdateSpace(true)} tasksDone={space.activities} />}
+      {section === "Summary" && (
+        <Summary
+          onUpdateSpace={() => setUpdateSpace(true)}
+          tasksDone={space.activities}
+        />
+      )}
     </Stack>
   );
 };
