@@ -62,8 +62,8 @@ const Summary = ({ tasksDone, onUpdateSpace }: Props) => {
       taskDate.getMonth() === currentDate.getMonth() &&
       taskDate.getFullYear() === currentDate.getFullYear()
     ) {
-      if (taskDate.getDay() === currentDate.getDay()) return "Today";
-      if (taskDate.getDay() === currentDate.getDay() - 1) return "Yesterday";
+      if (taskDate.getDate() === currentDate.getDate()) return "Today";
+      if (taskDate.getDate() === currentDate.getDate() - 1) return "Yesterday";
     }
 
     const day = taskDate.getDay();
