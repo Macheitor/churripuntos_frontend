@@ -22,6 +22,7 @@ import { useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
 import apiClient from "../services/api-client";
 import { CanceledError } from "axios";
+import SpaceNavBarMenu from "./SpaceNavBarMenu";
 
 interface Props {
   spacename: string;
@@ -62,7 +63,7 @@ const SpaceNavBar = ({ spacename, spaceId, onClick, onUpdateSpace }: Props) => {
           <Heading fontSize="xl" onClick={() => onOpen()}>
             {spacename}
           </Heading>
-          <EditIcon boxSize={6} />
+          <SpaceNavBarMenu />
         </HStack>
         <HStack justifyContent="center">
           <Button onClick={() => onClick("Ranking")}>Ranking</Button>
