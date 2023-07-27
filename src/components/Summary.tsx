@@ -87,13 +87,11 @@ const Summary = ({ tasksDone, onUpdateSpace }: Props) => {
         )}/activities/${taskDoneId}`
       )
       .then((res) => {
-        console.log(res);
         onUpdateSpace();
         setDeleteTaskDoneId("");
       })
       .catch((err) => {
         if (err instanceof CanceledError) return;
-        console.log(err);
         setError(err.response.data.message);
         setDeleteTaskDoneId("");
       });
