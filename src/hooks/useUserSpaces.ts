@@ -9,7 +9,7 @@ interface FetchGetSpacesResponse {
 }
 const useUserSpaces = () => {
   const [spaces, setSpaces] = useState<Space[]>([]);
-  const [error, setError] = useState("");
+  const [spacesError, setError] = useState("");
 
   useEffect(() => {
     const controller = new AbortController();
@@ -26,7 +26,7 @@ const useUserSpaces = () => {
     return () => controller.abort();
   }, []);
 
-  return { spaces, error };
+  return { spaces, spacesError };
 };
 
 export default useUserSpaces;
