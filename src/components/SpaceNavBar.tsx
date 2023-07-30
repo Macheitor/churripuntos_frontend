@@ -40,7 +40,7 @@ const SpaceNavBar = ({ spacename, spaceId, onClick, onUpdateSpace }: Props) => {
   const onChangeSpacename = (newSpacename: FieldValues) => {
     setIsLoading(true);
     apiClient
-      .put(`/spaces/${localStorage.getItem("currentSpaceId")}`, newSpacename)
+      .put(`/spaces/${spaceId}`, newSpacename)
       .then(() => {
         onClose();
         onUpdateSpace();
@@ -55,6 +55,23 @@ const SpaceNavBar = ({ spacename, spaceId, onClick, onUpdateSpace }: Props) => {
       });
   };
 
+  const handleDeleteSpace = () => {
+
+    apiClient
+      .delete(`/spaces/${spaceId}`)
+      .then(() => {
+        console.log("space deleted")
+        navigate("/spaces");
+      })
+      .catch((err) => {
+        if (err instanceof CanceledError) return;
+
+        console.log(err.message)
+        console.log(err.response.data.message)
+
+      });
+  };
+
   return (
     <>
       <Stack>
@@ -63,7 +80,7 @@ const SpaceNavBar = ({ spacename, spaceId, onClick, onUpdateSpace }: Props) => {
           <Heading fontSize="xl" onClick={() => onOpen()}>
             {spacename}
           </Heading>
-          <SpaceNavBarMenu />
+          <SpaceNavBarMenu onDeleteSpace={handleDeleteSpace} />
         </HStack>
         <HStack justifyContent="center">
           <Button onClick={() => onClick("Ranking")}>Ranking</Button>

@@ -4,10 +4,6 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
-  MenuItemOption,
-  MenuGroup,
-  MenuOptionGroup,
-  MenuDivider,
   IconButton,
 } from "@chakra-ui/react";
 import ModalAcceptCancel from "./ModalAcceptCancel";
@@ -16,7 +12,7 @@ interface Props {
   onDeleteSpace: () => void
 }
 
-const SpaceNavBarMenu = () => {
+const SpaceNavBarMenu = ({onDeleteSpace}: Props) => {
   return (
     <Menu>
       <MenuButton
@@ -29,7 +25,7 @@ const SpaceNavBarMenu = () => {
         <ModalAcceptCancel
           acceptText="Delete space"
           title="Are you sure you want to delete this space?"
-          onAccept={() => console.log("Accepted")}
+          onAccept={onDeleteSpace}
         >
           <MenuItem icon={<DeleteIcon />}>Delete space</MenuItem>
         </ModalAcceptCancel>
