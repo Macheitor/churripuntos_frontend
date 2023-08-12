@@ -23,14 +23,22 @@ import { FieldValues, useForm } from "react-hook-form";
 import apiClient from "../services/api-client";
 import { CanceledError } from "axios";
 import SpaceNavBarMenu from "./SpaceNavBarMenu";
+import { User } from "./Space";
 
 interface Props {
   spacename: string;
   spaceId: string;
+  users: User[];
   onClick: (section: "Ranking" | "Tasks" | "Summary") => void;
   onUpdateSpace: () => void;
 }
-const SpaceNavBar = ({ spacename, spaceId, onClick, onUpdateSpace }: Props) => {
+const SpaceNavBar = ({
+  spacename,
+  spaceId,
+  users,
+  onClick,
+  onUpdateSpace,
+}: Props) => {
   const navigate = useNavigate();
   const { onOpen, onClose, isOpen } = useDisclosure();
   const [error, setError] = useState("");
@@ -56,19 +64,29 @@ const SpaceNavBar = ({ spacename, spaceId, onClick, onUpdateSpace }: Props) => {
   };
 
   const handleDeleteSpace = () => {
-
     apiClient
       .delete(`/spaces/${spaceId}`)
       .then(() => {
-        console.log("space deleted")
         navigate("/spaces");
       })
       .catch((err) => {
         if (err instanceof CanceledError) return;
 
-        console.log(err.message)
-        console.log(err.response.data.message)
+        console.log(err.message);
+        console.log(err.response.data.message);
+      });
+  };
 
+  const handleDeleteUser = (userId: string) => {
+    apiClient
+      .delete(`/spaces/${spaceId}/users/${userId}`)
+      .then(() => {
+        onUpdateSpace();
+      })
+      .catch((err) => {
+        if (err instanceof CanceledError) return;
+        console.log(err.message);
+        console.log(err.response.data.message);
       });
   };
 
@@ -80,7 +98,11 @@ const SpaceNavBar = ({ spacename, spaceId, onClick, onUpdateSpace }: Props) => {
           <Heading fontSize="xl" onClick={() => onOpen()}>
             {spacename}
           </Heading>
-          <SpaceNavBarMenu onDeleteSpace={handleDeleteSpace} />
+          <SpaceNavBarMenu
+            users={users}
+            onDeleteSpace={handleDeleteSpace}
+            onDeleteUser={(userId) => handleDeleteUser(userId)}
+          />
         </HStack>
         <HStack justifyContent="center">
           <Button onClick={() => onClick("Ranking")}>Ranking</Button>

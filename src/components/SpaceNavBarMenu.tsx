@@ -7,12 +7,24 @@ import {
   IconButton,
 } from "@chakra-ui/react";
 import ModalAcceptCancel from "./ModalAcceptCancel";
+import ModalSelectAcceptCancel from "./ModalSelectAcceptCancel";
+import { useEffect, useState } from "react";
+import apiClient from "../services/api-client";
+import { CanceledError } from "axios";
+import { User } from "./Space";
 
 interface Props {
-  onDeleteSpace: () => void
+  users: User[];
+  onDeleteUser: (userId: string) => void;
+  onDeleteSpace: () => void;
 }
 
-const SpaceNavBarMenu = ({onDeleteSpace}: Props) => {
+const SpaceNavBarMenu = ({ users, onDeleteUser, onDeleteSpace }: Props) => {
+  const userList = users.map(({ _id, username }) => ({
+    id: _id,
+    text: username,
+  }));
+
   return (
     <Menu>
       <MenuButton
@@ -29,6 +41,14 @@ const SpaceNavBarMenu = ({onDeleteSpace}: Props) => {
         >
           <MenuItem icon={<DeleteIcon />}>Delete space</MenuItem>
         </ModalAcceptCancel>
+        <ModalSelectAcceptCancel
+          selectOptions={userList}
+          acceptText="Delete user"
+          title="Select user to delete"
+          onAccept={(userId) => onDeleteUser(userId)}
+        >
+          <MenuItem icon={<DeleteIcon />}>Delete user</MenuItem>
+        </ModalSelectAcceptCancel>
       </MenuList>
     </Menu>
   );

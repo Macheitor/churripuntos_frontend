@@ -9,15 +9,20 @@ import {
   useDisclosure,
   Select,
 } from "@chakra-ui/react";
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
+
+interface Item {
+  id: string;
+  text: string;
+}
 
 interface Props {
   children: ReactNode;
   title: string;
-  selectOptions: [{id: string, text: string}];
+  selectOptions: Item[];
   cancelText?: string;
   acceptText?: string;
-  onAccept: () => void;
+  onAccept: (id: string) => void;
 }
 
 const ModalAcceptCancel = ({
@@ -29,6 +34,7 @@ const ModalAcceptCancel = ({
   onAccept,
 }: Props) => {
   const { onOpen, onClose, isOpen } = useDisclosure();
+  const [id, setId] = useState("");
 
   return (
     <>
@@ -43,6 +49,9 @@ const ModalAcceptCancel = ({
           <ModalBody>
             <Select
               placeholder="Select user"
+              onChange={(e) => {
+                setId(e.target.value)
+              }}
             >
               {selectOptions.map((option) => (
                 <option key={option.id} value={option.id}>
@@ -58,7 +67,7 @@ const ModalAcceptCancel = ({
             </Button>
             <Button
               onClick={() => {
-                onAccept();
+                onAccept(id);
                 onClose();
               }}
               colorScheme="red"

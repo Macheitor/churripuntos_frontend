@@ -91,6 +91,7 @@ const Space = () => {
       <SpaceNavBar
         spacename={space.spacename}
         spaceId={space._id}
+        users={space.users}
         onClick={(section) => setSection(section)}
         onUpdateSpace={() => setUpdateSpace(true)}
       />
