@@ -34,13 +34,6 @@ const SpaceNavBarMenu = ({ users, onDeleteUser, onDeleteSpace }: Props) => {
         variant="outline"
       />
       <MenuList>
-        <ModalAcceptCancel
-          acceptText="Delete space"
-          title="Are you sure you want to delete this space?"
-          onAccept={onDeleteSpace}
-        >
-          <MenuItem icon={<DeleteIcon />}>Delete space</MenuItem>
-        </ModalAcceptCancel>
         <ModalSelectAcceptCancel
           selectOptions={userList}
           acceptText="Delete user"
@@ -49,6 +42,14 @@ const SpaceNavBarMenu = ({ users, onDeleteUser, onDeleteSpace }: Props) => {
         >
           <MenuItem icon={<DeleteIcon />}>Delete user</MenuItem>
         </ModalSelectAcceptCancel>
+
+        <ModalAcceptCancel
+          acceptText="Delete space"
+          title="Are you sure you want to delete this space?"
+          onAccept={onDeleteSpace}
+        >
+          <MenuItem icon={<DeleteIcon />}>Delete space</MenuItem>
+        </ModalAcceptCancel>
       </MenuList>
     </Menu>
   );
