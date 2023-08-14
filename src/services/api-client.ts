@@ -1,8 +1,7 @@
-import axios from "axios";
+import axios, {CanceledError} from "axios";
 
 const instance = axios.create({
-  baseURL: "http://localhost:8080",
-  params: {},
+  baseURL: "http://localhost:8080"
 });
 
 instance.interceptors.request.use(
@@ -18,3 +17,5 @@ instance.interceptors.request.use(
 );
 
 export default instance;
+
+export {CanceledError};

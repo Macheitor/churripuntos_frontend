@@ -18,9 +18,9 @@ import {
 import { FieldValues, useForm } from "react-hook-form";
 import { FaUserAlt, FaLock } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import apiClient from "../services/api-client";
+import { CanceledError } from "../services/api-client";
 import { useState } from "react";
-import { CanceledError } from "axios";
+import loginService, { LoginRequest } from "./../services/login-service";
 
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
@@ -32,19 +32,25 @@ const Login = () => {
   const { register, handleSubmit, reset } = useForm();
 
   const onSubmit = (data: FieldValues) => {
-    apiClient
-      .post("/login", data)
-      .then((res) => {
-        localStorage.setItem("userId", res.data.user._id);
-        localStorage.setItem("username", res.data.user.username);
-        localStorage.setItem("accessToken", res.data.user.accessToken);
+    const loginRequest: LoginRequest = {
+      email: data.email,
+      password: data.password,
+    };
+
+    loginService
+      .login(loginRequest)
+      .then(({ data: loginInfo }) => {
+        localStorage.setItem("userId", loginInfo.user._id);
+        localStorage.setItem("username", loginInfo.user.username);
+        localStorage.setItem("accessToken", loginInfo.user.accessToken);
         navigate("/spaces");
       })
       .catch((err) => {
         if (err instanceof CanceledError) return;
         setError(err.response.data.message);
       });
-      reset();
+    // Reset the form inputs no matter what
+    reset();
   };
 
   return (
