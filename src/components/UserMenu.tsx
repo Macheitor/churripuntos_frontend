@@ -39,8 +39,8 @@ const UserMenu = () => {
           borderRadius={20}
         />
         <MenuList>
-          <MenuItem onClick={logout}>Logout</MenuItem>
           <MenuItem onClick={getSpaces}>Get Spaces</MenuItem>
+          <MenuItem onClick={logout}>Logout</MenuItem>
         </MenuList>
       </Menu>
     </>
