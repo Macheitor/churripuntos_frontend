@@ -3,63 +3,50 @@ import {
   Button,
   Center,
   Flex,
-  FormControl,
   Grid,
   GridItem,
   HStack,
-  Input,
-  InputGroup,
-  InputLeftElement,
   Modal,
-  ModalBody,
   ModalContent,
-  ModalFooter,
-  ModalHeader,
   ModalOverlay,
   SimpleGrid,
   Stack,
   Text,
-  chakra,
   useDisclosure,
 } from "@chakra-ui/react";
 import NavBar from "./NavBar";
 import SpaceCard from "./SpaceCard";
 import { useNavigate } from "react-router-dom";
-import { FieldValues, useForm } from "react-hook-form";
-import { FaUserAlt } from "react-icons/fa";
-import { useState } from "react";
+import { FieldValues } from "react-hook-form";
+
 import apiClient from "../services/api-client";
 import { CanceledError } from "axios";
 import useUserSpaces from "../hooks/useUserSpaces";
-
-const CFaUserAlt = chakra(FaUserAlt);
+import Form from "./Form";
+import { useState } from "react";
 
 const SpacesGrid = () => {
   const navigate = useNavigate();
   const { spaces, spacesError } = useUserSpaces();
-
   const { onOpen, onClose, isOpen } = useDisclosure();
-  const { register, handleSubmit, reset } = useForm();
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
   const closeModal = () => {
-    reset();
     onClose();
+    setError("");
   };
 
   // Create space
-  const onSubmitCreateSpace = (data: FieldValues) => {
+  const onCreateSpace = (data: FieldValues) => {
+    const newSpace = { spacename: data.genericInput };
     apiClient
-      .post(`/spaces/`, data)
+      .post(`/spaces/`, newSpace)
       .then(() => {
         closeModal();
-        setIsLoading(false);
         window.location.reload(); // TODO: Find a way to reload only this component
       })
       .catch((err) => {
         if (err instanceof CanceledError) return;
-        setIsLoading(false);
         setError(err.response.data.message);
       });
   };
@@ -110,54 +97,25 @@ const SpacesGrid = () => {
             </GridItem>
           </Center>
         </Grid>
+
         <Modal isOpen={isOpen} onClose={closeModal} isCentered>
           <ModalOverlay />
-
           <ModalContent>
-            <ModalHeader>Create new space</ModalHeader>
-
-            <ModalBody>
-              <Stack spacing={4} p={1}>
-                <form
-                  id="formCreateSpace"
-                  onSubmit={handleSubmit(onSubmitCreateSpace)}
-                >
-                  <FormControl>
-                    <InputGroup>
-                      <InputLeftElement
-                        pointerEvents="none"
-                        children={<CFaUserAlt color="gray.300" />}
-                      />
-
-                      <Input
-                        {...register("spacename")}
-                        type="text"
-                        placeholder="Spacename"
-                      />
-                    </InputGroup>
-                    {error && (
-                      <Text as="i" color="red">
-                        {error}
-                      </Text>
-                    )}
-                  </FormControl>
-                </form>
-              </Stack>
-            </ModalBody>
-
-            <ModalFooter>
-              <Button variant="outline" mr={3} onClick={closeModal}>
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                form="formCreateSpace"
-                isLoading={isLoading}
-                colorScheme="blue"
-              >
-                Create space
-              </Button>
-            </ModalFooter>
+            <Stack spacing={4} p={1}>
+              <Form
+                title="Create new space"
+                acceptText="Create space"
+                cancelBtn={true}
+                cancelText="Cancel"
+                genericInput={true}
+                genericInputPlaceHolder="Spacename"
+                errorMsg={error}
+                onAccept={(data: FieldValues) => {
+                  onCreateSpace(data);
+                }}
+                onCancel={closeModal}
+              />
+            </Stack>
           </ModalContent>
         </Modal>
       </Box>
