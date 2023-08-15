@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Center,
+  Flex,
   FormControl,
   Grid,
   GridItem,
@@ -33,7 +34,7 @@ import { Space } from "../components/Space";
 
 const CFaUserAlt = chakra(FaUserAlt);
 
-interface FetchGetSpacesResponse {
+interface FetchGetUserSpacesResponse {
   status: string;
   spaces: Space[];
 }
@@ -52,21 +53,23 @@ const SpacesGrid = () => {
       const controller = new AbortController();
 
       apiClient
-        .get<FetchGetSpacesResponse>(
+        .get<FetchGetUserSpacesResponse>(
           `/users/${localStorage.getItem("userId")}`,
           {
             signal: controller.signal,
           }
         )
         .then((res) => {
-          setSpaces(res.data.spaces)
+          console.log("hey")
+          console.log(res.data.spaces)
+          setSpaces(res.data.spaces);
           setUpdate(false);
         })
         .catch((err) => {
           if (err instanceof CanceledError) return;
           setError(err.message);
         });
-      
+
       return () => controller.abort();
     }
   }, [update]);
@@ -93,96 +96,104 @@ const SpacesGrid = () => {
   };
 
   return (
-    <>
-      <Grid
-        templateAreas={{
-          base: `"nav" "main"`,
-        }}
-      >
-        <GridItem area="nav">
-          <NavBar />
-        </GridItem>
+    <Flex
+      flexDirection="column"
+      width="100wh"
+      height="100vh"
 
-        <HStack justify={"right"} mr={2}>
-          <Button
-            colorScheme="blue"
-            onClick={() => {
-              onOpen();
-            }}
-          >
-            Create space
-          </Button>
-        </HStack>
-
-        <Center>
-          <GridItem area="main">
-            {error && <Text>{error}</Text>}
-            <SimpleGrid padding="10px" spacing={10}>
-              {spaces.map((space) => (
-                <SpaceCard
-                  key={space._id}
-                  space={space}
-                  onSelect={(spaceId) => {
-                    localStorage.setItem("currentSpaceId", spaceId);
-                    navigate(`/spaces/${spaceId}`);
-                  }}
-                ></SpaceCard>
-              ))}
-            </SimpleGrid>
+      alignItems="center"
+    >
+      <Box minW={{ base: "90%", md: "750px" }}>
+        <Grid
+          templateAreas={{
+            base: `"nav" "main"`,
+          }}
+        >
+          <GridItem area="nav">
+            <NavBar />
           </GridItem>
-        </Center>
-      </Grid>
-      <Modal isOpen={isOpen} onClose={closeModal} isCentered>
-        <ModalOverlay />
 
-        <ModalContent>
-          <ModalHeader>Create new space</ModalHeader>
-
-          <ModalBody>
-            <Stack spacing={4} p={1}>
-              <form
-                id="formCreateSpace"
-                onSubmit={handleSubmit(onSubmitCreateSpace)}
-              >
-                <FormControl>
-                  <InputGroup>
-                    <InputLeftElement
-                      pointerEvents="none"
-                      children={<CFaUserAlt color="gray.300" />}
-                    />
-
-                    <Input
-                      {...register("spacename")}
-                      type="text"
-                      placeholder="Spacename"
-                    />
-                  </InputGroup>
-                  {error && (
-                    <Text as="i" color="red">
-                      {error}
-                    </Text>
-                  )}
-                </FormControl>
-              </form>
-            </Stack>
-          </ModalBody>
-
-          <ModalFooter>
-            <Button variant="outline" mr={3} onClick={closeModal}>
-              Cancel
-            </Button>
+          <HStack justify={"right"} mr={2}>
             <Button
-              type="submit"
-              form="formCreateSpace"
-              isLoading={isLoading}
               colorScheme="blue"
+              onClick={() => {
+                onOpen();
+              }}
             >
               Create space
             </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </>
+          </HStack>
+
+          <Center>
+            <GridItem area="main">
+              {error && <Text>{error}</Text>}
+              <SimpleGrid padding="10px" spacing={10}>
+                {spaces.map((space) => (
+                  <SpaceCard
+                    key={space._id}
+                    space={space}
+                    onSelect={(spaceId) => {
+                      localStorage.setItem("currentSpaceId", spaceId);
+                      navigate(`/spaces/${spaceId}`);
+                    }}
+                  ></SpaceCard>
+                ))}
+              </SimpleGrid>
+            </GridItem>
+          </Center>
+        </Grid>
+        <Modal isOpen={isOpen} onClose={closeModal} isCentered>
+          <ModalOverlay />
+
+          <ModalContent>
+            <ModalHeader>Create new space</ModalHeader>
+
+            <ModalBody>
+              <Stack spacing={4} p={1}>
+                <form
+                  id="formCreateSpace"
+                  onSubmit={handleSubmit(onSubmitCreateSpace)}
+                >
+                  <FormControl>
+                    <InputGroup>
+                      <InputLeftElement
+                        pointerEvents="none"
+                        children={<CFaUserAlt color="gray.300" />}
+                      />
+
+                      <Input
+                        {...register("spacename")}
+                        type="text"
+                        placeholder="Spacename"
+                      />
+                    </InputGroup>
+                    {error && (
+                      <Text as="i" color="red">
+                        {error}
+                      </Text>
+                    )}
+                  </FormControl>
+                </form>
+              </Stack>
+            </ModalBody>
+
+            <ModalFooter>
+              <Button variant="outline" mr={3} onClick={closeModal}>
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                form="formCreateSpace"
+                isLoading={isLoading}
+                colorScheme="blue"
+              >
+                Create space
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      </Box>
+    </Flex>
   );
 };
 
