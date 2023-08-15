@@ -21,7 +21,7 @@ const useUserSpaces = () => {
       .then((res) => setSpaces(res.data.spaces))
       .catch((err) => {
         if (err instanceof CanceledError) return;
-        setError(err.message);
+        setError( "Error getting spaces: " + err.response.data.code);
       });
     return () => controller.abort();
   }, []);
