@@ -27,36 +27,21 @@ import SpaceCard from "./SpaceCard";
 import { useNavigate } from "react-router-dom";
 import { FieldValues, useForm } from "react-hook-form";
 import { FaUserAlt } from "react-icons/fa";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import apiClient from "../services/api-client";
 import { CanceledError } from "axios";
-import { Space } from "../components/Space";
-import userService from "../services/user-service";
+import useUserSpaces from "../hooks/useUserSpaces";
 
 const CFaUserAlt = chakra(FaUserAlt);
 
 const SpacesGrid = () => {
   const navigate = useNavigate();
+  const { spaces, spacesError } = useUserSpaces();
+
   const { onOpen, onClose, isOpen } = useDisclosure();
   const { register, handleSubmit, reset } = useForm();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const [spaces, setSpaces] = useState<Space[]>([]);
-  const [update, setUpdate] = useState(true);
-
-  useEffect(() => {
-    const { request, cancel } = userService.getSpaces();
-    request
-      .then((res) => {
-        setSpaces(res.data.spaces);
-      })
-      .catch((err) => {
-        if (err instanceof CanceledError) return;
-        setError(err.message);
-      });
-
-    return () => cancel();
-  }, []);
 
   const closeModal = () => {
     reset();
@@ -70,7 +55,7 @@ const SpacesGrid = () => {
       .then(() => {
         closeModal();
         setIsLoading(false);
-        setUpdate(true);
+        window.location.reload(); // TODO: Find a way to reload only this component
       })
       .catch((err) => {
         if (err instanceof CanceledError) return;
@@ -109,7 +94,7 @@ const SpacesGrid = () => {
 
           <Center>
             <GridItem area="main">
-              {error && <Text>{error}</Text>}
+              {spacesError && <Text>{spacesError}</Text>}
               <SimpleGrid padding="10px" spacing={10}>
                 {spaces.map((space) => (
                   <SpaceCard
