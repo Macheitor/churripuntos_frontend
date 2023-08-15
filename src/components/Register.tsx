@@ -19,9 +19,9 @@ import { FieldValues, useForm } from "react-hook-form";
 import { FaUserAlt, FaLock } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-import apiClient from "../services/api-client";
 import { useState } from "react";
 import { CanceledError } from "axios";
+import registerService, { RegisterRequest } from "../services/register-service";
 
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
@@ -32,11 +32,15 @@ const Register = () => {
   const { register, handleSubmit, reset } = useForm();
 
   const onSubmit = (data: FieldValues) => {
-    apiClient
-      .post("/register", data)
-      .then(() => {
-        navigate("/login");
-      })
+    const registerRequest: RegisterRequest = {
+      email: data.email,
+      username: data.username,
+      password: data.password,
+    };
+
+    registerService
+      .register(registerRequest)
+      .then(() => navigate("/login"))
       .catch((err) => {
         if (err instanceof CanceledError) return;
         setError(err.response.data.message);
