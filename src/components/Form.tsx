@@ -1,3 +1,4 @@
+import { EditIcon } from "@chakra-ui/icons";
 import {
   Stack,
   FormControl,
@@ -6,6 +7,9 @@ import {
   Input,
   Button,
   chakra,
+  HStack,
+  Heading,
+  Text,
 } from "@chakra-ui/react";
 import { FieldValues, useForm } from "react-hook-form";
 import { FaUserAlt, FaLock } from "react-icons/fa";
@@ -19,12 +23,15 @@ interface Props {
   cancelBtn?: boolean;
   cancelText?: string;
   emailInput?: boolean;
+  errorMsg?: string;
   genericInput?: boolean;
+  genericInputPlaceHolder?: string;
   passwordInput?: boolean;
   selectInput?: boolean;
+  title?: string;
   usernameInput?: boolean;
 
-  onAccept: (data:FieldValues) => void;
+  onAccept: (data: FieldValues) => void;
   onCancel?: () => void;
 }
 
@@ -33,9 +40,12 @@ const Form = ({
   cancelBtn = false,
   cancelText = "",
   emailInput = false,
+  errorMsg = "",
   genericInput = false,
+  genericInputPlaceHolder = "",
   passwordInput = false,
   selectInput = false,
+  title = "",
   usernameInput = false,
   onAccept,
   onCancel,
@@ -46,57 +56,82 @@ const Form = ({
     reset();
   };
   return (
-      <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
-        <Stack spacing={4} p="1rem" boxShadow="md">
-          {usernameInput && (
-            <FormControl isRequired>
-              <InputGroup>
-                <InputLeftElement
-                  pointerEvents="none"
-                  children={<CFaUserAlt color="gray.300" />}
-                />
-                <Input
-                  {...register("username")}
-                  type="text"
-                  placeholder="Username"
-                />
-              </InputGroup>
-            </FormControl>
-          )}
-          {emailInput && (
-            <FormControl isRequired>
-              <InputGroup>
-                <InputLeftElement
-                  pointerEvents="none"
-                  children={<MdEmail color="gray.300" />}
-                />
-                <Input
-                  {...register("email")}
-                  type="email"
-                  placeholder="Email address"
-                />
-              </InputGroup>
-            </FormControl>
-          )}
-          {passwordInput && (
-            <FormControl isRequired>
-              <InputGroup>
-                <InputLeftElement
-                  pointerEvents="none"
-                  color="gray.300"
-                  children={<CFaLock color="gray.300" />}
-                />
-                <Input
-                  {...register("password")}
-                  type="password"
-                  placeholder="Password"
-                />
-              </InputGroup>
-            </FormControl>
-          )}
+    <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
+      <Heading p={2} size="lg">
+        {title}
+      </Heading>
+      <Stack spacing={4} p={2}>
+        {genericInput && (
+          <FormControl isRequired>
+            <InputGroup>
+              <InputLeftElement
+                pointerEvents="none"
+                children={<EditIcon color="gray.300" />}
+              />
+              <Input
+                {...register("genericInput")}
+                type="text"
+                placeholder={genericInputPlaceHolder}
+              />
+            </InputGroup>
+          </FormControl>
+        )}
+        {usernameInput && (
+          <FormControl isRequired>
+            <InputGroup>
+              <InputLeftElement
+                pointerEvents="none"
+                children={<CFaUserAlt color="gray.300" />}
+              />
+              <Input
+                {...register("username")}
+                type="text"
+                placeholder="Username"
+              />
+            </InputGroup>
+          </FormControl>
+        )}
+        {emailInput && (
+          <FormControl isRequired>
+            <InputGroup>
+              <InputLeftElement
+                pointerEvents="none"
+                children={<MdEmail color="gray.300" />}
+              />
+              <Input
+                {...register("email")}
+                type="email"
+                placeholder="Email address"
+              />
+            </InputGroup>
+          </FormControl>
+        )}
+        {passwordInput && (
+          <FormControl isRequired>
+            <InputGroup>
+              <InputLeftElement
+                pointerEvents="none"
+                color="gray.300"
+                children={<CFaLock color="gray.300" />}
+              />
+              <Input
+                {...register("password")}
+                type="password"
+                placeholder="Password"
+              />
+            </InputGroup>
+          </FormControl>
+        )}
+        {errorMsg !== "" && <Text color={"red"}>{errorMsg}</Text>}
+        <HStack>
           {cancelBtn && (
             <FormControl>
-              <Button type="reset" variant="outline" mr={3} onClick={onCancel}>
+              <Button
+                type="reset"
+                variant="outline"
+                w={"100%"}
+                onClick={onCancel}
+              >
                 {cancelText}
               </Button>
             </FormControl>
@@ -106,8 +141,9 @@ const Form = ({
               {acceptText}
             </Button>
           </FormControl>
-        </Stack>
-      </form>
+        </HStack>
+      </Stack>
+    </form>
   );
 };
 
