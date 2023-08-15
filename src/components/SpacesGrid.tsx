@@ -31,13 +31,9 @@ import { useEffect, useState } from "react";
 import apiClient from "../services/api-client";
 import { CanceledError } from "axios";
 import { Space } from "../components/Space";
+import userService from "../services/user-service";
 
 const CFaUserAlt = chakra(FaUserAlt);
-
-interface FetchGetUserSpacesResponse {
-  status: string;
-  spaces: Space[];
-}
 
 const SpacesGrid = () => {
   const navigate = useNavigate();
@@ -49,30 +45,18 @@ const SpacesGrid = () => {
   const [update, setUpdate] = useState(true);
 
   useEffect(() => {
-    if (update) {
-      const controller = new AbortController();
+    const { request, cancel } = userService.getSpaces();
+    request
+      .then((res) => {
+        setSpaces(res.data.spaces);
+      })
+      .catch((err) => {
+        if (err instanceof CanceledError) return;
+        setError(err.message);
+      });
 
-      apiClient
-        .get<FetchGetUserSpacesResponse>(
-          `/users/${localStorage.getItem("userId")}`,
-          {
-            signal: controller.signal,
-          }
-        )
-        .then((res) => {
-          console.log("hey")
-          console.log(res.data.spaces)
-          setSpaces(res.data.spaces);
-          setUpdate(false);
-        })
-        .catch((err) => {
-          if (err instanceof CanceledError) return;
-          setError(err.message);
-        });
-
-      return () => controller.abort();
-    }
-  }, [update]);
+    return () => cancel();
+  }, []);
 
   const closeModal = () => {
     reset();
@@ -100,7 +84,6 @@ const SpacesGrid = () => {
       flexDirection="column"
       width="100wh"
       height="100vh"
-
       alignItems="center"
     >
       <Box minW={{ base: "90%", md: "750px" }}>
