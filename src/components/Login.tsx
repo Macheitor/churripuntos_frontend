@@ -28,7 +28,6 @@ const CFaLock = chakra(FaLock);
 const Login = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
-
   const { register, handleSubmit, reset } = useForm();
 
   const onSubmit = (data: FieldValues) => {
