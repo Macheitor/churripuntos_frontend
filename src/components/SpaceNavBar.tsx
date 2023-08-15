@@ -17,7 +17,7 @@ import {
 } from "@chakra-ui/react";
 
 import { useNavigate } from "react-router-dom";
-import { ChevronLeftIcon, EditIcon } from "@chakra-ui/icons";
+import { ChevronLeftIcon } from "@chakra-ui/icons";
 import { useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
 import apiClient from "../services/api-client";
@@ -29,14 +29,12 @@ interface Props {
   spacename: string;
   spaceId: string;
   users: User[];
-  onClick: (section: "Ranking" | "Tasks" | "Summary") => void;
   onUpdateSpace: () => void;
 }
 const SpaceNavBar = ({
   spacename,
   spaceId,
   users,
-  onClick,
   onUpdateSpace,
 }: Props) => {
   const navigate = useNavigate();
@@ -103,11 +101,6 @@ const SpaceNavBar = ({
             onDeleteSpace={handleDeleteSpace}
             onDeleteUser={(userId) => handleDeleteUser(userId)}
           />
-        </HStack>
-        <HStack justifyContent="center">
-          <Button onClick={() => onClick("Ranking")}>Ranking</Button>
-          <Button onClick={() => onClick("Tasks")}>Tasks List</Button>
-          <Button onClick={() => onClick("Summary")}>Summary</Button>
         </HStack>
       </Stack>
 

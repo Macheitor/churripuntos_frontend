@@ -1,4 +1,11 @@
-import { Stack } from "@chakra-ui/react";
+import {
+  Stack,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+} from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
 import SpaceNavBar from "./SpaceNavBar";
 import { useEffect, useState } from "react";
@@ -49,7 +56,6 @@ interface FetchGetSpaceResponse {
 const Space = () => {
   const navigate = useNavigate();
   const { spaceId } = useParams();
-  const [section, setSection] = useState("Ranking");
   const [updateSpace, setUpdateSpace] = useState(true);
   const [space, setSpace] = useState<Space>({
     spacename: "",
@@ -92,30 +98,38 @@ const Space = () => {
         spacename={space.spacename}
         spaceId={space._id}
         users={space.users}
-        onClick={(section) => setSection(section)}
         onUpdateSpace={() => setUpdateSpace(true)}
       />
+      <Tabs isFitted variant="enclosed">
+        <TabList>
+          <Tab>Ranking</Tab>
+          <Tab>Tasks</Tab>
+          <Tab>Summary</Tab>
+        </TabList>
 
-      {section === "Ranking" && (
-        <Ranking
-          onUpdateSpace={() => setUpdateSpace(true)}
-          users={space.users}
-          tasksDone={space.activities}
-        />
-      )}
-      {section === "Tasks" && (
-        <Tasks
-          onUpdateSpace={() => setUpdateSpace(true)}
-          tasks={space.tasks}
-          users={space.users}
-        />
-      )}
-      {section === "Summary" && (
-        <Summary
-          onUpdateSpace={() => setUpdateSpace(true)}
-          tasksDone={space.activities}
-        />
-      )}
+        <TabPanels>
+          <TabPanel>
+            <Ranking
+              onUpdateSpace={() => setUpdateSpace(true)}
+              users={space.users}
+              tasksDone={space.activities}
+            />
+          </TabPanel>
+          <TabPanel>
+            <Tasks
+              onUpdateSpace={() => setUpdateSpace(true)}
+              tasks={space.tasks}
+              users={space.users}
+            />
+          </TabPanel>
+          <TabPanel>
+            <Summary
+              onUpdateSpace={() => setUpdateSpace(true)}
+              tasksDone={space.activities}
+            />
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
     </Stack>
   );
 };
