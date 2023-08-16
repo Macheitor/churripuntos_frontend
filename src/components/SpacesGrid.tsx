@@ -24,6 +24,7 @@ import { CanceledError } from "axios";
 import useUserSpaces from "../hooks/useUserSpaces";
 import Form from "./Form";
 import { useState } from "react";
+import spaceService, { CreateSpaceRequest } from "../services/space-service";
 
 const SpacesGrid = () => {
   const navigate = useNavigate();
@@ -38,9 +39,8 @@ const SpacesGrid = () => {
 
   // Create space
   const onCreateSpace = (data: FieldValues) => {
-    const newSpace = { spacename: data.genericInput };
-    apiClient
-      .post(`/spaces/`, newSpace)
+    spaceService
+      .create({ spacename: data.genericInput })
       .then(() => {
         closeModal();
         window.location.reload(); // TODO: Find a way to reload only this component

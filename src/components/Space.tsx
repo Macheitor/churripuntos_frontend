@@ -22,7 +22,6 @@ import ModalAcceptCancel from "./ModalAcceptCancel";
 export interface User {
   isAdmin: boolean;
   username: string;
-  color: string;
   _id: string;
 }
 
