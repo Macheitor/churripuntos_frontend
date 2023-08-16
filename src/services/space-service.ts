@@ -1,6 +1,6 @@
 import apiClient from "./api-client";
 
-export interface CreateSpaceRequest {
+interface CreateSpaceRequest {
   spacename: string;
 }
 
