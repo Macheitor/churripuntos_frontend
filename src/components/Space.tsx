@@ -166,7 +166,7 @@ const Space = () => {
             <Ranking
               onUpdateSpace={() => setUpdateSpace(true)}
               users={space.users}
-              tasksDone={space.activities}
+              activities={space.activities}
               deleteIcons={deleteIconsRanking}
             />
           </TabPanel>

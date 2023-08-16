@@ -169,6 +169,7 @@ const Form = ({
         )}
         {optionsList.map((option) => (
           <p
+          key={option} // TODO: this should be an id
             onClick={() => {
               setValue("username", option);
               setAcceptBtn(true);
