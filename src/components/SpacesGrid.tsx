@@ -1,11 +1,14 @@
 import {
   Box,
   Button,
+  Card,
+  CardBody,
   Center,
   Flex,
   Grid,
   GridItem,
   HStack,
+  Heading,
   Modal,
   ModalContent,
   ModalOverlay,
@@ -18,13 +21,11 @@ import NavBar from "./NavBar";
 import SpaceCard from "./SpaceCard";
 import { useNavigate } from "react-router-dom";
 import { FieldValues } from "react-hook-form";
-
-import apiClient from "../services/api-client";
 import { CanceledError } from "axios";
 import useUserSpaces from "../hooks/useUserSpaces";
 import Form from "./Form";
 import { useState } from "react";
-import spaceService, { CreateSpaceRequest } from "../services/space-service";
+import spaceService from "../services/space-service";
 
 const SpacesGrid = () => {
   const navigate = useNavigate();
@@ -84,14 +85,16 @@ const SpacesGrid = () => {
               {spacesError && <Text>{spacesError}</Text>}
               <SimpleGrid padding="10px" spacing={10}>
                 {spaces.map((space) => (
-                  <SpaceCard
-                    key={space._id}
-                    space={space}
-                    onSelect={(spaceId) => {
-                      localStorage.setItem("currentSpaceId", spaceId);
-                      navigate(`/spaces/${spaceId}`);
-                    }}
-                  ></SpaceCard>
+                  <Card borderRadius={10} overflow="hidden" key={space._id}>
+                    <CardBody
+                      onClick={() => {
+                        localStorage.setItem("currentSpaceId", space._id);
+                        navigate(`/spaces/${space._id}`);
+                      }}
+                    >
+                      <Heading fontSize="2xl">{space.spacename}</Heading>
+                    </CardBody>
+                  </Card>
                 ))}
               </SimpleGrid>
             </GridItem>
