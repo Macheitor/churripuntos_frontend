@@ -6,23 +6,6 @@ interface FetchGetUserSpacesResponse {
   spaces: Space[];
 }
 
-/*
-  getAllUsers() {
-    const controller = new AbortController();
-
-    const request = apiClient.get(`/users`),
-      {
-        signal: controller.signal,
-      }
-    );
-
-    return { request, cancel: () => controller.abort() };
-
-};
-  }
-
-*/
-
 class userService {
   getAllUsers() {
     const controller = new AbortController();
