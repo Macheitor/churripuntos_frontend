@@ -18,7 +18,6 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import NavBar from "./NavBar";
-import SpaceCard from "./SpaceCard";
 import { useNavigate } from "react-router-dom";
 import { FieldValues } from "react-hook-form";
 import { CanceledError } from "axios";
@@ -27,7 +26,7 @@ import Form from "./Form";
 import { useState } from "react";
 import spaceService from "../services/space-service";
 
-const SpacesGrid = () => {
+const UserSpaces = () => {
   const navigate = useNavigate();
   const { spaces, spacesError } = useUserSpaces();
   const { onOpen, onClose, isOpen } = useDisclosure();
@@ -126,4 +125,4 @@ const SpacesGrid = () => {
   );
 };
 
-export default SpacesGrid;
+export default UserSpaces;

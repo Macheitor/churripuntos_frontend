@@ -4,7 +4,7 @@ import Register from "./components/Register";
 import { useEffect } from "react";
 import apiClient from "./services/api-client";
 import { CanceledError } from "axios";
-import SpacesGrid from "./components/SpacesGrid";
+import UserSpaces from "./components/UserSpaces";
 import Space from "./components/Space";
 import { Text } from "@chakra-ui/react";
 
@@ -44,7 +44,7 @@ function App() {
       <Routes>
         <Route path="/Login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/spaces" element={<SpacesGrid />} />
+        <Route path="/spaces" element={<UserSpaces />} />
         <Route path="/spaces/:spaceId" element={<Space />} />
         <Route path="*" element={<Text>404 PAGE NOT</Text>} />
       </Routes>
