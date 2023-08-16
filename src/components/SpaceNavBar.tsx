@@ -28,13 +28,19 @@ import { User } from "./Space";
 interface Props {
   spacename: string;
   spaceId: string;
-  users: User[];
+  onDeleteRanking: () => void;
+  onDeleteTasks: () => void;
+  onDeleteSummary: () => void;
+  onDeleteSpace: () => void;
   onUpdateSpace: () => void;
 }
 const SpaceNavBar = ({
   spacename,
   spaceId,
-  users,
+  onDeleteRanking,
+  onDeleteTasks,
+  onDeleteSummary,
+  onDeleteSpace,
   onUpdateSpace,
 }: Props) => {
   const navigate = useNavigate();
@@ -61,32 +67,6 @@ const SpaceNavBar = ({
       });
   };
 
-  const handleDeleteSpace = () => {
-    apiClient
-      .delete(`/spaces/${spaceId}`)
-      .then(() => {
-        navigate("/spaces");
-      })
-      .catch((err) => {
-        if (err instanceof CanceledError) return;
-
-        console.log(err.message);
-        console.log(err.response.data.message);
-      });
-  };
-
-  const handleDeleteUser = (userId: string) => {
-    apiClient
-      .delete(`/spaces/${spaceId}/users/${userId}`)
-      .then(() => {
-        onUpdateSpace();
-      })
-      .catch((err) => {
-        if (err instanceof CanceledError) return;
-        console.log(err.message);
-        console.log(err.response.data.message);
-      });
-  };
 
   return (
     <>
@@ -97,9 +77,10 @@ const SpaceNavBar = ({
             {spacename}
           </Heading>
           <SpaceNavBarMenu
-            users={users}
-            onDeleteSpace={handleDeleteSpace}
-            onDeleteUser={(userId) => handleDeleteUser(userId)}
+            onDeleteRanking={onDeleteRanking}
+            onDeleteTasks={onDeleteTasks}
+            onDeleteSummary={onDeleteSummary}
+            onDeleteSpace={onDeleteSpace}
           />
         </HStack>
       </Stack>

@@ -15,13 +15,14 @@ import {
   Stack,
 } from "@chakra-ui/react";
 import { Activity } from "./Space";
-import { CloseIcon } from "@chakra-ui/icons";
+import { CloseIcon, DeleteIcon } from "@chakra-ui/icons";
 import { useState } from "react";
 import apiClient from "../services/api-client";
 import { CanceledError } from "axios";
 
 interface Props {
   tasksDone: Activity[];
+  deleteIcons: boolean;
   onUpdateSpace: () => void;
 }
 
@@ -48,7 +49,7 @@ const months = [
   "November",
   "December",
 ];
-const Summary = ({ tasksDone, onUpdateSpace }: Props) => {
+const Summary = ({ tasksDone, deleteIcons, onUpdateSpace }: Props) => {
   const { onOpen, onClose, isOpen } = useDisclosure();
   const [deleteTaskDoneId, setDeleteTaskDoneId] = useState("");
   const [error, setError] = useState("");
@@ -105,40 +106,33 @@ const Summary = ({ tasksDone, onUpdateSpace }: Props) => {
       {[...tasksDone].reverse().map((t) => {
         let printDate = false;
         // TODO: DO this right not using substring
-        if (t.date.substring(0,10) !== lastDate.substring(0,10)) {
+        if (t.date.substring(0, 10) !== lastDate.substring(0, 10)) {
           lastDate = t.date;
           printDate = true;
-        } 
+        }
 
         return (
           <Stack key={t._id}>
             {printDate && <Heading size={"md"}>{getMyDate(t.date)}</Heading>}
-            <Box w="100%" bg={"gray.700"} borderRadius={10} >
-              <HStack justify={"space-between"} p={2}>
-                <Text>{t.taskname}</Text>
-                <Text>{t.points} points</Text>
-                <Text>{t.username}</Text>
-                <Box
-                  bg="gray.600"
-                  border="3px"
-                  borderRadius={20}
-                  borderColor="gray.700"
-                >
-                  <CloseIcon
-                    fontSize={8}
-                    mb={1}
-                    mr={2}
-                    ml={2}
-                    color="gray.700"
-                    onClick={(e) => {
-                      setDeleteTaskDoneId(t._id);
-                      onOpen();
-                      e.stopPropagation();
-                    }}
-                  />
-                </Box>
-              </HStack>
-            </Box>
+            <HStack p={1}>
+              <Box w="100%" bg={"gray.700"} borderRadius={10}>
+                <HStack justify={"space-between"} p={2}>
+                  <Text>{t.taskname}</Text>
+                  <Text>{t.points} points</Text>
+                  <Text>{t.username}</Text>
+                </HStack>
+              </Box>
+              {deleteIcons && (
+                <DeleteIcon
+                  color="red"
+                  onClick={(e) => {
+                    setDeleteTaskDoneId(t._id);
+                    onOpen();
+                    e.stopPropagation();
+                  }}
+                />
+              )}
+            </HStack>
           </Stack>
         );
       })}

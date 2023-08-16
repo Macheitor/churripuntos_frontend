@@ -6,25 +6,20 @@ import {
   MenuItem,
   IconButton,
 } from "@chakra-ui/react";
-import ModalAcceptCancel from "./ModalAcceptCancel";
-import ModalSelectAcceptCancel from "./ModalSelectAcceptCancel";
-import { useEffect, useState } from "react";
-import apiClient from "../services/api-client";
-import { CanceledError } from "axios";
-import { User } from "./Space";
 
 interface Props {
-  users: User[];
-  onDeleteUser: (userId: string) => void;
+  onDeleteRanking: () => void;
+  onDeleteTasks: () => void;
+  onDeleteSummary: () => void;
   onDeleteSpace: () => void;
 }
 
-const SpaceNavBarMenu = ({ users, onDeleteUser, onDeleteSpace }: Props) => {
-  const userList = users.map(({ _id, username }) => ({
-    id: _id,
-    text: username,
-  }));
-
+const SpaceNavBarMenu = ({
+  onDeleteRanking,
+  onDeleteTasks,
+  onDeleteSummary,
+  onDeleteSpace,
+}: Props) => {
   return (
     <Menu>
       <MenuButton
@@ -34,22 +29,18 @@ const SpaceNavBarMenu = ({ users, onDeleteUser, onDeleteSpace }: Props) => {
         variant="outline"
       />
       <MenuList>
-        <ModalSelectAcceptCancel
-          selectOptions={userList}
-          acceptText="Delete user"
-          title="Select user to delete"
-          onAccept={(userId) => onDeleteUser(userId)}
-        >
-          <MenuItem icon={<DeleteIcon />}>Delete user</MenuItem>
-        </ModalSelectAcceptCancel>
-
-        <ModalAcceptCancel
-          acceptText="Delete space"
-          title="Are you sure you want to delete this space?"
-          onAccept={onDeleteSpace}
-        >
-          <MenuItem icon={<DeleteIcon />}>Delete space</MenuItem>
-        </ModalAcceptCancel>
+        <MenuItem icon={<DeleteIcon />} onClick={onDeleteRanking}>
+          Delete user
+        </MenuItem>
+        <MenuItem icon={<DeleteIcon />} onClick={onDeleteTasks}>
+          Delete tasks
+        </MenuItem>
+        <MenuItem icon={<DeleteIcon />} onClick={onDeleteSummary}>
+          Delete tasks done
+        </MenuItem>
+        <MenuItem icon={<DeleteIcon />} onClick={onDeleteSpace}>
+          Delete space
+        </MenuItem>
       </MenuList>
     </Menu>
   );

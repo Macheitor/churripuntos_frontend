@@ -1,4 +1,6 @@
 import {
+  Box,
+  MenuItem,
   Stack,
   Tab,
   TabList,
@@ -14,6 +16,8 @@ import Tasks from "./Tasks";
 import Summary from "./Summary";
 import apiClient from "../services/api-client";
 import { CanceledError } from "axios";
+import { DeleteIcon } from "@chakra-ui/icons";
+import ModalAcceptCancel from "./ModalAcceptCancel";
 
 export interface User {
   isAdmin: boolean;
@@ -66,6 +70,11 @@ const Space = () => {
   });
   const [error, setError] = useState("");
 
+  const [deleteIconsRanking, setDeleteIconsRanking] = useState(false);
+  const [deleteIconsTasks, setDeleteIconsTasks] = useState(false);
+  const [deleteIconsSummary, setDeleteIconsSummary] = useState(false);
+  const [tabIndex, setTabIndex] = useState(0);
+
   const currentSpaceId = localStorage.getItem("currentSpaceId");
 
   useEffect(() => {
@@ -92,15 +101,60 @@ const Space = () => {
     }
   }, [spaceId, updateSpace]); // TODO: is spaceId needed here?
 
+  const handleDeleteSpace = () => {
+    apiClient
+      .delete(`/spaces/${spaceId}`)
+      .then(() => {
+        navigate("/spaces");
+      })
+      .catch((err) => {
+        if (err instanceof CanceledError) return;
+
+        console.log(err.message);
+        console.log(err.response.data.message);
+      });
+  };
+
   return (
     <Stack margin={2}>
       <SpaceNavBar
         spacename={space.spacename}
         spaceId={space._id}
-        users={space.users}
+        onDeleteRanking={() => {
+          setDeleteIconsRanking(true);
+          setTabIndex(0);
+        }}
+        onDeleteTasks={() => {
+          setDeleteIconsTasks(true);
+          setTabIndex(1);
+        }}
+        onDeleteSummary={() => {
+          setDeleteIconsSummary(true);
+          setTabIndex(2);
+        }}
+        onDeleteSpace={() => {
+          <ModalAcceptCancel
+            acceptText="Delete space"
+            title="Are you sure you want to delete this space?"
+            onAccept={handleDeleteSpace}
+          >
+            <MenuItem icon={<DeleteIcon />}>Delete space</MenuItem>
+          </ModalAcceptCancel>;
+        }}
         onUpdateSpace={() => setUpdateSpace(true)}
       />
-      <Tabs isFitted variant="enclosed">
+
+      <Tabs
+        isFitted
+        index={tabIndex}
+        onChange={(index) => {
+          setTabIndex(index);
+          setDeleteIconsRanking(false);
+          setDeleteIconsTasks(false);
+          setDeleteIconsSummary(false);
+        }}
+        variant="enclosed"
+      >
         <TabList>
           <Tab>Ranking</Tab>
           <Tab>Tasks</Tab>
@@ -113,19 +167,22 @@ const Space = () => {
               onUpdateSpace={() => setUpdateSpace(true)}
               users={space.users}
               tasksDone={space.activities}
+              deleteIcons={deleteIconsRanking}
             />
           </TabPanel>
           <TabPanel>
             <Tasks
               onUpdateSpace={() => setUpdateSpace(true)}
-              tasks={space.tasks}
               users={space.users}
+              tasks={space.tasks}
+              deleteIcons={deleteIconsTasks}
             />
           </TabPanel>
           <TabPanel>
             <Summary
               onUpdateSpace={() => setUpdateSpace(true)}
               tasksDone={space.activities}
+              deleteIcons={deleteIconsSummary}
             />
           </TabPanel>
         </TabPanels>

@@ -26,6 +26,7 @@ import { FieldValues, useForm } from "react-hook-form";
 import { FaUserAlt } from "react-icons/fa";
 import apiClient from "../services/api-client";
 import { CanceledError } from "axios";
+import { DeleteIcon } from "@chakra-ui/icons";
 
 const CFaUserAlt = chakra(FaUserAlt);
 
@@ -42,10 +43,11 @@ interface User {
 interface Props {
   users: User[];
   tasksDone: Activity[];
+  deleteIcons: boolean;
   onUpdateSpace: () => void;
 }
 
-const Ranking = ({ users, tasksDone, onUpdateSpace }: Props) => {
+const Ranking = ({ users, deleteIcons, tasksDone, onUpdateSpace }: Props) => {
   const { onOpen, onClose, isOpen } = useDisclosure();
   const { register, handleSubmit, reset, setValue } = useForm();
   const [isLoading, setIsLoading] = useState(false);
@@ -95,6 +97,20 @@ const Ranking = ({ users, tasksDone, onUpdateSpace }: Props) => {
       });
   };
 
+  
+  const handleDeleteUser = (userId: string) => {
+    apiClient
+      .delete(`/spaces/${localStorage.getItem("currentSpaceId")}/users/${userId}`)
+      .then(() => {
+        onUpdateSpace();
+      })
+      .catch((err) => {
+        if (err instanceof CanceledError) return;
+        console.log(err.message);
+        console.log(err.response.data.message);
+      });
+  };
+
   const closeModal = () => {
     setUsersDisplay("none");
     setUsersFound([]);
@@ -139,7 +155,7 @@ const Ranking = ({ users, tasksDone, onUpdateSpace }: Props) => {
         <Heading size={"lg"}>RANKING</Heading>
       </Center>
 
-      <HStack justify={"right"}>
+      <HStack justify={"right"} p={1}>
         <Button
           colorScheme="blue"
           onClick={() => {
@@ -152,12 +168,24 @@ const Ranking = ({ users, tasksDone, onUpdateSpace }: Props) => {
       </HStack>
 
       {ranking.map((r, index) => (
-        <RankingCard
-          position={index + 1}
-          username={r.username}
-          points={r.points}
-          key={r.userId}
-        />
+        <HStack key={r.userId} p={1}>
+          <Box w="100%" bg={"gray.700"} borderRadius={10}>
+            <HStack justify={"space-between"} m={2}>
+                <Heading fontSize="2xl">{index + 1}</Heading>
+                <Text ml={2}>{r.username}</Text>
+              <Text>{r.points} points</Text>
+            </HStack>
+          </Box>
+
+          {deleteIcons && (
+            <DeleteIcon
+              color="red"
+              onClick={() => {
+                handleDeleteUser(r.userId)
+              }}
+            />
+          )}
+        </HStack>
       ))}
 
       <Modal isOpen={isOpen} onClose={closeModal} isCentered>

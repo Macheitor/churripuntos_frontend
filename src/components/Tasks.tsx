@@ -25,7 +25,7 @@ import {
   Box,
 } from "@chakra-ui/react";
 import { useRef, useState } from "react";
-import { CloseIcon } from "@chakra-ui/icons";
+import { CloseIcon, DeleteIcon } from "@chakra-ui/icons";
 import apiClient from "../services/api-client";
 import { CanceledError } from "axios";
 import { FieldValues, Form, useForm } from "react-hook-form";
@@ -37,6 +37,7 @@ const CFaLock = chakra(FaLock);
 interface Props {
   tasks: Task[];
   users: User[];
+  deleteIcons: boolean;
   onUpdateSpace: () => void;
 }
 
@@ -50,7 +51,7 @@ interface TaskDone {
   userId: string;
 }
 
-const Tasks = ({ tasks, users, onUpdateSpace }: Props) => {
+const Tasks = ({ tasks, users, deleteIcons, onUpdateSpace }: Props) => {
   const { onOpen, onClose, isOpen } = useDisclosure();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -130,7 +131,7 @@ const Tasks = ({ tasks, users, onUpdateSpace }: Props) => {
         <Heading size={"lg"}>TASKS LIST</Heading>
       </Center>
 
-      <HStack justify={"right"}>
+      <HStack justify={"right"} p={1}>
         <Button
           colorScheme="blue"
           onClick={() => {
@@ -143,42 +144,35 @@ const Tasks = ({ tasks, users, onUpdateSpace }: Props) => {
       </HStack>
 
       {tasks.map((task) => (
-        <Card
-          key={task._id}
-          onClick={() => {
-            setModalType("taskDone");
-            setTaskDone({ ...taskDone, taskId: task._id });
-            onOpen();
-          }}
-        >
-          <CardBody>
-            <HStack justify={"space-between"}>
+        <HStack p={1}>
+          <Box
+            w="100%"
+            bg={"gray.700"}
+            borderRadius={10}
+            onClick={() => {
+              setModalType("taskDone");
+              setTaskDone({ ...taskDone, taskId: task._id });
+              onOpen();
+            }}
+          >
+            <HStack justify={"space-between"} p={2}>
               <Text>{task.taskname}</Text>
               <Text marginRight={3}>{task.points} points</Text>
-
-              <Box
-                bg="gray.600"
-                border="3px"
-                borderRadius={20}
-                borderColor="gray.700"
-              >
-                <CloseIcon
-                  fontSize={8}
-                  mb={1}
-                  mr={2}
-                  ml={2}
-                  color="gray.700"
-                  onClick={(e) => {
-                    setModalType("deleteTask");
-                    setDeleteTaskId(task._id);
-                    onOpen();
-                    e.stopPropagation(); // stops the click from propagating
-                  }}
-                />
-              </Box>
             </HStack>
-          </CardBody>
-        </Card>
+          </Box>
+
+          {deleteIcons && (
+            <DeleteIcon
+              color="red"
+              onClick={(e) => {
+                setModalType("deleteTask");
+                setDeleteTaskId(task._id);
+                onOpen();
+                e.stopPropagation(); // stops the click from propagating
+              }}
+            />
+          )}
+        </HStack>
       ))}
 
       <Modal
