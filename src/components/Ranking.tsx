@@ -9,26 +9,16 @@ import {
   Modal,
   ModalOverlay,
   ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  FormControl,
-  InputGroup,
-  InputLeftElement,
-  chakra,
-  Input,
   Stack,
 } from "@chakra-ui/react";
 import { Activity } from "./Space";
-import RankingCard from "./RankingCard";
 import { useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
-import { FaUserAlt } from "react-icons/fa";
 import apiClient from "../services/api-client";
 import { CanceledError } from "axios";
 import { DeleteIcon } from "@chakra-ui/icons";
+import Form from "./Form";
 
-const CFaUserAlt = chakra(FaUserAlt);
 
 interface Rank {
   username: string;
@@ -49,12 +39,9 @@ interface Props {
 
 const Ranking = ({ users, deleteIcons, tasksDone, onUpdateSpace }: Props) => {
   const { onOpen, onClose, isOpen } = useDisclosure();
-  const { register, handleSubmit, reset, setValue } = useForm();
-  const [isLoading, setIsLoading] = useState(false);
+  const { reset } = useForm();
   const [error, setError] = useState("");
   const [allUsers, setAllUsers] = useState<User[]>([]);
-  const [usersFound, setUsersFound] = useState<User[]>([]);
-  const [usersDisplay, setUsersDisplay] = useState("none");
 
   const buildRanking = (users: User[], arr: Activity[]) => {
     let result = arr.reduce((acc: Rank[], val) => {
@@ -97,23 +84,21 @@ const Ranking = ({ users, deleteIcons, tasksDone, onUpdateSpace }: Props) => {
       });
   };
 
-  
   const handleDeleteUser = (userId: string) => {
     apiClient
-      .delete(`/spaces/${localStorage.getItem("currentSpaceId")}/users/${userId}`)
+      .delete(
+        `/spaces/${localStorage.getItem("currentSpaceId")}/users/${userId}`
+      )
       .then(() => {
         onUpdateSpace();
       })
       .catch((err) => {
         if (err instanceof CanceledError) return;
-        console.log(err.message);
         console.log(err.response.data.message);
       });
   };
 
   const closeModal = () => {
-    setUsersDisplay("none");
-    setUsersFound([]);
     setAllUsers([]);
     setError("");
     reset();
@@ -121,8 +106,8 @@ const Ranking = ({ users, deleteIcons, tasksDone, onUpdateSpace }: Props) => {
   };
 
   // Add user
-  const onSubmitAddUser = (data: FieldValues) => {
-    const user = usersFound.find((u) => u.username === data.username);
+  const onAddUser = (username: string) => {
+    const user = allUsers.find((u) => u.username === username);
 
     if (user) {
       apiClient
@@ -130,13 +115,9 @@ const Ranking = ({ users, deleteIcons, tasksDone, onUpdateSpace }: Props) => {
         .then(() => {
           closeModal();
           onUpdateSpace();
-          setIsLoading(false);
         })
         .catch((err) => {
           if (err instanceof CanceledError) return;
-          setIsLoading(false);
-          setUsersDisplay("none");
-          setUsersFound([]);
           setAllUsers([]);
           setError(err.response.data.message);
         });
@@ -170,9 +151,9 @@ const Ranking = ({ users, deleteIcons, tasksDone, onUpdateSpace }: Props) => {
       {ranking.map((r, index) => (
         <HStack key={r.userId} p={1}>
           <Box w="100%" bg={"gray.700"} borderRadius={10}>
-            <HStack justify={"space-between"} m={2}>
-                <Heading fontSize="2xl">{index + 1}</Heading>
-                <Text ml={2}>{r.username}</Text>
+            <HStack justify={"space-between"} ml={2} mr={2}>
+              <Heading fontSize="2xl">{index + 1}</Heading>
+              <Text>{r.username}</Text>
               <Text>{r.points} points</Text>
             </HStack>
           </Box>
@@ -181,13 +162,35 @@ const Ranking = ({ users, deleteIcons, tasksDone, onUpdateSpace }: Props) => {
             <DeleteIcon
               color="red"
               onClick={() => {
-                handleDeleteUser(r.userId)
+                handleDeleteUser(r.userId);
               }}
             />
           )}
         </HStack>
       ))}
 
+      <Modal isOpen={isOpen} onClose={closeModal} isCentered>
+        <ModalOverlay />
+        <ModalContent>
+          <Stack spacing={4} p={1}>
+            <Form
+              title="Add user to space"
+              acceptText="Add user"
+              acceptBtnDefault={false}
+              cancelBtn={true}
+              cancelText="Cancel"
+              usernameInput={true}
+              errorMsg={error}
+              userList={allUsers.map((user) => user.username)}
+              onAccept={(data: FieldValues) => {
+                onAddUser(data.username);
+              }}
+              onCancel={closeModal}
+            />
+          </Stack>
+        </ModalContent>
+      </Modal>
+      {/* 
       <Modal isOpen={isOpen} onClose={closeModal} isCentered>
         <ModalOverlay />
 
@@ -269,7 +272,7 @@ const Ranking = ({ users, deleteIcons, tasksDone, onUpdateSpace }: Props) => {
             </Button>
           </ModalFooter>
         </ModalContent>
-      </Modal>
+      </Modal> */}
     </>
   );
 };

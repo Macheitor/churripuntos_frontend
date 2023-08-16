@@ -1,4 +1,4 @@
-import { EditIcon } from "@chakra-ui/icons";
+import { CheckIcon, EditIcon } from "@chakra-ui/icons";
 import {
   Stack,
   FormControl,
@@ -10,7 +10,9 @@ import {
   HStack,
   Heading,
   Text,
+  InputRightElement,
 } from "@chakra-ui/react";
+import { useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
 import { FaUserAlt, FaLock } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
@@ -20,12 +22,14 @@ const CFaLock = chakra(FaLock);
 
 interface Props {
   acceptText: string;
+  acceptBtnDefault?: boolean;
   cancelBtn?: boolean;
   cancelText?: string;
   emailInput?: boolean;
   errorMsg?: string;
   genericInput?: boolean;
   genericInputPlaceHolder?: string;
+  userList?: string[];
   passwordInput?: boolean;
   selectInput?: boolean;
   title?: string;
@@ -37,6 +41,7 @@ interface Props {
 
 const Form = ({
   acceptText = "",
+  acceptBtnDefault = true,
   cancelBtn = false,
   cancelText = "",
   emailInput = false,
@@ -45,22 +50,30 @@ const Form = ({
   genericInputPlaceHolder = "",
   passwordInput = false,
   selectInput = false,
+  userList = [],
   title = "",
   usernameInput = false,
   onAccept,
   onCancel,
 }: Props) => {
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit, reset, setValue } = useForm();
+  const [acceptBtn, setAcceptBtn] = useState(acceptBtnDefault);
+  const [showCheckIcon, setShowCheckIcon] = useState(false);
+  const [optionsList, setOptionsList] = useState<string[]>([]);
+
   const onSubmit = (data: FieldValues) => {
     onAccept(data);
+    setShowCheckIcon(false);
+    setOptionsList([]);
     reset();
   };
+
   return (
     <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
       <Heading p={2} size="lg">
         {title}
       </Heading>
-      <Stack spacing={4} p={2}>
+      <Stack pl={2} pr={2}>
         {genericInput && (
           <FormControl isRequired>
             <InputGroup>
@@ -87,7 +100,39 @@ const Form = ({
                 {...register("username")}
                 type="text"
                 placeholder="Username"
+                onChange={(e) => {
+                  setValue("username", e.target.value);
+                  if (e.target.value.length >= 3) {
+                    setOptionsList(
+                      userList.filter((user) => {
+                        return user
+                          .toLowerCase()
+                          .startsWith(e.target.value.toLowerCase());
+                      })
+                    );
+                  } else {
+                    setOptionsList([]);
+                  }
+
+                  const found = userList.find(
+                    (u) => u.toLowerCase() === e.target.value.toLowerCase()
+                  );
+
+                  if (found) {
+                    setAcceptBtn(true);
+                    setShowCheckIcon(true);
+                  } else {
+                    setAcceptBtn(false);
+                    setShowCheckIcon(false);
+                  }
+                }}
               />
+              {showCheckIcon && (
+                <InputRightElement
+                  pointerEvents="none"
+                  children={<CheckIcon color="green.300" />}
+                />
+              )}
             </InputGroup>
           </FormControl>
         )}
@@ -122,6 +167,18 @@ const Form = ({
             </InputGroup>
           </FormControl>
         )}
+        {optionsList.map((option) => (
+          <p
+            onClick={() => {
+              setValue("username", option);
+              setAcceptBtn(true);
+              setShowCheckIcon(true);
+              setOptionsList([]);
+            }}
+          >
+            {option}
+          </p>
+        ))}
         {errorMsg !== "" && <Text color={"red"}>{errorMsg}</Text>}
         <HStack>
           {cancelBtn && (
@@ -137,7 +194,12 @@ const Form = ({
             </FormControl>
           )}
           <FormControl>
-            <Button type="submit" colorScheme="teal" w={"100%"}>
+            <Button
+              isDisabled={!acceptBtn}
+              type="submit"
+              colorScheme="teal"
+              w={"100%"}
+            >
               {acceptText}
             </Button>
           </FormControl>

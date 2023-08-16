@@ -7,8 +7,6 @@ import {
   useDisclosure,
   HStack,
   Input,
-  Card,
-  CardBody,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -21,14 +19,13 @@ import {
   InputLeftElement,
   chakra,
   Select,
-  FormLabel,
   Box,
 } from "@chakra-ui/react";
-import { useRef, useState } from "react";
-import { CloseIcon, DeleteIcon } from "@chakra-ui/icons";
+import { useState } from "react";
+import { DeleteIcon } from "@chakra-ui/icons";
 import apiClient from "../services/api-client";
 import { CanceledError } from "axios";
-import { FieldValues, Form, useForm } from "react-hook-form";
+import { FieldValues, useForm } from "react-hook-form";
 
 import { FaUserAlt, FaLock } from "react-icons/fa";
 const CFaUserAlt = chakra(FaUserAlt);
@@ -144,7 +141,7 @@ const Tasks = ({ tasks, users, deleteIcons, onUpdateSpace }: Props) => {
       </HStack>
 
       {tasks.map((task) => (
-        <HStack p={1}>
+        <HStack p={1} key={task._id}>
           <Box
             w="100%"
             bg={"gray.700"}
