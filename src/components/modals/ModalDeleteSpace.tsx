@@ -75,7 +75,7 @@ const ModalAddUser = ({ children, spaceId, spacename }: Props) => {
             </Button>
             <Button
               isLoading={isLoading}
-              colorScheme="blue"
+              colorScheme="red"
               onClick={() => handleDeleteSpace()}
             >
               Delete space
