@@ -17,7 +17,7 @@ import {
 } from "@chakra-ui/react";
 import { ReactNode, useState } from "react";
 import { User } from "../../hooks/useSpace";
-import { useForm } from "react-hook-form";
+import { FieldValues, useForm } from "react-hook-form";
 import userService from "../../services/user-service";
 import { CanceledError } from "../../services/api-client";
 import { FaUserAlt } from "react-icons/fa";
@@ -33,7 +33,7 @@ interface Props {
 const ModalAddUser = ({ children, onAccept }: Props) => {
   const { onOpen, onClose, isOpen } = useDisclosure();
   const [allUsers, setAllUsers] = useState<User[]>([]);
-  const { register, reset, setValue, getValues } = useForm();
+  const { register, handleSubmit, reset, setValue, getValues } = useForm();
   const [showCheckIcon, setShowCheckIcon] = useState(false);
   const [usersFound, setUsersFound] = useState<User[]>([]);
   const [acceptBtn, setAcceptBtn] = useState(false);
@@ -60,6 +60,11 @@ const ModalAddUser = ({ children, onAccept }: Props) => {
     reset();
   };
 
+  const onSubmit = (data: FieldValues) => {
+    onAccept(data.user);
+    onCloseModal();
+  };
+
   return (
     <>
       <div
@@ -77,56 +82,58 @@ const ModalAddUser = ({ children, onAccept }: Props) => {
           <ModalHeader>Add user</ModalHeader>
           <ModalBody>
             <Stack spacing={4} p={1}>
-              <FormControl isRequired>
-                <InputGroup>
-                  <InputLeftElement
-                    pointerEvents="none"
-                    children={<CFaUserAlt color="gray.300" />}
-                  />
-                  <Input
-                    {...register("username")}
-                    type="text"
-                    placeholder="Username"
-                    onChange={(e) => {
-                      const username = e.target.value;
-                      setValue("username", username);
-
-                      if (username.length >= 3) {
-                        setUsersFound(
-                          allUsers.filter((user) => {
-                            return user.username
-                              .toLowerCase()
-                              .startsWith(username.toLowerCase());
-                          })
-                        );
-                      } else {
-                        setUsersFound([]);
-                      }
-
-                      const userFound = allUsers.find(
-                        (u) =>
-                          u.username.toLowerCase() === username.toLowerCase()
-                      );
-
-                      if (userFound) {
-                        setValue("user", userFound);
-                        setAcceptBtn(true);
-                        setShowCheckIcon(true);
-                      } else {
-                        setValue("user", null);
-                        setAcceptBtn(false);
-                        setShowCheckIcon(false);
-                      }
-                    }}
-                  />
-                  {showCheckIcon && (
-                    <InputRightElement
+              <form id="formAddUser" onSubmit={handleSubmit(onSubmit)}>
+                <FormControl isRequired>
+                  <InputGroup>
+                    <InputLeftElement
                       pointerEvents="none"
-                      children={<CheckIcon color="green.300" />}
+                      children={<CFaUserAlt color="gray.300" />}
                     />
-                  )}
-                </InputGroup>
-              </FormControl>
+                    <Input
+                      {...register("username")}
+                      type="text"
+                      placeholder="Username"
+                      onChange={(e) => {
+                        const username = e.target.value;
+                        setValue("username", username);
+
+                        if (username.length >= 3) {
+                          setUsersFound(
+                            allUsers.filter((user) => {
+                              return user.username
+                                .toLowerCase()
+                                .startsWith(username.toLowerCase());
+                            })
+                          );
+                        } else {
+                          setUsersFound([]);
+                        }
+
+                        const userFound = allUsers.find(
+                          (u) =>
+                            u.username.toLowerCase() === username.toLowerCase()
+                        );
+
+                        if (userFound) {
+                          setValue("user", userFound);
+                          setAcceptBtn(true);
+                          setShowCheckIcon(true);
+                        } else {
+                          setValue("user", null);
+                          setAcceptBtn(false);
+                          setShowCheckIcon(false);
+                        }
+                      }}
+                    />
+                    {showCheckIcon && (
+                      <InputRightElement
+                        pointerEvents="none"
+                        children={<CheckIcon color="green.300" />}
+                      />
+                    )}
+                  </InputGroup>
+                </FormControl>
+              </form>
               {usersFound.map((user) => (
                 <p
                   key={user._id}
@@ -148,12 +155,10 @@ const ModalAddUser = ({ children, onAccept }: Props) => {
               Cancel
             </Button>
             <Button
+              type="submit"
+              form="formAddUser"
               isDisabled={!acceptBtn}
               colorScheme="blue"
-              onClick={() => {
-                onAccept(getValues("user"));
-                onCloseModal();
-              }}
             >
               Add user
             </Button>
