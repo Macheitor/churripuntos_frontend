@@ -5,23 +5,46 @@ import {
   useDisclosure,
   Stack,
 } from "@chakra-ui/react";
-import { ReactNode } from "react";
-import Form from "./Form";
-import { User } from "../hooks/useSpace";
+import { ReactNode, useState } from "react";
+import Form from "../Form";
+import { User } from "../../hooks/useSpace";
 import { FieldValues } from "react-hook-form";
+import userService from "../../services/user-service";
+import { CanceledError } from "../../services/api-client";
 
 interface Props {
   children: ReactNode;
-  allUsers: User[];
   onAccept: (user: User) => void;
 }
 
-const ModalAddUser = ({ children, allUsers, onAccept }: Props) => {
+const ModalAddUser = ({ children, onAccept }: Props) => {
   const { onOpen, onClose, isOpen } = useDisclosure();
+  const [allUsers, setAllUsers] = useState<User[]>([]);
+
+  const getAllUsers = () => {
+    const { request, cancel } = userService.getAllUsers();
+    request
+      .then((res) => {
+        setAllUsers(res.data.users);
+      })
+      .catch((err) => {
+        if (err instanceof CanceledError) return;
+        console.log(err.response.data.message);
+        setAllUsers([]);
+      });
+    return () => cancel();
+  };
 
   return (
     <>
-      <div onClick={onOpen}>{children}</div>
+      <div
+        onClick={() => {
+          onOpen();
+          getAllUsers();
+        }}
+      >
+        {children}
+      </div>
 
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />

@@ -1,62 +1,26 @@
-import {
-  Box,
-  Button,
-  Center,
-  HStack,
-  Heading,
-  Text,
-  useDisclosure,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  Stack,
-} from "@chakra-ui/react";
+import { Box, Button, Center, HStack, Heading, Text } from "@chakra-ui/react";
 import { Activity, User } from "../hooks/useSpace";
-import { useState } from "react";
-import { FieldValues } from "react-hook-form";
-import { CanceledError } from "axios";
 import { DeleteIcon } from "@chakra-ui/icons";
-import Form from "./Form";
 import useRanking from "../hooks/useRanking";
-import userService from "../services/user-service";
 import ModalAcceptCancel from "./ModalAcceptCancel";
-import ModalAddUser from "./ModalAddUser";
+import ModalAddUser from "./modals/ModalAddUser";
 
 interface Props {
   users: User[];
   activities: Activity[];
-  deleteIcons: boolean;
+  showDeleteIcon: boolean;
   onAddUser: (user: User) => void;
   onDeleteUser: (user: User) => void;
 }
 
 const Ranking = ({
   users,
-  deleteIcons,
   activities,
+  showDeleteIcon,
   onAddUser,
   onDeleteUser,
 }: Props) => {
-  const { onOpen, onClose, isOpen } = useDisclosure();
-
-  const [modalAddUser, setModalAddUser] = useState(false);
-  const [error, setError] = useState("");
-  const [allUsers, setAllUsers] = useState<User[]>([]);
   const { ranking } = useRanking(users, activities);
-
-  const getAllUsers = () => {
-    const { request, cancel } = userService.getAllUsers();
-    request
-      .then((res) => {
-        setAllUsers(res.data.users);
-      })
-      .catch((err) => {
-        if (err instanceof CanceledError) return;
-        setError(err.response.data.message);
-        setAllUsers([]);
-      });
-    return () => cancel();
-  };
 
   return (
     <>
@@ -65,16 +29,8 @@ const Ranking = ({
       </Center>
 
       <HStack justify={"right"} p={1}>
-        <ModalAddUser allUsers={allUsers} onAccept={() => console.log("Add user")}>
-          <Button
-            colorScheme="blue"
-            onClick={() => {
-              onOpen();
-              getAllUsers();
-            }}
-          >
-            Add user
-          </Button>
+        <ModalAddUser onAccept={(user) => onAddUser(user)}>
+          <Button colorScheme="blue">Add user</Button>
         </ModalAddUser>
       </HStack>
 
@@ -88,7 +44,7 @@ const Ranking = ({
             </HStack>
           </Box>
 
-          {deleteIcons && r.userId !== `${localStorage.getItem("userId")}` && (
+          {showDeleteIcon && r.userId !== `${localStorage.getItem("userId")}` && (
             <ModalAcceptCancel
               acceptText="Delete user"
               title={`Are you sure you want to delete "${r.username}" ?`}

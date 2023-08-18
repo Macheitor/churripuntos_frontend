@@ -67,7 +67,7 @@ const Space = () => {
               onDeleteUser={(user) => onDeleteUser(user)}
               users={space.users}
               activities={space.activities}
-              deleteIcons={deleteIconsRanking}
+              showDeleteIcon={deleteIconsRanking}
             />
           </TabPanel>
           <TabPanel>
