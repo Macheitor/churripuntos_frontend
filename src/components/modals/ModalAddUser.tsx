@@ -4,13 +4,26 @@ import {
   ModalContent,
   useDisclosure,
   Stack,
+  ModalHeader,
+  chakra,
+  FormControl,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  InputRightElement,
+  ModalBody,
+  Button,
+  ModalFooter,
 } from "@chakra-ui/react";
 import { ReactNode, useState } from "react";
-import Form from "../Form";
 import { User } from "../../hooks/useSpace";
-import { FieldValues } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import userService from "../../services/user-service";
 import { CanceledError } from "../../services/api-client";
+import { FaUserAlt } from "react-icons/fa";
+import { CheckIcon } from "@chakra-ui/icons";
+
+const CFaUserAlt = chakra(FaUserAlt);
 
 interface Props {
   children: ReactNode;
@@ -20,6 +33,10 @@ interface Props {
 const ModalAddUser = ({ children, onAccept }: Props) => {
   const { onOpen, onClose, isOpen } = useDisclosure();
   const [allUsers, setAllUsers] = useState<User[]>([]);
+  const { register, reset, setValue, getValues } = useForm();
+  const [showCheckIcon, setShowCheckIcon] = useState(false);
+  const [usersFound, setUsersFound] = useState<User[]>([]);
+  const [acceptBtn, setAcceptBtn] = useState(false);
 
   const getAllUsers = () => {
     const { request, cancel } = userService.getAllUsers();
@@ -35,6 +52,14 @@ const ModalAddUser = ({ children, onAccept }: Props) => {
     return () => cancel();
   };
 
+  const onCloseModal = () => {
+    onClose();
+    setAllUsers([]);
+    setShowCheckIcon(false);
+    setUsersFound([]);
+    reset();
+  };
+
   return (
     <>
       <div
@@ -46,32 +71,93 @@ const ModalAddUser = ({ children, onAccept }: Props) => {
         {children}
       </div>
 
-      <Modal isOpen={isOpen} onClose={onClose} isCentered>
+      <Modal isOpen={isOpen} onClose={onCloseModal} isCentered>
         <ModalOverlay />
         <ModalContent>
-          <Stack spacing={4} p={1}>
-            <Form
-              title="Add user to space"
-              acceptText="Add user"
-              acceptBtnDefault={false}
-              cancelBtn={true}
-              cancelText="Cancel"
-              usernameInput={true}
-              userList={allUsers.map((user) => user.username)}
-              onAccept={(data: FieldValues) => {
-                // We only have the username from the form data field, search for the actual user
-                const user = allUsers.find(
-                  (user) => user.username === data.username
-                );
+          <ModalHeader>Add user</ModalHeader>
+          <ModalBody>
+            <Stack spacing={4} p={1}>
+              <FormControl isRequired>
+                <InputGroup>
+                  <InputLeftElement
+                    pointerEvents="none"
+                    children={<CFaUserAlt color="gray.300" />}
+                  />
+                  <Input
+                    {...register("username")}
+                    type="text"
+                    placeholder="Username"
+                    onChange={(e) => {
+                      const username = e.target.value;
+                      setValue("username", username);
 
-                if (user) {
-                  onAccept(user);
-                  onClose();
-                }
+                      if (username.length >= 3) {
+                        setUsersFound(
+                          allUsers.filter((user) => {
+                            return user.username
+                              .toLowerCase()
+                              .startsWith(username.toLowerCase());
+                          })
+                        );
+                      } else {
+                        setUsersFound([]);
+                      }
+
+                      const userFound = allUsers.find(
+                        (u) =>
+                          u.username.toLowerCase() === username.toLowerCase()
+                      );
+
+                      if (userFound) {
+                        setValue("user", userFound);
+                        setAcceptBtn(true);
+                        setShowCheckIcon(true);
+                      } else {
+                        setValue("user", null);
+                        setAcceptBtn(false);
+                        setShowCheckIcon(false);
+                      }
+                    }}
+                  />
+                  {showCheckIcon && (
+                    <InputRightElement
+                      pointerEvents="none"
+                      children={<CheckIcon color="green.300" />}
+                    />
+                  )}
+                </InputGroup>
+              </FormControl>
+              {usersFound.map((user) => (
+                <p
+                  key={user._id}
+                  onClick={() => {
+                    setValue("username", user.username);
+                    setAcceptBtn(true);
+                    setShowCheckIcon(true);
+                    setUsersFound([]);
+                  }}
+                >
+                  {user.username}
+                </p>
+              ))}
+            </Stack>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button variant="outline" mr={3} onClick={onCloseModal}>
+              Cancel
+            </Button>
+            <Button
+              isDisabled={!acceptBtn}
+              colorScheme="blue"
+              onClick={() => {
+                onAccept(getValues("user"));
+                onCloseModal();
               }}
-              onCancel={() => onClose()}
-            />
-          </Stack>
+            >
+              Add user
+            </Button>
+          </ModalFooter>
         </ModalContent>
       </Modal>
     </>

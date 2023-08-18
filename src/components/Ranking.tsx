@@ -2,15 +2,15 @@ import { Box, Button, Center, HStack, Heading, Text } from "@chakra-ui/react";
 import { Activity, User } from "../hooks/useSpace";
 import { DeleteIcon } from "@chakra-ui/icons";
 import useRanking from "../hooks/useRanking";
-import ModalAcceptCancel from "./ModalAcceptCancel";
 import ModalAddUser from "./modals/ModalAddUser";
+import ModalKickOutUser from "./modals/ModalKickOutUser";
 
 interface Props {
   users: User[];
   activities: Activity[];
   showDeleteIcon: boolean;
   onAddUser: (user: User) => void;
-  onDeleteUser: (user: User) => void;
+  onKickOutUser: (user: User) => void;
 }
 
 const Ranking = ({
@@ -18,7 +18,7 @@ const Ranking = ({
   activities,
   showDeleteIcon,
   onAddUser,
-  onDeleteUser,
+  onKickOutUser,
 }: Props) => {
   const { ranking } = useRanking(users, activities);
 
@@ -44,18 +44,18 @@ const Ranking = ({
             </HStack>
           </Box>
 
-          {showDeleteIcon && r.userId !== `${localStorage.getItem("userId")}` && (
-            <ModalAcceptCancel
-              acceptText="Delete user"
-              title={`Are you sure you want to delete "${r.username}" ?`}
-              onAccept={() => {
-                const user: User = { username: r.username, _id: r.userId };
-                onDeleteUser(user);
-              }}
-            >
-              <DeleteIcon color="red" />
-            </ModalAcceptCancel>
-          )}
+          {showDeleteIcon &&
+            r.userId !== `${localStorage.getItem("userId")}` && (
+              <ModalKickOutUser
+                username={r.username}
+                onAccept={() => {
+                  const user: User = { username: r.username, _id: r.userId };
+                  onKickOutUser(user);
+                }}
+              >
+                <DeleteIcon color="red" />
+              </ModalKickOutUser>
+            )}
         </HStack>
       ))}
     </>

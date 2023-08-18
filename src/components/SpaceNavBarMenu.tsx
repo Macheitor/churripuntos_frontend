@@ -33,7 +33,7 @@ const SpaceNavBarMenu = ({
       />
       <MenuList>
         <MenuItem icon={<DeleteIcon />} onClick={onDeleteRanking}>
-          Delete user
+          Kick out user
         </MenuItem>
         <MenuItem icon={<DeleteIcon />} onClick={onDeleteTasks}>
           Delete tasks

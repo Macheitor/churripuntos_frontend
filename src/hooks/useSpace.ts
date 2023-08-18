@@ -78,7 +78,7 @@ const useSpace = () => {
       });
   };
 
-  const onDeleteUser = (user: User) => {
+  const onKickOutUser = (user: User) => {
     apiClient
       .delete(`/spaces/${spaceId}/users/${user._id}`)
       .then(() => {
@@ -93,7 +93,7 @@ const useSpace = () => {
       });
   };
 
-  return { space, errorSpace,setErrorSpace, onAddUser, onDeleteUser };
+  return { space, errorSpace,setErrorSpace, onAddUser, onKickOutUser };
 };
 
 export default useSpace;

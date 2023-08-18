@@ -14,9 +14,8 @@ import Summary from "./Summary";
 
 import useSpace from "../hooks/useSpace";
 
-
 const Space = () => {
-  const { space, errorSpace, setErrorSpace, onAddUser, onDeleteUser } =
+  const { space, errorSpace, setErrorSpace, onAddUser, onKickOutUser } =
     useSpace();
 
   const [deleteIconsRanking, setDeleteIconsRanking] = useState(false);
@@ -64,7 +63,7 @@ const Space = () => {
           <TabPanel>
             <Ranking
               onAddUser={(user) => onAddUser(user)}
-              onDeleteUser={(user) => onDeleteUser(user)}
+              onKickOutUser={(user) => onKickOutUser(user)}
               users={space.users}
               activities={space.activities}
               showDeleteIcon={deleteIconsRanking}
