@@ -13,7 +13,6 @@ import Tasks from "./Tasks";
 import Summary from "./Summary";
 
 import useSpace from "../hooks/useSpace";
-import { useNavigate } from "react-router-dom";
 
 
 const Space = () => {
@@ -25,7 +24,6 @@ const Space = () => {
   const [deleteIconsSummary, setDeleteIconsSummary] = useState(false);
 
   const [tabIndex, setTabIndex] = useState(0);
-  const navigate = useNavigate();
 
   return (
     <Stack margin={2}>
