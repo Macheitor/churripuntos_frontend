@@ -1,48 +1,26 @@
 import {
   Box,
   Button,
-  Card,
-  CardBody,
   Center,
   Flex,
   Grid,
   GridItem,
   HStack,
-  Heading,
-  Modal,
-  ModalContent,
-  ModalOverlay,
   SimpleGrid,
-  Stack,
   Text,
-  useDisclosure,
 } from "@chakra-ui/react";
 import NavBar from "./NavBar";
 import { useNavigate } from "react-router-dom";
-import { FieldValues } from "react-hook-form";
 import useUserSpaces from "../hooks/useUserSpaces";
-import Form from "./Form";
-import { useState } from "react";
 import { Space } from "../hooks/useSpace";
+import ModalCreateSpace from "./modals/ModalCreateSpace";
 
 const UserSpaces = () => {
   // Hook for navigate between pages
   const navigate = useNavigate();
 
-  // Custom hook for getting al user spaces
+  // Custom hook user spaces
   const { spaces, spacesError, onCreateSpace } = useUserSpaces();
-
-  // chakra-ui hook for controlling the modal
-  const { onOpen, onClose, isOpen } = useDisclosure();
-
-  // useState for displaying error
-  const [error, setError] = useState("");
-
-  // Function to call whenever the modal is closed
-  const closeModal = () => {
-    onClose();
-    setError("");
-  };
 
   return (
     <Flex
@@ -65,16 +43,13 @@ const UserSpaces = () => {
           </GridItem>
 
           {/* Button for creating spaces */}
-          <HStack justify={"right"} mr={2}>
-            <Button
-              colorScheme="blue"
-              onClick={() => {
-                onOpen();
-              }}
-            >
-              Create space
-            </Button>
-          </HStack>
+          <ModalCreateSpace
+            onCreateSpace={(spacename: string) => onCreateSpace(spacename)}
+          >
+            <HStack justify={"right"} mr={2}>
+              <Button colorScheme="blue">Create space</Button>
+            </HStack>
+          </ModalCreateSpace>
 
           <Center>
             <GridItem area="main">
@@ -98,28 +73,6 @@ const UserSpaces = () => {
             </GridItem>
           </Center>
         </Grid>
-
-        <Modal isOpen={isOpen} onClose={closeModal} isCentered>
-          <ModalOverlay />
-          <ModalContent>
-            <Stack spacing={4} p={1}>
-              <Form
-                title="Create new space"
-                acceptText="Create space"
-                cancelBtn={true}
-                cancelText="Cancel"
-                genericInput={true}
-                genericInputPlaceHolder="Spacename"
-                errorMsg={error}
-                onAccept={(data: FieldValues) => {
-                  closeModal();
-                  onCreateSpace(data.genericInput);
-                }}
-                onCancel={closeModal}
-              />
-            </Stack>
-          </ModalContent>
-        </Modal>
       </Box>
     </Flex>
   );
