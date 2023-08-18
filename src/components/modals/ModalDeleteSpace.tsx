@@ -10,7 +10,7 @@ import {
   Center,
   Text,
 } from "@chakra-ui/react";
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useState } from "react";
 import spaceService from "../../services/space-service";
 import { CanceledError } from "../../services/api-client";
 import { useNavigate } from "react-router-dom";
@@ -78,7 +78,7 @@ const ModalAddUser = ({ children, spaceId, spacename }: Props) => {
               colorScheme="blue"
               onClick={() => handleDeleteSpace()}
             >
-              Delete
+              Delete space
             </Button>
           </ModalFooter>
         </ModalContent>
