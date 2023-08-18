@@ -1,6 +1,11 @@
-import { Rank, User } from "../components/Ranking";
-import { Activity } from "../components/Space";
 
+import { Activity, User } from "../hooks/useSpace";
+
+export interface Rank {
+  username: string;
+  points: number;
+  userId: string;
+}
 
 const buildRanking = (users: User[], arr: Activity[]) => {
   let result = arr.reduce((acc: Rank[], val) => {

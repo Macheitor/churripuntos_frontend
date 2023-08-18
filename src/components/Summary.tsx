@@ -14,8 +14,8 @@ import {
   Button,
   Stack,
 } from "@chakra-ui/react";
-import { Activity } from "./Space";
-import { CloseIcon, DeleteIcon } from "@chakra-ui/icons";
+import { Activity } from "../hooks/useSpace"
+import { DeleteIcon } from "@chakra-ui/icons";
 import { useState } from "react";
 import apiClient from "../services/api-client";
 import { CanceledError } from "axios";
@@ -23,7 +23,6 @@ import { CanceledError } from "axios";
 interface Props {
   tasksDone: Activity[];
   deleteIcons: boolean;
-  onUpdateSpace: () => void;
 }
 
 const days = [
@@ -49,7 +48,7 @@ const months = [
   "November",
   "December",
 ];
-const Summary = ({ tasksDone, deleteIcons, onUpdateSpace }: Props) => {
+const Summary = ({ tasksDone, deleteIcons }: Props) => {
   const { onOpen, onClose, isOpen } = useDisclosure();
   const [deleteTaskDoneId, setDeleteTaskDoneId] = useState("");
   const [error, setError] = useState("");
@@ -88,7 +87,6 @@ const Summary = ({ tasksDone, deleteIcons, onUpdateSpace }: Props) => {
         )}/activities/${taskDoneId}`
       )
       .then((res) => {
-        onUpdateSpace();
         setDeleteTaskDoneId("");
       })
       .catch((err) => {

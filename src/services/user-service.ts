@@ -1,5 +1,6 @@
-import { Space } from "../components/Space";
+import { Space } from "./../hooks/useSpace";
 import apiClient from "./api-client";
+import spaceService from "./space-service";
 
 interface FetchGetUserSpacesResponse {
   status: string;

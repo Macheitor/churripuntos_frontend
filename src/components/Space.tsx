@@ -1,5 +1,4 @@
 import {
-  MenuItem,
   Stack,
   Tab,
   TabList,
@@ -7,111 +6,26 @@ import {
   TabPanels,
   Tabs,
 } from "@chakra-ui/react";
-import { useNavigate, useParams } from "react-router-dom";
 import SpaceNavBar from "./SpaceNavBar";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Ranking from "./Ranking";
 import Tasks from "./Tasks";
 import Summary from "./Summary";
-import apiClient from "../services/api-client";
-import { CanceledError } from "axios";
-import { DeleteIcon } from "@chakra-ui/icons";
-import ModalAcceptCancel from "./ModalAcceptCancel";
 
-export interface User {
-  isAdmin: boolean;
-  username: string;
-  _id: string;
-}
+import useSpace from "../hooks/useSpace";
+import { useNavigate } from "react-router-dom";
 
-export interface Task {
-  taskname: string;
-  points: number;
-  _id: string;
-}
-
-export interface Activity {
-  username: string;
-  userId: string;
-  color: string;
-  taskId: string;
-  taskname: string;
-  points: number;
-  date: string;
-  validated: boolean;
-  _id: string;
-}
-
-export interface Space {
-  spacename: string;
-  users: User[];
-  tasks: Task[];
-  activities: Activity[];
-  _id: string;
-}
-
-interface FetchGetSpaceResponse {
-  status: string;
-  space: Space;
-}
 
 const Space = () => {
-  const navigate = useNavigate();
-  const { spaceId } = useParams();
-  const [updateSpace, setUpdateSpace] = useState(true);
-  const [space, setSpace] = useState<Space>({
-    spacename: "",
-    tasks: [],
-    users: [],
-    activities: [],
-    _id: "",
-  });
-  const [error, setError] = useState("");
+  const { space, errorSpace, setErrorSpace, onAddUser, onDeleteUser } =
+    useSpace();
 
   const [deleteIconsRanking, setDeleteIconsRanking] = useState(false);
   const [deleteIconsTasks, setDeleteIconsTasks] = useState(false);
   const [deleteIconsSummary, setDeleteIconsSummary] = useState(false);
+
   const [tabIndex, setTabIndex] = useState(0);
-
-  const currentSpaceId = localStorage.getItem("currentSpaceId");
-
-  useEffect(() => {
-    if ((spaceId && spaceId !== currentSpaceId) || currentSpaceId === null) {
-      return navigate("/spaces", { replace: true });
-    }
-
-    if (updateSpace) {
-      const controller = new AbortController();
-      const signal = controller.signal;
-      apiClient
-        .get<FetchGetSpaceResponse>(`/spaces/${currentSpaceId}`, { signal })
-        .then((res) => {
-          setSpace(res.data.space);
-          setUpdateSpace(false);
-        })
-        .catch((err) => {
-          if (err instanceof CanceledError) return;
-          setError(err.response.data.message);
-          setUpdateSpace(false);
-        });
-
-      return () => controller.abort();
-    }
-  }, [spaceId, updateSpace]); // TODO: is spaceId needed here?
-
-  const handleDeleteSpace = () => {
-    apiClient
-      .delete(`/spaces/${spaceId}`)
-      .then(() => {
-        navigate("/spaces");
-      })
-      .catch((err) => {
-        if (err instanceof CanceledError) return;
-
-        console.log(err.message);
-        console.log(err.response.data.message);
-      });
-  };
+  const navigate = useNavigate();
 
   return (
     <Stack margin={2}>
@@ -130,18 +44,7 @@ const Space = () => {
           setDeleteIconsSummary(true);
           setTabIndex(2);
         }}
-        onDeleteSpace={() => {
-          <ModalAcceptCancel
-            acceptText="Delete space"
-            title="Are you sure you want to delete this space?"
-            onAccept={handleDeleteSpace}
-          >
-            <MenuItem icon={<DeleteIcon />}>Delete space</MenuItem>
-          </ModalAcceptCancel>;
-        }}
-        onUpdateSpace={() => setUpdateSpace(true)}
       />
-
       <Tabs
         isFitted
         index={tabIndex}
@@ -162,7 +65,8 @@ const Space = () => {
         <TabPanels>
           <TabPanel>
             <Ranking
-              onUpdateSpace={() => setUpdateSpace(true)}
+              onAddUser={(user) => onAddUser(user)}
+              onDeleteUser={(user) => onDeleteUser(user)}
               users={space.users}
               activities={space.activities}
               deleteIcons={deleteIconsRanking}
@@ -170,7 +74,6 @@ const Space = () => {
           </TabPanel>
           <TabPanel>
             <Tasks
-              onUpdateSpace={() => setUpdateSpace(true)}
               users={space.users}
               tasks={space.tasks}
               deleteIcons={deleteIconsTasks}
@@ -178,7 +81,6 @@ const Space = () => {
           </TabPanel>
           <TabPanel>
             <Summary
-              onUpdateSpace={() => setUpdateSpace(true)}
               tasksDone={space.activities}
               deleteIcons={deleteIconsSummary}
             />

@@ -23,7 +23,6 @@ import { FieldValues, useForm } from "react-hook-form";
 import apiClient from "../services/api-client";
 import { CanceledError } from "axios";
 import SpaceNavBarMenu from "./SpaceNavBarMenu";
-import { User } from "./Space";
 
 interface Props {
   spacename: string;
@@ -31,8 +30,6 @@ interface Props {
   onDeleteRanking: () => void;
   onDeleteTasks: () => void;
   onDeleteSummary: () => void;
-  onDeleteSpace: () => void;
-  onUpdateSpace: () => void;
 }
 const SpaceNavBar = ({
   spacename,
@@ -40,8 +37,6 @@ const SpaceNavBar = ({
   onDeleteRanking,
   onDeleteTasks,
   onDeleteSummary,
-  onDeleteSpace,
-  onUpdateSpace,
 }: Props) => {
   const navigate = useNavigate();
   const { onOpen, onClose, isOpen } = useDisclosure();
@@ -55,7 +50,6 @@ const SpaceNavBar = ({
       .put(`/spaces/${spaceId}`, newSpacename)
       .then(() => {
         onClose();
-        onUpdateSpace();
         setIsLoading(false);
         reset();
       })
@@ -67,7 +61,6 @@ const SpaceNavBar = ({
       });
   };
 
-
   return (
     <>
       <Stack>
@@ -77,10 +70,11 @@ const SpaceNavBar = ({
             {spacename}
           </Heading>
           <SpaceNavBarMenu
+            spaceId={spaceId}
+            spacename={spacename}
             onDeleteRanking={onDeleteRanking}
             onDeleteTasks={onDeleteTasks}
             onDeleteSummary={onDeleteSummary}
-            onDeleteSpace={onDeleteSpace}
           />
         </HStack>
       </Stack>

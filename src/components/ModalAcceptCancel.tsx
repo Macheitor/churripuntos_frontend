@@ -8,7 +8,7 @@ import {
   Button,
   useDisclosure,
 } from "@chakra-ui/react";
-import {  ReactNode } from "react";
+import { ReactNode } from "react";
 
 interface Props {
   children: ReactNode;
@@ -21,8 +21,8 @@ interface Props {
 const ModalAcceptCancel = ({
   children,
   title,
-  cancelText="Cancel",
-  acceptText="Accept",
+  cancelText = "Cancel",
+  acceptText = "Accept",
   onAccept,
 }: Props) => {
   const { onOpen, onClose, isOpen } = useDisclosure();
@@ -40,7 +40,13 @@ const ModalAcceptCancel = ({
           <ModalBody></ModalBody>
 
           <ModalFooter>
-            <Button variant="outline" mr={3} onClick={onClose}>
+            <Button
+              variant="outline"
+              mr={3}
+              onClick={() => {
+                onClose();
+              }}
+            >
               {cancelText}
             </Button>
             <Button

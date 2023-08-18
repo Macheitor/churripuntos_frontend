@@ -1,4 +1,3 @@
-import { Task, User } from "./Space";
 import {
   Button,
   Center,
@@ -28,6 +27,7 @@ import { CanceledError } from "axios";
 import { FieldValues, useForm } from "react-hook-form";
 
 import { FaUserAlt, FaLock } from "react-icons/fa";
+import { Task, User } from "../hooks/useSpace";
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
 
@@ -35,7 +35,6 @@ interface Props {
   tasks: Task[];
   users: User[];
   deleteIcons: boolean;
-  onUpdateSpace: () => void;
 }
 
 interface FormInput {
@@ -48,7 +47,10 @@ interface TaskDone {
   userId: string;
 }
 
-const Tasks = ({ tasks, users, deleteIcons, onUpdateSpace }: Props) => {
+const Tasks = ({ tasks, users, deleteIcons }: Props) => {
+
+
+  
   const { onOpen, onClose, isOpen } = useDisclosure();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -71,7 +73,6 @@ const Tasks = ({ tasks, users, deleteIcons, onUpdateSpace }: Props) => {
       .post(`/spaces/${localStorage.getItem("currentSpaceId")}/tasks`, task)
       .then(() => {
         onClose();
-        onUpdateSpace();
         setIsLoading(false);
         reset();
       })
@@ -90,7 +91,6 @@ const Tasks = ({ tasks, users, deleteIcons, onUpdateSpace }: Props) => {
         `/spaces/${localStorage.getItem("currentSpaceId")}/tasks/${taskId}`
       )
       .then(() => {
-        onUpdateSpace();
         setDeleteTaskId("");
       })
       .catch((err) => {
@@ -110,7 +110,6 @@ const Tasks = ({ tasks, users, deleteIcons, onUpdateSpace }: Props) => {
       )
       .then(() => {
         onClose();
-        onUpdateSpace();
         setIsLoading(false);
         reset();
       })
