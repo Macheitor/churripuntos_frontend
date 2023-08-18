@@ -2,10 +2,8 @@ import {
   Button,
   Center,
   Heading,
-  Stack,
   useDisclosure,
   HStack,
-  Input,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -13,10 +11,6 @@ import {
   ModalFooter,
   ModalBody,
   Text,
-  FormControl,
-  InputGroup,
-  InputLeftElement,
-  chakra,
   Select,
   Box,
 } from "@chakra-ui/react";
@@ -24,17 +18,17 @@ import { useState } from "react";
 import { DeleteIcon } from "@chakra-ui/icons";
 import apiClient from "../services/api-client";
 import { CanceledError } from "axios";
-import { FieldValues, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 
-import { FaUserAlt, FaLock } from "react-icons/fa";
 import { Task, User } from "../hooks/useSpace";
-const CFaUserAlt = chakra(FaUserAlt);
-const CFaLock = chakra(FaLock);
+import ModalCreateTask from "./modals/ModalCreateTask";
 
 interface Props {
   tasks: Task[];
   users: User[];
-  deleteIcons: boolean;
+  showDeleteIcon: boolean;
+  onCreateTask: (task: Task) => void;
+  // onTaskDone: (task: Task) => void;
 }
 
 interface FormInput {
@@ -47,17 +41,13 @@ interface TaskDone {
   userId: string;
 }
 
-const Tasks = ({ tasks, users, deleteIcons }: Props) => {
-
-
-  
+const Tasks = ({ tasks, users, showDeleteIcon, onCreateTask }: Props) => {
   const { onOpen, onClose, isOpen } = useDisclosure();
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
 
   const [modalType, setModalType] = useState("");
 
-  const { register, handleSubmit, reset } = useForm<FormInput>();
+  const { reset } = useForm<FormInput>();
 
   const [deleteTaskId, setDeleteTaskId] = useState("");
 
@@ -65,24 +55,6 @@ const Tasks = ({ tasks, users, deleteIcons }: Props) => {
     taskId: "",
     userId: "",
   });
-
-  // Create task
-  const onSubmit = (task: FieldValues) => {
-    setIsLoading(true);
-    apiClient
-      .post(`/spaces/${localStorage.getItem("currentSpaceId")}/tasks`, task)
-      .then(() => {
-        onClose();
-        setIsLoading(false);
-        reset();
-      })
-      .catch((err) => {
-        if (err instanceof CanceledError) return;
-        setIsLoading(false);
-        setError(err.response.data.message);
-        reset();
-      });
-  };
 
   // Delete task
   const deleteTask = (taskId: string) => {
@@ -95,7 +67,7 @@ const Tasks = ({ tasks, users, deleteIcons }: Props) => {
       })
       .catch((err) => {
         if (err instanceof CanceledError) return;
-        setError(err.response.data.message);
+        console.log(err.response.data.message);
         setDeleteTaskId("");
       });
   };
@@ -116,7 +88,7 @@ const Tasks = ({ tasks, users, deleteIcons }: Props) => {
       .catch((err) => {
         if (err instanceof CanceledError) return;
         setIsLoading(false);
-        setError(err.response.data.message);
+        console.log(err.response.data.message);
         reset();
       });
   };
@@ -128,15 +100,9 @@ const Tasks = ({ tasks, users, deleteIcons }: Props) => {
       </Center>
 
       <HStack justify={"right"} p={1}>
-        <Button
-          colorScheme="blue"
-          onClick={() => {
-            setModalType("createTask");
-            onOpen();
-          }}
-        >
-          Create task
-        </Button>
+        <ModalCreateTask onAccept={(task) => onCreateTask(task)}>
+          <Button colorScheme="blue">Create task</Button>
+        </ModalCreateTask>
       </HStack>
 
       {tasks.map((task) => (
@@ -157,7 +123,7 @@ const Tasks = ({ tasks, users, deleteIcons }: Props) => {
             </HStack>
           </Box>
 
-          {deleteIcons && (
+          {showDeleteIcon && (
             <DeleteIcon
               color="red"
               onClick={(e) => {
@@ -180,75 +146,6 @@ const Tasks = ({ tasks, users, deleteIcons }: Props) => {
         isCentered
       >
         <ModalOverlay />
-
-        {modalType === "createTask" && (
-          <ModalContent>
-            <ModalHeader>Create new task</ModalHeader>
-
-            <ModalBody>
-              <form id="taskAddForm" onSubmit={handleSubmit(onSubmit)}>
-                <Stack spacing={4} p={1} boxShadow="md">
-                  <FormControl>
-                    <InputGroup>
-                      <InputLeftElement
-                        pointerEvents="none"
-                        children={<CFaUserAlt color="gray.300" />}
-                      />
-                      <Input
-                        {...register("taskname")}
-                        type="text"
-                        placeholder="Task name"
-                      />
-                    </InputGroup>
-                  </FormControl>
-                  <FormControl>
-                    <InputGroup>
-                      <InputLeftElement
-                        pointerEvents="none"
-                        color="gray.300"
-                        children={<CFaLock color="gray.300" />}
-                      />
-                      <Input
-                        {...register("points", { valueAsNumber: true })}
-                        type="number"
-                        placeholder="Points"
-                      />
-                    </InputGroup>
-                    <Center>
-                      {error && (
-                        <Text as="i" color="red">
-                          {error}
-                        </Text>
-                      )}
-                    </Center>
-                  </FormControl>
-                </Stack>
-              </form>
-            </ModalBody>
-
-            <ModalFooter>
-              <Button
-                variant="outline"
-                mr={3}
-                onClick={() => {
-                  onClose();
-                  reset();
-                  setError("");
-                }}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                form="taskAddForm"
-                isLoading={isLoading}
-                colorScheme="blue"
-              >
-                Create
-              </Button>
-            </ModalFooter>
-          </ModalContent>
-        )}
         {modalType === "deleteTask" && (
           <ModalContent>
             <ModalHeader>Delete this task?</ModalHeader>
@@ -262,7 +159,6 @@ const Tasks = ({ tasks, users, deleteIcons }: Props) => {
                 onClick={() => {
                   onClose();
                   reset();
-                  setError("");
                 }}
               >
                 Cancel
@@ -303,7 +199,6 @@ const Tasks = ({ tasks, users, deleteIcons }: Props) => {
                 onClick={() => {
                   onClose();
                   reset();
-                  setError("");
                 }}
               >
                 Cancel

@@ -48,7 +48,6 @@ const useSpace = () => {
     activities: [],
     _id: "",
   });
-  const [errorSpace, setErrorSpace] = useState(null);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -60,7 +59,7 @@ const useSpace = () => {
       })
       .catch((err) => {
         if (err instanceof CanceledError) return;
-        setErrorSpace(err.response.data.message);
+        console.log(err.response.data.message);
       });
 
     return () => controller.abort();
@@ -74,7 +73,7 @@ const useSpace = () => {
       })
       .catch((err) => {
         if (err instanceof CanceledError) return;
-        setErrorSpace(err.response.data.message);
+        console.log(err.response.data.message);
       });
   };
 
@@ -93,7 +92,19 @@ const useSpace = () => {
       });
   };
 
-  return { space, errorSpace,setErrorSpace, onAddUser, onKickOutUser };
+  const onCreateTask = (task: Task) => {
+    apiClient
+      .post(`/spaces/${spaceId}/tasks`, task)
+      .then((res) => {
+        setSpace({ ...space, tasks: [...space.tasks, res.data.task] });
+      })
+      .catch((err) => {
+        if (err instanceof CanceledError) return;
+        console.log(err.response.data.message);
+      });
+  };
+
+  return { space, onAddUser, onKickOutUser, onCreateTask };
 };
 
 export default useSpace;
