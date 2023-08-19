@@ -44,15 +44,8 @@ const Tasks = ({
       </Center>
 
       {tasks.map((task) => (
-        <HStack>
-          <Box
-            w={"100%"}
-            p={1}
-            m={1}
-            key={task._id}
-            bg={"gray.700"}
-            borderRadius={10}
-          >
+        <HStack key={task._id}>
+          <Box w={"100%"} p={1} m={1} bg={"gray.700"} borderRadius={10}>
             <ModalTaskDone
               space={space}
               task={task}

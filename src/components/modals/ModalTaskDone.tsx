@@ -73,13 +73,13 @@ const ModalTaskDone = ({
           <ModalHeader>Who did task "{task.taskname}"?</ModalHeader>
           <ModalBody>
             <Select
+            value={currentUserId}
               onChange={(choice) => {
                 setUserIdSelected(choice.target.value);
               }}
             >
               {users.map((user) => (
                 <option
-                  selected={user._id === currentUserId}
                   key={user._id}
                   value={user._id}
                 >
