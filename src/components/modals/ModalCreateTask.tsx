@@ -15,19 +15,22 @@ import {
   chakra,
 } from "@chakra-ui/react";
 import { ReactNode } from "react";
-import { Task } from "../../hooks/useSpace";
+import { Space, Task } from "../../hooks/useSpace";
 import { FieldValues, useForm } from "react-hook-form";
 import { BiSolidBullseye } from "react-icons/bi";
 import { EditIcon } from "@chakra-ui/icons";
+import { CanceledError } from "../../services/api-client";
+import spaceService from "../../services/space-service";
 
 const CBiSolidBullseye = chakra(BiSolidBullseye);
 
 interface Props {
   children: ReactNode;
-  onAccept: (task: Task) => void;
+  space: Space;
+  onTaskCreated: (task: Task) => void;
 }
 
-const ModalCreateTask = ({ children, onAccept }: Props) => {
+const ModalCreateTask = ({ children, space, onTaskCreated }: Props) => {
   const { onOpen, onClose, isOpen } = useDisclosure();
   const { register, handleSubmit, reset } = useForm();
 
@@ -42,7 +45,17 @@ const ModalCreateTask = ({ children, onAccept }: Props) => {
       points: data.points,
       _id: "",
     };
-    onAccept(task);
+
+    spaceService
+      .createTask(space, task)
+      .then((res) => {
+        onTaskCreated(res.data.task);
+      })
+      .catch((err) => {
+        if (err instanceof CanceledError) return;
+        console.log(err.response.data.message);
+      });
+
     onCloseModal();
   };
 

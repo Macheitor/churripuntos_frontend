@@ -76,19 +76,29 @@ const useSpace = () => {
     });
   };
 
-  const onCreateTask = (task: Task) => {
-    apiClient
-      .post(`/spaces/${spaceId}/tasks`, task)
-      .then((res) => {
-        setSpace({ ...space, tasks: [...space.tasks, res.data.task] });
-      })
-      .catch((err) => {
-        if (err instanceof CanceledError) return;
-        console.log(err.response.data.message);
-      });
+  const onTaskCreated = (task: Task) => {
+    setSpace({ ...space, tasks: [...space.tasks, task] });
   };
 
-  return { space, onUserAdded, onUserKicked, onCreateTask };
+  const onTaskDeleted = (task: Task) => {
+    setSpace({
+      ...space,
+      tasks: space.tasks.filter((t) => t._id !== task._id),
+    });
+  };
+
+  const onTaskDone = (activity: Activity) => {
+    setSpace({ ...space, activities: [...space.activities, activity] });
+  };
+
+  return {
+    space,
+    onUserAdded,
+    onUserKicked,
+    onTaskCreated,
+    onTaskDeleted,
+    onTaskDone,
+  };
 };
 
 export default useSpace;

@@ -1,96 +1,40 @@
-import {
-  Button,
-  Center,
-  Heading,
-  useDisclosure,
-  HStack,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  Text,
-  Select,
-  Box,
-} from "@chakra-ui/react";
+import { Button, Center, Heading, HStack, Text, Box } from "@chakra-ui/react";
 import { useState } from "react";
 import { DeleteIcon } from "@chakra-ui/icons";
-import apiClient from "../services/api-client";
-import { CanceledError } from "axios";
-import { useForm } from "react-hook-form";
 
-import { Task, User } from "../hooks/useSpace";
+import { Activity, Space, Task } from "../hooks/useSpace";
 import ModalCreateTask from "./modals/ModalCreateTask";
+import ModalDeleteTask from "./modals/ModalDeleteTask";
+import ModalTaskDone from "./modals/ModalTaskDone";
 
 interface Props {
-  tasks: Task[];
-  users: User[];
-  showDeleteIcon: boolean;
-  onCreateTask: (task: Task) => void;
-  // onTaskDone: (task: Task) => void;
+  space: Space;
+  currentUserId: string;
+  onTaskCreated: (task: Task) => void;
+  onTaskDeleted: (task: Task) => void;
+  onTaskDone: (activity: Activity) => void;
 }
 
-interface FormInput {
-  taskname: string;
-  points: number;
-}
+const Tasks = ({
+  space,
+  currentUserId,
+  onTaskCreated,
+  onTaskDeleted,
+  onTaskDone,
+}: Props) => {
+  const tasks = space.tasks;
 
-interface TaskDone {
-  taskId: string;
-  userId: string;
-}
+  const [showDeleteIcon, setShowDeleteIcon] = useState(false);
+  const [deleteBtn, setDeleteBtn] = useState("Delete");
 
-const Tasks = ({ tasks, users, showDeleteIcon, onCreateTask }: Props) => {
-  const { onOpen, onClose, isOpen } = useDisclosure();
-  const [isLoading, setIsLoading] = useState(false);
-
-  const [modalType, setModalType] = useState("");
-
-  const { reset } = useForm<FormInput>();
-
-  const [deleteTaskId, setDeleteTaskId] = useState("");
-
-  const [taskDone, setTaskDone] = useState<TaskDone>({
-    taskId: "",
-    userId: "",
-  });
-
-  // Delete task
-  const deleteTask = (taskId: string) => {
-    apiClient
-      .delete(
-        `/spaces/${localStorage.getItem("currentSpaceId")}/tasks/${taskId}`
-      )
-      .then(() => {
-        setDeleteTaskId("");
-      })
-      .catch((err) => {
-        if (err instanceof CanceledError) return;
-        console.log(err.response.data.message);
-        setDeleteTaskId("");
-      });
-  };
-
-  // Task done
-  const onTaskDoneSubmit = () => {
-    setIsLoading(true);
-    apiClient
-      .post(
-        `/spaces/${localStorage.getItem("currentSpaceId")}/activities`,
-        taskDone
-      )
-      .then(() => {
-        onClose();
-        setIsLoading(false);
-        reset();
-      })
-      .catch((err) => {
-        if (err instanceof CanceledError) return;
-        setIsLoading(false);
-        console.log(err.response.data.message);
-        reset();
-      });
+  const toggleDeleteBtn = () => {
+    if (deleteBtn === "Delete") {
+      setShowDeleteIcon(true);
+      setDeleteBtn("Cancel");
+    } else {
+      setShowDeleteIcon(false);
+      setDeleteBtn("Delete");
+    }
   };
 
   return (
@@ -99,121 +43,75 @@ const Tasks = ({ tasks, users, showDeleteIcon, onCreateTask }: Props) => {
         <Heading size={"lg"}>TASKS LIST</Heading>
       </Center>
 
-      <HStack justify={"right"} p={1}>
-        <ModalCreateTask onAccept={(task) => onCreateTask(task)}>
-          <Button colorScheme="blue">Create task</Button>
-        </ModalCreateTask>
-      </HStack>
-
       {tasks.map((task) => (
-        <HStack p={1} key={task._id}>
+        <HStack>
           <Box
-            w="100%"
+            w={"100%"}
+            p={1}
+            m={1}
+            key={task._id}
             bg={"gray.700"}
             borderRadius={10}
-            onClick={() => {
-              setModalType("taskDone");
-              setTaskDone({ ...taskDone, taskId: task._id });
-              onOpen();
-            }}
           >
-            <HStack justify={"space-between"} p={2}>
-              <Text>{task.taskname}</Text>
-              <Text marginRight={3}>{task.points} points</Text>
-            </HStack>
+            <ModalTaskDone
+              space={space}
+              task={task}
+              currentUserId={currentUserId}
+              onTaskDone={(activity) => onTaskDone(activity)}
+              key={task._id}
+            >
+              <HStack
+                justify={"space-between"}
+                onClick={() => {
+                  setShowDeleteIcon(false);
+                  setDeleteBtn("Delete");
+                }}
+              >
+                <Text>{task.taskname}</Text>
+                <Text marginRight={3}>{task.points} points</Text>
+              </HStack>
+            </ModalTaskDone>
           </Box>
-
           {showDeleteIcon && (
-            <DeleteIcon
-              color="red"
-              onClick={(e) => {
-                setModalType("deleteTask");
-                setDeleteTaskId(task._id);
-                onOpen();
-                e.stopPropagation(); // stops the click from propagating
-              }}
-            />
+            <ModalDeleteTask
+              space={space}
+              task={task}
+              onTaskDeleted={() => onTaskDeleted(task)}
+            >
+              <DeleteIcon color="red" />
+            </ModalDeleteTask>
           )}
         </HStack>
       ))}
 
-      <Modal
-        isOpen={isOpen}
-        onClose={() => {
-          reset();
-          onClose();
-        }}
-        isCentered
-      >
-        <ModalOverlay />
-        {modalType === "deleteTask" && (
-          <ModalContent>
-            <ModalHeader>Delete this task?</ModalHeader>
+      <HStack justify={"right"} p={1}>
+        <ModalCreateTask
+          space={space}
+          onTaskCreated={(task) => onTaskCreated(task)}
+        >
+          <Button
+            colorScheme="blue"
+            onClick={() => {
+              setShowDeleteIcon(false);
+              setDeleteBtn("Delete");
+            }}
+          >
+            Create task
+          </Button>
+        </ModalCreateTask>
 
-            <ModalBody></ModalBody>
-
-            <ModalFooter>
-              <Button
-                variant="outline"
-                mr={3}
-                onClick={() => {
-                  onClose();
-                  reset();
-                }}
-              >
-                Cancel
-              </Button>
-              <Button
-                onClick={() => {
-                  deleteTask(deleteTaskId);
-                  onClose();
-                }}
-                colorScheme="red"
-              >
-                Delete
-              </Button>
-            </ModalFooter>
-          </ModalContent>
+        {tasks.length > 0 && (
+          <Button
+            variant="outline"
+            colorScheme="red"
+            onClick={() => {
+              toggleDeleteBtn();
+            }}
+          >
+            {deleteBtn}
+          </Button>
         )}
-        {modalType === "taskDone" && (
-          <ModalContent>
-            <ModalHeader>WHO DID THIS TASK?</ModalHeader>
-            <ModalBody>
-              <Select
-                onChange={(choice) =>
-                  setTaskDone({ ...taskDone, userId: choice.target.value })
-                }
-                placeholder="Select user"
-              >
-                {users.map((user) => (
-                  <option key={user._id} value={user._id}>
-                    {user.username}
-                  </option>
-                ))}
-              </Select>
-            </ModalBody>
-            <ModalFooter>
-              <Button
-                variant="outline"
-                mr={3}
-                onClick={() => {
-                  onClose();
-                  reset();
-                }}
-              >
-                Cancel
-              </Button>
-              <Button
-                isLoading={isLoading}
-                colorScheme="blue"
-                onClick={() => onTaskDoneSubmit()}
-              >
-                Mark as Done
-              </Button>
-            </ModalFooter>
-          </ModalContent>
-        )}
-      </Modal>
+      </HStack>
     </>
   );
 };

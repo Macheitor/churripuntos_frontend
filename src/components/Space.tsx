@@ -15,9 +15,15 @@ import Summary from "./Summary";
 import useSpace from "../hooks/useSpace";
 
 const Space = () => {
-  const { space, onUserAdded, onUserKicked, onCreateTask } = useSpace();
+  const {
+    space,
+    onUserAdded,
+    onUserKicked,
+    onTaskCreated,
+    onTaskDeleted,
+    onTaskDone,
+  } = useSpace();
 
-  const [deleteIconsTasks, setDeleteIconsTasks] = useState(false);
   const [deleteIconsSummary, setDeleteIconsSummary] = useState(false);
 
   const [tabIndex, setTabIndex] = useState(0);
@@ -30,7 +36,6 @@ const Space = () => {
         spacename={space.spacename}
         spaceId={space._id}
         onDeleteTasks={() => {
-          setDeleteIconsTasks(true);
           setTabIndex(1);
         }}
         onDeleteSummary={() => {
@@ -44,7 +49,6 @@ const Space = () => {
         index={tabIndex}
         onChange={(index) => {
           setTabIndex(index);
-          setDeleteIconsTasks(false);
           setDeleteIconsSummary(false);
         }}
         variant="enclosed"
@@ -66,10 +70,11 @@ const Space = () => {
           </TabPanel>
           <TabPanel>
             <Tasks
-              users={space.users}
-              tasks={space.tasks}
-              showDeleteIcon={deleteIconsTasks}
-              onCreateTask={(task) => onCreateTask(task)}
+              space={space}
+              currentUserId={currentUserId}
+              onTaskCreated={(task) => onTaskCreated(task)}
+              onTaskDeleted={(task) => onTaskDeleted(task)}
+              onTaskDone={(activity) => onTaskDone(activity)}
             />
           </TabPanel>
           <TabPanel>
