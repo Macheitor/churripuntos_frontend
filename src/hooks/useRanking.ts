@@ -1,22 +1,20 @@
 
 import { Activity, User } from "../hooks/useSpace";
 
-export interface Rank {
-  username: string;
-  points: number;
-  userId: string;
+export interface Rank extends User {
+  points: number 
 }
 
 const buildRanking = (users: User[], arr: Activity[]) => {
   let result = arr.reduce((acc: Rank[], val) => {
-    const index = acc.findIndex((obj) => obj.userId === val.userId);
+    const index = acc.findIndex((obj) => obj._id === val._id);
     if (index !== -1) {
       acc[index].points += val.points;
     } else {
       acc.push({
         username: val.username,
         points: val.points,
-        userId: val.userId,
+        _id: val._id,
       });
     }
     return acc;
@@ -24,12 +22,12 @@ const buildRanking = (users: User[], arr: Activity[]) => {
 
   // Add users with 0 points
   users.map((u) => {
-    const index = result.findIndex((obj) => obj.userId === u._id);
+    const index = result.findIndex((obj) => obj._id === u._id);
     if (index === -1) {
       result.push({
         username: u.username,
         points: 0,
-        userId: u._id,
+        _id: u._id,
       });
     }
   });

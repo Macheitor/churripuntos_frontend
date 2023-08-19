@@ -65,31 +65,15 @@ const useSpace = () => {
     return () => controller.abort();
   }, []);
 
-  const onAddUser = (user: User) => {
-    apiClient
-      .put(`/spaces/${localStorage.getItem("currentSpaceId")}/users`, user)
-      .then(() => {
-        setSpace({ ...space, users: [...space.users, user] });
-      })
-      .catch((err) => {
-        if (err instanceof CanceledError) return;
-        console.log(err.response.data.message);
-      });
+  const onUserAdded = (user: User) => {
+    setSpace({ ...space, users: [...space.users, user] });
   };
 
-  const onKickOutUser = (user: User) => {
-    apiClient
-      .delete(`/spaces/${spaceId}/users/${user._id}`)
-      .then(() => {
-        setSpace({
-          ...space,
-          users: space.users.filter((u) => u._id !== user._id),
-        });
-      })
-      .catch((err) => {
-        if (err instanceof CanceledError) return;
-        console.log(err.response.data.message);
-      });
+  const onUserKicked = (user: User) => {
+    setSpace({
+      ...space,
+      users: space.users.filter((u) => u._id !== user._id),
+    });
   };
 
   const onCreateTask = (task: Task) => {
@@ -104,7 +88,7 @@ const useSpace = () => {
       });
   };
 
-  return { space, onAddUser, onKickOutUser, onCreateTask };
+  return { space, onUserAdded, onUserKicked, onCreateTask };
 };
 
 export default useSpace;

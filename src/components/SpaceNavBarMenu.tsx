@@ -11,7 +11,6 @@ import ModalDeleteSpace from "./modals/ModalDeleteSpace";
 interface Props {
   spaceId: string;
   spacename: string;
-  onDeleteRanking: () => void;
   onDeleteTasks: () => void;
   onDeleteSummary: () => void;
 }
@@ -19,7 +18,6 @@ interface Props {
 const SpaceNavBarMenu = ({
   spaceId,
   spacename,
-  onDeleteRanking,
   onDeleteTasks,
   onDeleteSummary,
 }: Props) => {
@@ -32,9 +30,6 @@ const SpaceNavBarMenu = ({
         variant="outline"
       />
       <MenuList>
-        <MenuItem icon={<DeleteIcon />} onClick={onDeleteRanking}>
-          Kick out user
-        </MenuItem>
         <MenuItem icon={<DeleteIcon />} onClick={onDeleteTasks}>
           Delete tasks
         </MenuItem>

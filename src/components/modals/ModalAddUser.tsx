@@ -16,24 +16,26 @@ import {
   ModalFooter,
 } from "@chakra-ui/react";
 import { ReactNode, useState } from "react";
-import { User } from "../../hooks/useSpace";
+import { Space, User } from "../../hooks/useSpace";
 import { FieldValues, useForm } from "react-hook-form";
 import userService from "../../services/user-service";
 import { CanceledError } from "../../services/api-client";
 import { FaUserAlt } from "react-icons/fa";
 import { CheckIcon } from "@chakra-ui/icons";
+import spaceService from "../../services/space-service";
 
 const CFaUserAlt = chakra(FaUserAlt);
 
 interface Props {
   children: ReactNode;
-  onAccept: (user: User) => void;
+  space: Space;
+  onUserAdded: (user: User) => void;
 }
 
-const ModalAddUser = ({ children, onAccept }: Props) => {
+const ModalAddUser = ({ children, space, onUserAdded }: Props) => {
   const { onOpen, onClose, isOpen } = useDisclosure();
   const [allUsers, setAllUsers] = useState<User[]>([]);
-  const { register, handleSubmit, reset, setValue, getValues } = useForm();
+  const { register, handleSubmit, reset, setValue } = useForm();
   const [showCheckIcon, setShowCheckIcon] = useState(false);
   const [usersFound, setUsersFound] = useState<User[]>([]);
   const [acceptBtn, setAcceptBtn] = useState(false);
@@ -52,6 +54,18 @@ const ModalAddUser = ({ children, onAccept }: Props) => {
     return () => cancel();
   };
 
+  const onAddUser = (user: User) => {
+    spaceService
+      .addUser(space, user)
+      .then((res) => {
+        onUserAdded(res.data.user);
+      })
+      .catch((err) => {
+        if (err instanceof CanceledError) return;
+        console.log(err.response.data.message);
+      });
+  };
+
   const onCloseModal = () => {
     onClose();
     setAllUsers([]);
@@ -61,7 +75,7 @@ const ModalAddUser = ({ children, onAccept }: Props) => {
   };
 
   const onSubmit = (data: FieldValues) => {
-    onAccept(data.user);
+    onAddUser(data.user);
     onCloseModal();
   };
 

@@ -9,15 +9,31 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { ReactNode } from "react";
+import { CanceledError } from "../../services/api-client";
+import { Space, User } from "../../hooks/useSpace";
+import spaceService from "../../services/space-service";
 
 interface Props {
   children: ReactNode;
-  username: string;
-  onAccept: () => void;
+  space: Space;
+  user: User;
+  onUserKicked: (user: User) => void;
 }
 
-const ModalKickOutUser = ({ children, username, onAccept }: Props) => {
+const ModalKickOutUser = ({ children, space, user, onUserKicked }: Props) => {
   const { onOpen, onClose, isOpen } = useDisclosure();
+
+  const kickOutUser = (user: User) => {
+    spaceService
+      .removeUser(space, user)
+      .then(() => {
+        onUserKicked(user);
+      })
+      .catch((err) => {
+        if (err instanceof CanceledError) return;
+        console.log(err.response.data.message);
+      });
+  };
 
   return (
     <>
@@ -30,7 +46,7 @@ const ModalKickOutUser = ({ children, username, onAccept }: Props) => {
           <ModalHeader>Delete user</ModalHeader>
 
           <ModalBody>
-            {`Are you sure you want to kick out ${username}?`}
+            {`Are you sure you want to kick out ${user.username} from ${space.spacename}?`}
           </ModalBody>
 
           <ModalFooter>
@@ -45,7 +61,7 @@ const ModalKickOutUser = ({ children, username, onAccept }: Props) => {
             </Button>
             <Button
               onClick={() => {
-                onAccept();
+                kickOutUser(user);
                 onClose();
               }}
               colorScheme="red"

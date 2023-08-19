@@ -15,24 +15,20 @@ import Summary from "./Summary";
 import useSpace from "../hooks/useSpace";
 
 const Space = () => {
-  const { space, onAddUser, onKickOutUser, onCreateTask } =
-    useSpace();
+  const { space, onUserAdded, onUserKicked, onCreateTask } = useSpace();
 
-  const [deleteIconsRanking, setDeleteIconsRanking] = useState(false);
   const [deleteIconsTasks, setDeleteIconsTasks] = useState(false);
   const [deleteIconsSummary, setDeleteIconsSummary] = useState(false);
 
   const [tabIndex, setTabIndex] = useState(0);
 
+  const currentUserId = `${localStorage.getItem("userId")}`;
+
   return (
-    <Stack margin={2}>
+    <Stack mr={1} ml={1} height="100vh">
       <SpaceNavBar
         spacename={space.spacename}
         spaceId={space._id}
-        onDeleteRanking={() => {
-          setDeleteIconsRanking(true);
-          setTabIndex(0);
-        }}
         onDeleteTasks={() => {
           setDeleteIconsTasks(true);
           setTabIndex(1);
@@ -43,11 +39,11 @@ const Space = () => {
         }}
       />
       <Tabs
+        isLazy
         isFitted
         index={tabIndex}
         onChange={(index) => {
           setTabIndex(index);
-          setDeleteIconsRanking(false);
           setDeleteIconsTasks(false);
           setDeleteIconsSummary(false);
         }}
@@ -62,11 +58,10 @@ const Space = () => {
         <TabPanels>
           <TabPanel>
             <Ranking
-              onAddUser={(user) => onAddUser(user)}
-              onKickOutUser={(user) => onKickOutUser(user)}
-              users={space.users}
-              activities={space.activities}
-              showDeleteIcon={deleteIconsRanking}
+              space={space}
+              currentUserId={currentUserId}
+              onUserAdded={(user) => onUserAdded(user)}
+              onUserKicked={(user) => onUserKicked(user)}
             />
           </TabPanel>
           <TabPanel>

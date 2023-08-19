@@ -27,14 +27,12 @@ import SpaceNavBarMenu from "./SpaceNavBarMenu";
 interface Props {
   spacename: string;
   spaceId: string;
-  onDeleteRanking: () => void;
   onDeleteTasks: () => void;
   onDeleteSummary: () => void;
 }
 const SpaceNavBar = ({
   spacename,
   spaceId,
-  onDeleteRanking,
   onDeleteTasks,
   onDeleteSummary,
 }: Props) => {
@@ -72,7 +70,6 @@ const SpaceNavBar = ({
           <SpaceNavBarMenu
             spaceId={spaceId}
             spacename={spacename}
-            onDeleteRanking={onDeleteRanking}
             onDeleteTasks={onDeleteTasks}
             onDeleteSummary={onDeleteSummary}
           />
