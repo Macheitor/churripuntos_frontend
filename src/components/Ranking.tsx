@@ -1,4 +1,4 @@
-import { Box, Button, Center, HStack, Heading, Text } from "@chakra-ui/react";
+import { Badge, Box, Button, Center, HStack, Heading, Text } from "@chakra-ui/react";
 import { Space, User } from "../hooks/useSpace";
 import { DeleteIcon } from "@chakra-ui/icons";
 import useRanking from "../hooks/useRanking";
@@ -47,7 +47,12 @@ const Ranking = ({
           <Box w="100%" bg={"gray.700"} borderRadius={10}>
             <HStack justify={"space-between"} ml={2} mr={2}>
               <Heading fontSize="2xl">{index + 1}</Heading>
+              <HStack>
               <Text>{user.username}</Text>
+
+
+              { user.isAdmin && <Badge>ADMIN</Badge>}
+              </HStack>
               <Text>{user.points} points</Text>
             </HStack>
           </Box>
