@@ -12,7 +12,7 @@ import Ranking from "./Ranking";
 import Tasks from "./Tasks";
 import Summary from "./Summary";
 
-import useSpace from "../hooks/useSpace";
+import useSpace, { User } from "../hooks/useSpace";
 
 const Space = () => {
   const {
@@ -28,12 +28,13 @@ const Space = () => {
 
 
   const [tabIndex, setTabIndex] = useState(0);
-  const currentUserId = `${localStorage.getItem("userId")}`;
+  const currentUser: User = {username:`${localStorage.getItem("username")}`, _id:`${localStorage.getItem("userId")}`} 
 
   return (
     <Stack mr={1} ml={1} height="100vh">
       <SpaceNavBar
         space={space}
+        currentUser={currentUser}
         onSpacenameChanged={(newSpacename) => onSpacenameChanged(newSpacename)}
       />
       <Tabs
@@ -55,7 +56,7 @@ const Space = () => {
           <TabPanel>
             <Ranking
               space={space}
-              currentUserId={currentUserId}
+              currentUser={currentUser}
               onUserAdded={(user) => onUserAdded(user)}
               onUserKicked={(user) => onUserKicked(user)}
             />
@@ -63,7 +64,7 @@ const Space = () => {
           <TabPanel>
             <Tasks
               space={space}
-              currentUserId={currentUserId}
+              currentUser={currentUser}
               onTaskCreated={(task) => onTaskCreated(task)}
               onTaskDeleted={(task) => onTaskDeleted(task)}
               onTaskDone={(activity) => onTaskDone(activity)}

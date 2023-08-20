@@ -7,19 +7,31 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  chakra,
 } from "@chakra-ui/react";
 
 import { useNavigate } from "react-router-dom";
-import { ChevronLeftIcon, DeleteIcon, HamburgerIcon } from "@chakra-ui/icons";
-import { Space } from "../hooks/useSpace";
+import {
+  ChevronLeftIcon,
+  DeleteIcon,
+  EditIcon,
+  HamburgerIcon,
+} from "@chakra-ui/icons";
+import { Space, User } from "../hooks/useSpace";
 import ModalChangeSpacename from "./modals/ModalChangeSpacename";
 import ModalDeleteSpace from "./modals/ModalDeleteSpace";
 
+import { ImExit } from "react-icons/im";
+import ModalLeaveSpace from "./modals/ModalLeaveSpace";
+
+const CImExit = chakra(ImExit);
+
 interface Props {
   space: Space;
+  currentUser: User;
   onSpacenameChanged: (newSpacename: string) => void;
 }
-const SpaceNavBar = ({ space, onSpacenameChanged }: Props) => {
+const SpaceNavBar = ({ space, currentUser, onSpacenameChanged }: Props) => {
   const navigate = useNavigate();
 
   return (
@@ -42,8 +54,12 @@ const SpaceNavBar = ({ space, onSpacenameChanged }: Props) => {
                   onSpacenameChanged(newSpacename)
                 }
               >
-                <MenuItem icon={<DeleteIcon />}>Change spacename</MenuItem>
+                <MenuItem icon={<EditIcon />}>Change spacename</MenuItem>
               </ModalChangeSpacename>
+              <ModalLeaveSpace space={space} currentUser={currentUser}>
+                <MenuItem icon={<CImExit />}>Leave space</MenuItem>
+              </ModalLeaveSpace>
+
               <ModalDeleteSpace space={space}>
                 <MenuItem icon={<DeleteIcon />}>Delete space</MenuItem>
               </ModalDeleteSpace>

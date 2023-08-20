@@ -2,14 +2,14 @@ import { Button, Center, Heading, HStack, Text, Box } from "@chakra-ui/react";
 import { useState } from "react";
 import { DeleteIcon } from "@chakra-ui/icons";
 
-import { Activity, Space, Task } from "../hooks/useSpace";
+import { Activity, Space, Task, User } from "../hooks/useSpace";
 import ModalCreateTask from "./modals/ModalCreateTask";
 import ModalDeleteTask from "./modals/ModalDeleteTask";
 import ModalTaskDone from "./modals/ModalTaskDone";
 
 interface Props {
   space: Space;
-  currentUserId: string;
+  currentUser: User;
   onTaskCreated: (task: Task) => void;
   onTaskDeleted: (task: Task) => void;
   onTaskDone: (activity: Activity) => void;
@@ -17,7 +17,7 @@ interface Props {
 
 const Tasks = ({
   space,
-  currentUserId,
+  currentUser,
   onTaskCreated,
   onTaskDeleted,
   onTaskDone,
@@ -49,7 +49,7 @@ const Tasks = ({
             <ModalTaskDone
               space={space}
               task={task}
-              currentUserId={currentUserId}
+              currentUser={currentUser}
               onTaskDone={(activity) => onTaskDone(activity)}
               key={task._id}
             >

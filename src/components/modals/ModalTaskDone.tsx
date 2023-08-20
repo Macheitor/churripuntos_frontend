@@ -10,7 +10,7 @@ import {
   Select,
 } from "@chakra-ui/react";
 import { ReactNode, useState } from "react";
-import { Activity, Space, Task } from "../../hooks/useSpace";
+import { Activity, Space, Task, User } from "../../hooks/useSpace";
 import { CanceledError } from "../../services/api-client";
 import spaceService from "../../services/space-service";
 
@@ -19,7 +19,7 @@ interface Props {
   children: ReactNode;
   space: Space;
   task: Task;
-  currentUserId: string;
+  currentUser: User;
   onTaskDone: (activity: Activity) => void;
 }
 
@@ -27,13 +27,13 @@ const ModalTaskDone = ({
   children,
   space,
   task,
-  currentUserId,
+  currentUser,
   onTaskDone,
 }: Props) => {
   const users = space.users;
 
   const { onOpen, onClose, isOpen } = useDisclosure();
-  const [userIdSelected, setUserIdSelected] = useState(currentUserId);
+  const [userIdSelected, setUserIdSelected] = useState(currentUser._id);
 
   const onSubmit = () => {
     const user = users.find((user) => user._id === userIdSelected);
@@ -43,12 +43,12 @@ const ModalTaskDone = ({
         .taskDone(space, task, user)
         .then((res) => {
           onTaskDone(res.data.activity);
-          setUserIdSelected(currentUserId);
+          setUserIdSelected(currentUser._id);
           onClose();
         })
         .catch((err) => {
           if (err instanceof CanceledError) return;
-          setUserIdSelected(currentUserId);
+          setUserIdSelected(currentUser._id);
           console.log(err.response.data.message);
         });
     } else {
@@ -73,7 +73,7 @@ const ModalTaskDone = ({
           <ModalHeader>Who did task "{task.taskname}"?</ModalHeader>
           <ModalBody>
             <Select
-            value={currentUserId}
+            value={currentUser._id}
               onChange={(choice) => {
                 setUserIdSelected(choice.target.value);
               }}
