@@ -14,14 +14,14 @@ import { ReactNode, useState } from "react";
 import spaceService from "../../services/space-service";
 import { CanceledError } from "../../services/api-client";
 import { useNavigate } from "react-router-dom";
+import { Space } from "../../hooks/useSpace";
 
 interface Props {
   children: ReactNode;
-  spaceId: string;
-  spacename: string;
+  space: Space
 }
 
-const ModalAddUser = ({ children, spaceId, spacename }: Props) => {
+const ModalAddUser = ({ children, space }: Props) => {
   const { onOpen, onClose, isOpen } = useDisclosure();
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -36,7 +36,7 @@ const ModalAddUser = ({ children, spaceId, spacename }: Props) => {
   const handleDeleteSpace = () => {
     setIsLoading(true);
     spaceService
-      .delete(spaceId)
+      .delete(space._id)
       .then(() => {
         setIsLoading(false);
         onCloseModal();
@@ -59,7 +59,7 @@ const ModalAddUser = ({ children, spaceId, spacename }: Props) => {
           <ModalHeader>Delete space</ModalHeader>
 
           <ModalBody>
-            <p>{`Are you sure you want to delete space ${spacename}?`}</p>
+            <p>{`Are you sure you want to delete space ${space.spacename}?`}</p>
             <Center>
               {error && (
                 <Text as="i" color="red">
