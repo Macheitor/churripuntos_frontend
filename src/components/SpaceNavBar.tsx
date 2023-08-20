@@ -34,37 +34,49 @@ interface Props {
 const SpaceNavBar = ({ space, currentUser, onSpacenameChanged }: Props) => {
   const navigate = useNavigate();
 
+  const logout = () => {
+    localStorage.clear();
+    navigate("/login");
+  };
+
   return (
     <>
       <Stack>
         <HStack justify={"space-between"} padding={3}>
           <ChevronLeftIcon boxSize={10} onClick={() => navigate(-1)} />
           <Heading fontSize="xl">{space.spacename}</Heading>
-          <Menu>
-            <MenuButton
-              as={IconButton}
-              aria-label="Options"
-              icon={<HamburgerIcon />}
-              variant="outline"
-            />
-            <MenuList>
-              <ModalChangeSpacename
-                space={space}
-                onSpacenameChanged={(newSpacename) =>
-                  onSpacenameChanged(newSpacename)
-                }
-              >
-                <MenuItem icon={<EditIcon />}>Change spacename</MenuItem>
-              </ModalChangeSpacename>
-              <ModalLeaveSpace space={space} currentUser={currentUser}>
-                <MenuItem icon={<CImExit />}>Leave space</MenuItem>
-              </ModalLeaveSpace>
+          <HStack>
+            <p>{currentUser.username}</p>
+            <Menu>
+              <MenuButton
+                as={IconButton}
+                aria-label="Options"
+                icon={<HamburgerIcon />}
+                variant="outline"
+              />
 
-              <ModalDeleteSpace space={space}>
-                <MenuItem icon={<DeleteIcon />}>Delete space</MenuItem>
-              </ModalDeleteSpace>
-            </MenuList>
-          </Menu>
+              <MenuList>
+                <ModalChangeSpacename
+                  space={space}
+                  onSpacenameChanged={(newSpacename) =>
+                    onSpacenameChanged(newSpacename)
+                  }
+                >
+                  <MenuItem icon={<EditIcon />}>Change spacename</MenuItem>
+                </ModalChangeSpacename>
+                <ModalLeaveSpace space={space} currentUser={currentUser}>
+                  <MenuItem icon={<CImExit />}>Leave space</MenuItem>
+                </ModalLeaveSpace>
+
+                <ModalDeleteSpace space={space}>
+                  <MenuItem icon={<DeleteIcon />}>Delete space</MenuItem>
+                </ModalDeleteSpace>
+                <MenuItem icon={<CImExit />} onClick={logout}>
+                  Logout
+                </MenuItem>
+              </MenuList>
+            </Menu>
+          </HStack>
         </HStack>
       </Stack>
     </>
