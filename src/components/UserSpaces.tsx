@@ -20,7 +20,7 @@ const UserSpaces = () => {
   const navigate = useNavigate();
 
   // Custom hook user spaces
-  const { spaces, spacesError, onCreateSpace } = useUserSpaces();
+  const { spaces, spacesError, onSpaceCreated } = useUserSpaces();
 
   return (
     <Flex
@@ -44,7 +44,7 @@ const UserSpaces = () => {
 
           {/* Button for creating spaces */}
           <ModalCreateSpace
-            onCreateSpace={(spacename: string) => onCreateSpace(spacename)}
+            onSpaceCreated={(space: Space) => onSpaceCreated(space)}
           >
             <HStack justify={"right"} mr={2}>
               <Button colorScheme="blue">Create space</Button>

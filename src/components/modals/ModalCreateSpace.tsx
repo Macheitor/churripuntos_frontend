@@ -16,13 +16,16 @@ import {
 import { ReactNode } from "react";
 import { useForm, FieldValues } from "react-hook-form";
 import { EditIcon } from "@chakra-ui/icons";
+import { Space } from "../../hooks/useSpace";
+import spaceService from "../../services/space-service";
+import { CanceledError } from "../../services/api-client";
 
 interface Props {
   children: ReactNode;
-  onCreateSpace: (spacename: string) => void;
+  onSpaceCreated: (space: Space) => void;
 }
 
-const ModalAddUser = ({ children, onCreateSpace }: Props) => {
+const ModalAddUser = ({ children, onSpaceCreated }: Props) => {
   const { onOpen, onClose, isOpen } = useDisclosure();
   const { register, handleSubmit, reset } = useForm();
 
@@ -32,7 +35,19 @@ const ModalAddUser = ({ children, onCreateSpace }: Props) => {
   };
 
   const onSubmit = (data: FieldValues) => {
-    onCreateSpace(data.spacename);
+    const spacename = data.spacename
+
+      spaceService
+        .create(spacename)
+        .then((res) => {
+          onSpaceCreated(res.data.space)
+        })
+        .catch((err) => {
+          if (err instanceof CanceledError) return;
+          console.log(err.response.data.message);
+        });
+
+
     onCloseModal();
   };
 

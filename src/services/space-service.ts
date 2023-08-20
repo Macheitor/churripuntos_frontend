@@ -2,8 +2,8 @@ import { Activity, Space, Task, User } from "../hooks/useSpace";
 import apiClient from "./api-client";
 
 class spaceService {
-  create(newSpacename: string) {
-    return apiClient.post(`/spaces/`, newSpacename);
+  create(spacename: string) {
+    return apiClient.post(`/spaces/`, {spacename});
   }
 
   delete(spaceId: string) {

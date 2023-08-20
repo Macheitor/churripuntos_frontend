@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import apiClient from "../services/api-client";
 import { CanceledError } from "axios";
 import { Space } from "../hooks/useSpace";
-import spaceService from "../services/space-service";
 
 interface FetchGetSpacesResponse {
   status: string;
@@ -33,19 +32,11 @@ const useUserSpaces = () => {
     return () => controller.abort();
   }, []);
 
-  const onCreateSpace = (spacename: string) => {
-    spaceService
-      .create({ spacename })
-      .then((res) => {
-        setSpaces([...spaces, res.data.space]);
-      })
-      .catch((err) => {
-        if (err instanceof CanceledError) return;
-        setSpacesError(err.response.data.message);
-      });
-  };
+  const onSpaceCreated = (space: Space) => {
+    setSpaces([...spaces, space])
+  }
 
-  return { spaces, spacesError, onCreateSpace };
+  return { spaces, spacesError, onSpaceCreated };
 };
 
 export default useUserSpaces;
