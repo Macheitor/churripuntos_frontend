@@ -13,11 +13,10 @@ export interface Task {
   points: number;
   _id: string;
 }
-// TODO: Activity should have a User document, instead of username and userId separately
+
 export interface Activity {
   username: string;
   userId: string;
-  color: string;
   taskId: string;
   taskname: string;
   points: number;
