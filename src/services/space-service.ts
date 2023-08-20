@@ -1,4 +1,4 @@
-import { Space, Task, User } from "../hooks/useSpace";
+import { Activity, Space, Task, User } from "../hooks/useSpace";
 import apiClient from "./api-client";
 
 interface CreateSpaceRequest {
@@ -33,5 +33,10 @@ class spaceService {
   taskDone(space: Space, task: Task, user: User) {
     return apiClient.post(`/spaces/${space._id}/activities`, {task, user});
   }
+
+  deleteTaskDone(space: Space, taskDone: Activity) {
+    return apiClient.delete(`/spaces/${space._id}/activities/${taskDone._id}`);
+  }
+
 }
 export default new spaceService();

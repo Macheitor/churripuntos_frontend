@@ -4,25 +4,17 @@ import {
   HStack,
   Heading,
   Text,
-  useDisclosure,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
   Button,
   Stack,
 } from "@chakra-ui/react";
-import { Activity } from "../hooks/useSpace"
+import { Activity, Space } from "../hooks/useSpace";
 import { DeleteIcon } from "@chakra-ui/icons";
 import { useState } from "react";
-import apiClient from "../services/api-client";
-import { CanceledError } from "axios";
+import ModalDeleteTaskDone from "./modals/ModalDeleteTaskDone";
 
 interface Props {
-  tasksDone: Activity[];
-  deleteIcons: boolean;
+  space: Space;
+  onTaskDoneDeleted: (taskDone: Activity) => void;
 }
 
 const days = [
@@ -48,10 +40,12 @@ const months = [
   "November",
   "December",
 ];
-const Summary = ({ tasksDone, deleteIcons }: Props) => {
-  const { onOpen, onClose, isOpen } = useDisclosure();
-  const [deleteTaskDoneId, setDeleteTaskDoneId] = useState("");
-  const [error, setError] = useState("");
+const Summary = ({ space, onTaskDoneDeleted }: Props) => {
+  const tasksDone = space.activities;
+
+  const [showDeleteIcon, setShowDeleteIcon] = useState(false);
+  const [deleteBtn, setDeleteBtn] = useState("Delete");
+
   let lastDate = "";
 
   const getMyDate = (taskDateDB: string) => {
@@ -78,22 +72,14 @@ const Summary = ({ tasksDone, deleteIcons }: Props) => {
     return result;
   };
 
-  // Delete taskDone
-  const deleteTaskDone = (taskDoneId: string) => {
-    apiClient
-      .delete(
-        `/spaces/${localStorage.getItem(
-          "currentSpaceId"
-        )}/activities/${taskDoneId}`
-      )
-      .then((res) => {
-        setDeleteTaskDoneId("");
-      })
-      .catch((err) => {
-        if (err instanceof CanceledError) return;
-        setError(err.response.data.message);
-        setDeleteTaskDoneId("");
-      });
+  const toggleDeleteBtn = () => {
+    if (deleteBtn === "Delete") {
+      setShowDeleteIcon(true);
+      setDeleteBtn("Cancel");
+    } else {
+      setShowDeleteIcon(false);
+      setDeleteBtn("Delete");
+    }
   };
 
   return (
@@ -103,15 +89,16 @@ const Summary = ({ tasksDone, deleteIcons }: Props) => {
       </Center>
       {[...tasksDone].reverse().map((t) => {
         let printDate = false;
-        // TODO: DO this right not using substring
-        if (t.date.substring(0, 10) !== lastDate.substring(0, 10)) {
-          lastDate = t.date;
+        let date = getMyDate(t.date);
+
+        if (lastDate !== date) {
+          lastDate = date;
           printDate = true;
         }
 
         return (
           <Stack key={t._id}>
-            {printDate && <Heading size={"md"}>{getMyDate(t.date)}</Heading>}
+            {printDate && <Heading size={"md"}>{date}</Heading>}
             <HStack p={1}>
               <Box w="100%" bg={"gray.700"} borderRadius={10}>
                 <HStack justify={"space-between"} p={2}>
@@ -120,58 +107,34 @@ const Summary = ({ tasksDone, deleteIcons }: Props) => {
                   <Text>{t.username}</Text>
                 </HStack>
               </Box>
-              {deleteIcons && (
-                <DeleteIcon
-                  color="red"
-                  onClick={(e) => {
-                    setDeleteTaskDoneId(t._id);
-                    onOpen();
-                    e.stopPropagation();
-                  }}
-                />
+              {showDeleteIcon && (
+                <ModalDeleteTaskDone
+                  space={space}
+                  taskDone={t}
+                  onTaskDoneDeleted={(taskDone) => onTaskDoneDeleted(taskDone)}
+                >
+                  <DeleteIcon
+                    color="red"
+                  />
+                </ModalDeleteTaskDone>
               )}
             </HStack>
           </Stack>
         );
       })}
-      <Modal
-        isOpen={isOpen}
-        onClose={() => {
-          onClose();
-        }}
-        isCentered
-      >
-        <ModalOverlay />
-
-        <ModalContent>
-          <ModalHeader>Delete this task done?</ModalHeader>
-
-          <ModalBody></ModalBody>
-
-          <ModalFooter>
-            <Button
-              variant="outline"
-              mr={3}
-              onClick={() => {
-                onClose();
-
-                setError("");
-              }}
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={() => {
-                deleteTaskDone(deleteTaskDoneId);
-                onClose();
-              }}
-              colorScheme="red"
-            >
-              Delete
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      {tasksDone.length > 0 && (
+        <HStack justify={"right"} p={1}>
+          <Button
+            variant="outline"
+            colorScheme="red"
+            onClick={() => {
+              toggleDeleteBtn();
+            }}
+          >
+            {deleteBtn}
+          </Button>
+        </HStack>
+      )}
     </>
   );
 };

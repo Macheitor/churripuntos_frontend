@@ -23,29 +23,22 @@ import { FieldValues, useForm } from "react-hook-form";
 import apiClient from "../services/api-client";
 import { CanceledError } from "axios";
 import SpaceNavBarMenu from "./SpaceNavBarMenu";
+import { Space } from "../hooks/useSpace";
 
 interface Props {
-  spacename: string;
-  spaceId: string;
-  onDeleteTasks: () => void;
-  onDeleteSummary: () => void;
+  space: Space;
 }
-const SpaceNavBar = ({
-  spacename,
-  spaceId,
-  onDeleteTasks,
-  onDeleteSummary,
-}: Props) => {
+const SpaceNavBar = ({ space }: Props) => {
   const navigate = useNavigate();
   const { onOpen, onClose, isOpen } = useDisclosure();
   const [error, setError] = useState("");
-  const { register, handleSubmit, reset } = useForm<{ newSpacename: string }>();
+  const { register, handleSubmit, reset } = useForm();
   const [isLoading, setIsLoading] = useState(false);
 
   const onChangeSpacename = (newSpacename: FieldValues) => {
     setIsLoading(true);
     apiClient
-      .put(`/spaces/${spaceId}`, newSpacename)
+      .put(`/spaces/${space._id}`, newSpacename)
       .then(() => {
         onClose();
         setIsLoading(false);
@@ -65,13 +58,10 @@ const SpaceNavBar = ({
         <HStack justify={"space-between"} padding={3}>
           <ChevronLeftIcon boxSize={10} onClick={() => navigate(-1)} />
           <Heading fontSize="xl" onClick={() => onOpen()}>
-            {spacename}
+            {space.spacename}
           </Heading>
           <SpaceNavBarMenu
-            spaceId={spaceId}
-            spacename={spacename}
-            onDeleteTasks={onDeleteTasks}
-            onDeleteSummary={onDeleteSummary}
+            space={space}
           />
         </HStack>
       </Stack>
@@ -99,7 +89,7 @@ const SpaceNavBar = ({
                   <Input
                     {...register("newSpacename")}
                     type="text"
-                    placeholder={spacename}
+                    placeholder={space.spacename}
                   />
                 </FormControl>
               </Stack>

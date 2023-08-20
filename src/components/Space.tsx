@@ -22,26 +22,17 @@ const Space = () => {
     onTaskCreated,
     onTaskDeleted,
     onTaskDone,
+    onTaskDoneDeleted
   } = useSpace();
 
-  const [deleteIconsSummary, setDeleteIconsSummary] = useState(false);
 
   const [tabIndex, setTabIndex] = useState(0);
-
   const currentUserId = `${localStorage.getItem("userId")}`;
 
   return (
     <Stack mr={1} ml={1} height="100vh">
       <SpaceNavBar
-        spacename={space.spacename}
-        spaceId={space._id}
-        onDeleteTasks={() => {
-          setTabIndex(1);
-        }}
-        onDeleteSummary={() => {
-          setDeleteIconsSummary(true);
-          setTabIndex(2);
-        }}
+        space={space}
       />
       <Tabs
         isLazy
@@ -49,7 +40,6 @@ const Space = () => {
         index={tabIndex}
         onChange={(index) => {
           setTabIndex(index);
-          setDeleteIconsSummary(false);
         }}
         variant="enclosed"
       >
@@ -79,8 +69,8 @@ const Space = () => {
           </TabPanel>
           <TabPanel>
             <Summary
-              tasksDone={space.activities}
-              deleteIcons={deleteIconsSummary}
+              space={space}
+              onTaskDoneDeleted={(taskDone) => onTaskDoneDeleted(taskDone)}
             />
           </TabPanel>
         </TabPanels>

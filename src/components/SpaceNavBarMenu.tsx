@@ -7,20 +7,13 @@ import {
   IconButton,
 } from "@chakra-ui/react";
 import ModalDeleteSpace from "./modals/ModalDeleteSpace";
+import { Space } from "../hooks/useSpace";
 
 interface Props {
-  spaceId: string;
-  spacename: string;
-  onDeleteTasks: () => void;
-  onDeleteSummary: () => void;
+  space: Space;
 }
 
-const SpaceNavBarMenu = ({
-  spaceId,
-  spacename,
-  onDeleteTasks,
-  onDeleteSummary,
-}: Props) => {
+const SpaceNavBarMenu = ({ space }: Props) => {
   return (
     <Menu>
       <MenuButton
@@ -30,13 +23,7 @@ const SpaceNavBarMenu = ({
         variant="outline"
       />
       <MenuList>
-        <MenuItem icon={<DeleteIcon />} onClick={onDeleteTasks}>
-          Delete tasks
-        </MenuItem>
-        <MenuItem icon={<DeleteIcon />} onClick={onDeleteSummary}>
-          Delete tasks done
-        </MenuItem>
-        <ModalDeleteSpace spaceId={spaceId} spacename={spacename}>
+        <ModalDeleteSpace space={space}>
           <MenuItem icon={<DeleteIcon />}>Delete space</MenuItem>
         </ModalDeleteSpace>
       </MenuList>

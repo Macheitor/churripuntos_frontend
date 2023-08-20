@@ -91,6 +91,15 @@ const useSpace = () => {
     setSpace({ ...space, activities: [...space.activities, activity] });
   };
 
+  const onTaskDoneDeleted = (taskDone: Activity) => {
+    setSpace({
+      ...space,
+      activities: space.activities.filter(
+        (activity) => activity._id !== taskDone._id
+      ),
+    });
+  };
+
   return {
     space,
     onUserAdded,
@@ -98,6 +107,7 @@ const useSpace = () => {
     onTaskCreated,
     onTaskDeleted,
     onTaskDone,
+    onTaskDoneDeleted,
   };
 };
 
