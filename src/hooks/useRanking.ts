@@ -7,14 +7,15 @@ export interface Rank extends User {
 
 const buildRanking = (users: User[], arr: Activity[]) => {
   let result = arr.reduce((acc: Rank[], val) => {
-    const index = acc.findIndex((obj) => obj._id === val._id);
+    const index = acc.findIndex((obj) => obj._id === val.userId);
+    console.log(index)
     if (index !== -1) {
       acc[index].points += val.points;
     } else {
       acc.push({
         username: val.username,
         points: val.points,
-        _id: val._id,
+        _id: val.userId,
       });
     }
     return acc;
