@@ -17,6 +17,7 @@ import useSpace from "../hooks/useSpace";
 const Space = () => {
   const {
     space,
+    onSpacenameChanged,
     onUserAdded,
     onUserKicked,
     onTaskCreated,
@@ -33,6 +34,7 @@ const Space = () => {
     <Stack mr={1} ml={1} height="100vh">
       <SpaceNavBar
         space={space}
+        onSpacenameChanged={(newSpacename) => onSpacenameChanged(newSpacename)}
       />
       <Tabs
         isLazy

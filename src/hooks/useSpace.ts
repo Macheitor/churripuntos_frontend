@@ -65,6 +65,10 @@ const useSpace = () => {
     return () => controller.abort();
   }, []);
 
+  const onSpacenameChanged = (newSpacename: string) => {
+    setSpace({ ...space, spacename: newSpacename });
+  };
+
   const onUserAdded = (user: User) => {
     setSpace({ ...space, users: [...space.users, user] });
   };
@@ -102,6 +106,7 @@ const useSpace = () => {
 
   return {
     space,
+    onSpacenameChanged,
     onUserAdded,
     onUserKicked,
     onTaskCreated,

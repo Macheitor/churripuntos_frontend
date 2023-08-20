@@ -1,131 +1,56 @@
 import {
-  Button,
   HStack,
   Heading,
   Stack,
-  useDisclosure,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  FormControl,
-  Input,
-  Center,
-  Text,
+  IconButton,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
 } from "@chakra-ui/react";
 
 import { useNavigate } from "react-router-dom";
-import { ChevronLeftIcon } from "@chakra-ui/icons";
-import { useState } from "react";
-import { FieldValues, useForm } from "react-hook-form";
-import apiClient from "../services/api-client";
-import { CanceledError } from "axios";
-import SpaceNavBarMenu from "./SpaceNavBarMenu";
+import { ChevronLeftIcon, DeleteIcon, HamburgerIcon } from "@chakra-ui/icons";
 import { Space } from "../hooks/useSpace";
+import ModalChangeSpacename from "./modals/ModalChangeSpacename";
+import ModalDeleteSpace from "./modals/ModalDeleteSpace";
 
 interface Props {
   space: Space;
+  onSpacenameChanged: (newSpacename: string) => void;
 }
-const SpaceNavBar = ({ space }: Props) => {
+const SpaceNavBar = ({ space, onSpacenameChanged }: Props) => {
   const navigate = useNavigate();
-  const { onOpen, onClose, isOpen } = useDisclosure();
-  const [error, setError] = useState("");
-  const { register, handleSubmit, reset } = useForm();
-  const [isLoading, setIsLoading] = useState(false);
-
-  const onChangeSpacename = (newSpacename: FieldValues) => {
-    setIsLoading(true);
-    apiClient
-      .put(`/spaces/${space._id}`, newSpacename)
-      .then(() => {
-        onClose();
-        setIsLoading(false);
-        reset();
-      })
-      .catch((err) => {
-        if (err instanceof CanceledError) return;
-        setIsLoading(false);
-        setError(err.response.data.message);
-        reset();
-      });
-  };
 
   return (
     <>
       <Stack>
         <HStack justify={"space-between"} padding={3}>
           <ChevronLeftIcon boxSize={10} onClick={() => navigate(-1)} />
-          <Heading fontSize="xl" onClick={() => onOpen()}>
-            {space.spacename}
-          </Heading>
-          <SpaceNavBarMenu
-            space={space}
-          />
+          <Heading fontSize="xl">{space.spacename}</Heading>
+          <Menu>
+            <MenuButton
+              as={IconButton}
+              aria-label="Options"
+              icon={<HamburgerIcon />}
+              variant="outline"
+            />
+            <MenuList>
+              <ModalChangeSpacename
+                space={space}
+                onSpacenameChanged={(newSpacename) =>
+                  onSpacenameChanged(newSpacename)
+                }
+              >
+                <MenuItem icon={<DeleteIcon />}>Change spacename</MenuItem>
+              </ModalChangeSpacename>
+              <ModalDeleteSpace space={space}>
+                <MenuItem icon={<DeleteIcon />}>Delete space</MenuItem>
+              </ModalDeleteSpace>
+            </MenuList>
+          </Menu>
         </HStack>
       </Stack>
-
-      <Modal
-        isOpen={isOpen}
-        onClose={() => {
-          onClose();
-          reset();
-        }}
-        isCentered
-      >
-        <ModalOverlay />
-
-        <ModalContent>
-          <ModalHeader>Change spacename</ModalHeader>
-
-          <ModalBody>
-            <form
-              id="changeSpacename"
-              onSubmit={handleSubmit(onChangeSpacename)}
-            >
-              <Stack spacing={4} p={1} boxShadow="md">
-                <FormControl>
-                  <Input
-                    {...register("newSpacename")}
-                    type="text"
-                    placeholder={space.spacename}
-                  />
-                </FormControl>
-              </Stack>
-            </form>
-            <Center>
-              {error && (
-                <Text as="i" color="red">
-                  {error}
-                </Text>
-              )}
-            </Center>
-          </ModalBody>
-
-          <ModalFooter>
-            <Button
-              variant="outline"
-              mr={3}
-              onClick={() => {
-                onClose();
-                reset();
-                setError("");
-              }}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              form="changeSpacename"
-              isLoading={isLoading}
-              colorScheme="blue"
-            >
-              Change spacename
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
     </>
   );
 };
