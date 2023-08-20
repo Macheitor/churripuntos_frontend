@@ -50,13 +50,14 @@ const ModalCreateTask = ({ children, space, onTaskCreated }: Props) => {
       .createTask(space, task)
       .then((res) => {
         onTaskCreated(res.data.task);
+        onCloseModal();
       })
       .catch((err) => {
         if (err instanceof CanceledError) return;
         console.log(err.response.data.message);
       });
 
-    onCloseModal();
+
   };
 
   return (
