@@ -3,7 +3,7 @@ import apiClient from "./api-client";
 
 class spaceService {
   create(spacename: string) {
-    return apiClient.post(`/spaces/`, {spacename});
+    return apiClient.post(`/spaces/`, { spacename });
   }
 
   delete(spaceId: string) {
@@ -11,11 +11,11 @@ class spaceService {
   }
 
   changeSpacename(space: Space, newSpacename: string) {
-    return apiClient.put(`/spaces/${space._id}/`, {newSpacename});
+    return apiClient.put(`/spaces/${space._id}/`, { newSpacename });
   }
 
-  addUser(space: Space, user: User) {
-    return apiClient.put(`/spaces/${space._id}/users`, user);
+  addUser(space: Space, email: string) {
+    return apiClient.put(`/spaces/${space._id}/users`, {email});
   }
 
   removeUser(space: Space, user: User) {
