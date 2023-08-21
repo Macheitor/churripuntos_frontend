@@ -42,27 +42,27 @@ const Ranking = ({
         <Heading size={"lg"}>RANKING</Heading>
       </Center>
 
-      {ranking.map((user, index) => (
-        <HStack key={user._id} p={1}>
+      {ranking.map((rank, index) => (
+        <HStack key={rank._id} p={1}>
           <Box w="100%" bg={"gray.700"} borderRadius={10}>
             <HStack justify={"space-between"} ml={2} mr={2}>
               <Heading fontSize="2xl">{index + 1}</Heading>
               <HStack>
-              <Text>{user.username}</Text>
+              <Text>{rank.username}</Text>
 
 
-              { user.isAdmin && <Badge>ADMIN</Badge>}
+              { rank.isAdmin && <Badge>ADMIN</Badge>}
               </HStack>
-              <Text>{user.points} points</Text>
+              <Text>{rank.points} points</Text>
             </HStack>
           </Box>
 
-          {showDeleteIcon && user._id !== currentUser._id && (
+          {showDeleteIcon && rank._id !== currentUser._id && (
             <ModalKickOutUser
               space={space}
-              user={user}
+              user={rank}
               onUserKicked={() => {
-                onUserKicked(user);
+                onUserKicked(rank);
                 if (ranking.length === 2) toggleRemoveBtn();
               }}
             >
