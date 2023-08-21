@@ -15,13 +15,8 @@ function App() {
   useEffect(() => {
     const controller = new AbortController();
 
-    const user = {
-      username: localStorage.getItem("username"),
-      userId: localStorage.getItem("userId"),
-    };
-
     apiClient
-      .post("/verifySession", user, {
+      .post("/verifySession", {
         signal: controller.signal,
       })
       .then(() => {
@@ -51,35 +46,6 @@ function App() {
       </Routes>
     </>
   );
-
-  /*
-
-
-
-
-  return (
-    <Grid
-      templateAreas={{
-        base: `"nav" "main"`,
-        // lg: `"nav nav nav" "aside main section"`,
-      }}
-    >
-      <GridItem area="nav">
-        <NavBar />
-      </GridItem>
-
-      // <Show above="lg">
-      //   <GridItem area="aside">aside</GridItem>
-      // </Show>
-
-      <Center>
-        <GridItem area="main" width={700}>
-          <SpacesGrid />
-        </GridItem>
-      </Center>
-    </Grid>
-  );
-  */
 }
 
 export default App;
