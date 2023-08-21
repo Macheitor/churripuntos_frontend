@@ -19,7 +19,7 @@ const useUserSpaces = () => {
     const controller = new AbortController();
 
     apiClient
-      .get<FetchGetSpacesResponse>(`/users/${localStorage.getItem("userId")}`, {
+      .get<FetchGetSpacesResponse>(`/users/${localStorage.getItem("userId")}/spaces`, {
         signal: controller.signal,
       })
       .then((res) => {
