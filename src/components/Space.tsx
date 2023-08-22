@@ -28,7 +28,7 @@ const Space = () => {
 
 
   const [tabIndex, setTabIndex] = useState(0);
-  const currentUser: User = {username:`${localStorage.getItem("username")}`, _id:`${localStorage.getItem("userId")}`} 
+  const currentUser: User = {username:`${localStorage.getItem("username")}`, _id:`${localStorage.getItem("userId")}`, isDeleted:false} 
 
   return (
     <Stack mr={1} ml={1} height="100vh">

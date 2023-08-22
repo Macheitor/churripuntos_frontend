@@ -82,6 +82,8 @@ const Summary = ({ space, onTaskDoneDeleted }: Props) => {
     }
   };
 
+  const findUsername = (userId: string) => space.users.find(u => u._id === userId)?.username
+
   return (
     <>
       <Center>
@@ -104,7 +106,7 @@ const Summary = ({ space, onTaskDoneDeleted }: Props) => {
                 <HStack justify={"space-between"} p={2}>
                   <Text>{t.taskname}</Text>
                   <Text>{t.points} points</Text>
-                  <Text>{t.username}</Text>
+                  <Text>{findUsername(t.userId)}</Text>
                 </HStack>
               </Box>
               {showDeleteIcon && (

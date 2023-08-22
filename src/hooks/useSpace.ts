@@ -6,6 +6,7 @@ export interface User {
   isAdmin?: boolean;
   username: string;
   _id: string;
+  isDeleted: boolean
 }
 
 export interface Task {
@@ -15,7 +16,6 @@ export interface Task {
 }
 
 export interface Activity {
-  username: string;
   userId: string;
   taskId: string;
   taskname: string;

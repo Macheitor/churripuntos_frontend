@@ -78,7 +78,7 @@ const ModalTaskDone = ({
                 setUserIdSelected(choice.target.value);
               }}
             >
-              {users.map((user) => (
+              {users.filter(u => !u.isDeleted).map((user) => (
                 <option
                   key={user._id}
                   value={user._id}

@@ -2,14 +2,12 @@ import { Activity, User } from "../hooks/useSpace";
 
 export interface Rank extends User {
   points: number;
-  isUserInSpace: boolean;
 }
 
 const buildRanking = (users: User[], arr: Activity[]) => {
-  let result: Rank[] = users.map((user) => ({
+  let result: Rank[] = users.filter(u => !u.isDeleted).map((user) => ({
     ...user,
-    points: 0,
-    isUserInSpace: true,
+    points: 0
   }));
 
   arr.forEach((activity) => {

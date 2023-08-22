@@ -1,4 +1,12 @@
-import { Badge, Box, Button, Center, HStack, Heading, Text } from "@chakra-ui/react";
+import {
+  Badge,
+  Box,
+  Button,
+  Center,
+  HStack,
+  Heading,
+  Text,
+} from "@chakra-ui/react";
 import { Space, User } from "../hooks/useSpace";
 import { DeleteIcon } from "@chakra-ui/icons";
 import useRanking from "../hooks/useRanking";
@@ -13,12 +21,7 @@ interface Props {
   onUserKicked: (user: User) => void;
 }
 
-const Ranking = ({
-  space,
-  currentUser,
-  onUserAdded,
-  onUserKicked,
-}: Props) => {
+const Ranking = ({ space, currentUser, onUserAdded, onUserKicked }: Props) => {
   const users = space.users;
   const activities = space.activities;
 
@@ -48,10 +51,9 @@ const Ranking = ({
             <HStack justify={"space-between"} ml={2} mr={2}>
               <Heading fontSize="2xl">{index + 1}</Heading>
               <HStack>
-              <Text>{rank.username}</Text>
+                <Text>{rank.username}</Text>
 
-
-              { rank.isAdmin && <Badge>ADMIN</Badge>}
+                {rank.isAdmin && <Badge>ADMIN</Badge>}
               </HStack>
               <Text>{rank.points} points</Text>
             </HStack>
