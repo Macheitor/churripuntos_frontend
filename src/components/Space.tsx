@@ -13,8 +13,11 @@ import Tasks from "./Tasks";
 import Summary from "./Summary";
 
 import useSpace, { User } from "../hooks/useSpace";
+import { useNavigate } from "react-router-dom";
 
 const Space = () => {
+  const navigate = useNavigate();
+  
   const {
     space,
     onSpacenameChanged,
@@ -29,6 +32,9 @@ const Space = () => {
 
   const [tabIndex, setTabIndex] = useState(0);
   const currentUser: User = {username:`${localStorage.getItem("username")}`, _id:`${localStorage.getItem("userId")}`, isDeleted:false} 
+
+  if (space.users.find(user => user._id === currentUser._id)?.isDeleted) navigate("/spaces");
+
 
   return (
     <Stack mr={1} ml={1} height="100vh">
