@@ -9,7 +9,7 @@ import ModalTaskDone from "./modals/ModalTaskDone";
 
 interface Props {
   space: Space;
-  currentUser: User;
+  currentUserId: string;
   onTaskCreated: (task: Task) => void;
   onTaskDeleted: (task: Task) => void;
   onTaskDone: (activity: Activity) => void;
@@ -17,7 +17,7 @@ interface Props {
 
 const Tasks = ({
   space,
-  currentUser,
+  currentUserId,
   onTaskCreated,
   onTaskDeleted,
   onTaskDone,
@@ -49,7 +49,7 @@ const Tasks = ({
             <ModalTaskDone
               space={space}
               task={task}
-              currentUser={currentUser}
+              currentUserId={currentUserId}
               onTaskDone={(activity) => onTaskDone(activity)}
               key={task._id}
             >

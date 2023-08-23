@@ -16,12 +16,12 @@ import { useState } from "react";
 
 interface Props {
   space: Space;
-  currentUser: User;
+  currentUserId: string;
   onUserAdded: (user: User) => void;
   onUserKicked: (user: User) => void;
 }
 
-const Ranking = ({ space, currentUser, onUserAdded, onUserKicked }: Props) => {
+const Ranking = ({ space, currentUserId, onUserAdded, onUserKicked }: Props) => {
   const users = space.users;
   const activities = space.activities;
 
@@ -59,7 +59,7 @@ const Ranking = ({ space, currentUser, onUserAdded, onUserKicked }: Props) => {
             </HStack>
           </Box>
 
-          {showDeleteIcon && rank._id !== currentUser._id && (
+          {showDeleteIcon && rank._id !== currentUserId && (
             <ModalKickOutUser
               space={space}
               user={rank}

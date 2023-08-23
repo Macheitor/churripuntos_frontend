@@ -40,7 +40,6 @@ const Login = () => {
       .login(loginRequest)
       .then(({ data: loginInfo }) => {
         localStorage.setItem("userId", loginInfo.user._id);
-        localStorage.setItem("username", loginInfo.user.username);
         localStorage.setItem("accessToken", loginInfo.user.accessToken);
         navigate("/spaces");
       })

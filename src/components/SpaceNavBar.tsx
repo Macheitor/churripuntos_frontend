@@ -28,10 +28,10 @@ const CImExit = chakra(ImExit);
 
 interface Props {
   space: Space;
-  currentUser: User;
+  currentUserId: string;
   onSpacenameChanged: (newSpacename: string) => void;
 }
-const SpaceNavBar = ({ space, currentUser, onSpacenameChanged }: Props) => {
+const SpaceNavBar = ({ space, currentUserId, onSpacenameChanged }: Props) => {
   const navigate = useNavigate();
 
   const logout = () => {
@@ -46,7 +46,7 @@ const SpaceNavBar = ({ space, currentUser, onSpacenameChanged }: Props) => {
           <ChevronLeftIcon boxSize={10} onClick={() => navigate(-1)} />
           <Heading fontSize="xl">{space.spacename}</Heading>
           <HStack>
-            <p>{currentUser.username}</p>
+            <p>{space.users.find(user => user._id === currentUserId)?.username}</p>
             <Menu>
               <MenuButton
                 as={IconButton}
@@ -64,7 +64,7 @@ const SpaceNavBar = ({ space, currentUser, onSpacenameChanged }: Props) => {
                 >
                   <MenuItem icon={<EditIcon />}>Change spacename</MenuItem>
                 </ModalChangeSpacename>
-                <ModalLeaveSpace space={space} currentUser={currentUser}>
+                <ModalLeaveSpace space={space} currentUserId={currentUserId}>
                   <MenuItem icon={<CImExit />}>Leave space</MenuItem>
                 </ModalLeaveSpace>
 

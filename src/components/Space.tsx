@@ -31,16 +31,16 @@ const Space = () => {
 
 
   const [tabIndex, setTabIndex] = useState(0);
-  const currentUser: User = {username:`${localStorage.getItem("username")}`, _id:`${localStorage.getItem("userId")}`, isDeleted:false} 
+  const currentUserId =`${localStorage.getItem("userId")}`
 
-  if (space.users.find(user => user._id === currentUser._id)?.isDeleted) navigate("/spaces");
+  if (space.users.find(user => user._id === currentUserId)?.isDeleted) navigate("/spaces");
 
 
   return (
     <Stack mr={1} ml={1} height="100vh">
       <SpaceNavBar
         space={space}
-        currentUser={currentUser}
+        currentUserId={currentUserId}
         onSpacenameChanged={(newSpacename) => onSpacenameChanged(newSpacename)}
       />
       <Tabs
@@ -62,7 +62,7 @@ const Space = () => {
           <TabPanel>
             <Ranking
               space={space}
-              currentUser={currentUser}
+              currentUserId={currentUserId}
               onUserAdded={(user) => onUserAdded(user)}
               onUserKicked={(user) => onUserKicked(user)}
             />
@@ -70,7 +70,7 @@ const Space = () => {
           <TabPanel>
             <Tasks
               space={space}
-              currentUser={currentUser}
+              currentUserId={currentUserId}
               onTaskCreated={(task) => onTaskCreated(task)}
               onTaskDeleted={(task) => onTaskDeleted(task)}
               onTaskDone={(activity) => onTaskDone(activity)}

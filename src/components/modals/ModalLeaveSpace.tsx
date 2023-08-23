@@ -14,15 +14,15 @@ import { ReactNode, useState } from "react";
 import spaceService from "../../services/space-service";
 import { CanceledError } from "../../services/api-client";
 import { useNavigate } from "react-router-dom";
-import { Space, User } from "../../hooks/useSpace";
+import { Space } from "../../hooks/useSpace";
 
 interface Props {
   children: ReactNode;
   space: Space;
-  currentUser: User;
+  currentUserId: string;
 }
 
-const ModalLeaveSpace = ({ children, space, currentUser }: Props) => {
+const ModalLeaveSpace = ({ children, space, currentUserId }: Props) => {
   const { onOpen, onClose, isOpen } = useDisclosure();
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -38,7 +38,7 @@ const ModalLeaveSpace = ({ children, space, currentUser }: Props) => {
 
     setIsLoading(true);
     spaceService
-      .removeUser(space, currentUser)
+      .removeUser(space, currentUserId)
       .then(() => {
         setIsLoading(false);
         onCloseModal();

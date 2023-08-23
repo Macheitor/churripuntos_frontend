@@ -18,8 +18,8 @@ class spaceService {
     return apiClient.put(`/spaces/${space._id}/users`, {email});
   }
 
-  removeUser(space: Space, user: User) {
-    return apiClient.delete(`/spaces/${space._id}/users/${user._id}`);
+  removeUser(space: Space, userId: string) {
+    return apiClient.delete(`/spaces/${space._id}/users/${userId}`);
   }
 
   createTask(space: Space, task: Task) {

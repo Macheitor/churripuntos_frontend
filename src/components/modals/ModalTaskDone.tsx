@@ -19,7 +19,7 @@ interface Props {
   children: ReactNode;
   space: Space;
   task: Task;
-  currentUser: User;
+  currentUserId: string;
   onTaskDone: (activity: Activity) => void;
 }
 
@@ -27,13 +27,13 @@ const ModalTaskDone = ({
   children,
   space,
   task,
-  currentUser,
+  currentUserId,
   onTaskDone,
 }: Props) => {
   const users = space.users;
 
   const { onOpen, onClose, isOpen } = useDisclosure();
-  const [userIdSelected, setUserIdSelected] = useState(currentUser._id);
+  const [userIdSelected, setUserIdSelected] = useState(currentUserId);
 
   const onSubmit = () => {
     const user = users.find((user) => user._id === userIdSelected);
@@ -43,12 +43,12 @@ const ModalTaskDone = ({
         .taskDone(space, task, user)
         .then((res) => {
           onTaskDone(res.data.activity);
-          setUserIdSelected(currentUser._id);
+          setUserIdSelected(currentUserId);
           onClose();
         })
         .catch((err) => {
           if (err instanceof CanceledError) return;
-          setUserIdSelected(currentUser._id);
+          setUserIdSelected(currentUserId);
           console.log(err.response.data.message);
         });
     } else {
@@ -73,7 +73,7 @@ const ModalTaskDone = ({
           <ModalHeader>Who did task "{task.taskname}"?</ModalHeader>
           <ModalBody>
             <Select
-            value={currentUser._id}
+            value={currentUserId}
               onChange={(choice) => {
                 setUserIdSelected(choice.target.value);
               }}

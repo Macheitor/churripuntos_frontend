@@ -25,7 +25,7 @@ const ModalKickOutUser = ({ children, space, user, onUserKicked }: Props) => {
 
   const kickOutUser = (user: User) => {
     spaceService
-      .removeUser(space, user)
+      .removeUser(space, user._id)
       .then(() => {
         onUserKicked(user);
       })

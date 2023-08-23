@@ -62,7 +62,6 @@ const UserSpaces = () => {
                     fontSize="2xl"
                     key={space._id}
                     onClick={() => {
-                      localStorage.setItem("currentSpaceId", space._id);
                       navigate(`/spaces/${space._id}`);
                     }}
                   >
