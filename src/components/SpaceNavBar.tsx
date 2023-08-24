@@ -17,12 +17,13 @@ import {
   EditIcon,
   HamburgerIcon,
 } from "@chakra-ui/icons";
-import { Space, User } from "../hooks/useSpace";
+import { Space } from "../hooks/useSpace";
 import ModalChangeSpacename from "./modals/ModalChangeSpacename";
 import ModalDeleteSpace from "./modals/ModalDeleteSpace";
 
 import { ImExit } from "react-icons/im";
 import ModalLeaveSpace from "./modals/ModalLeaveSpace";
+import ModalChangeUsername from "./modals/ModalChangeUsername";
 
 const CImExit = chakra(ImExit);
 
@@ -30,8 +31,14 @@ interface Props {
   space: Space;
   currentUserId: string;
   onSpacenameChanged: (newSpacename: string) => void;
+  onUsernameChanged: (userId: string, newUsername: string) => void;
 }
-const SpaceNavBar = ({ space, currentUserId, onSpacenameChanged }: Props) => {
+const SpaceNavBar = ({
+  space,
+  currentUserId,
+  onUsernameChanged,
+  onSpacenameChanged,
+}: Props) => {
   const navigate = useNavigate();
 
   const logout = () => {
@@ -46,7 +53,9 @@ const SpaceNavBar = ({ space, currentUserId, onSpacenameChanged }: Props) => {
           <ChevronLeftIcon boxSize={10} onClick={() => navigate(-1)} />
           <Heading fontSize="xl">{space.spacename}</Heading>
           <HStack>
-            <p>{space.users.find(user => user._id === currentUserId)?.username}</p>
+            <p>
+              {space.users.find((user) => user._id === currentUserId)?.username}
+            </p>
             <Menu>
               <MenuButton
                 as={IconButton}
@@ -56,6 +65,16 @@ const SpaceNavBar = ({ space, currentUserId, onSpacenameChanged }: Props) => {
               />
 
               <MenuList>
+                <ModalChangeUsername
+                  space={space}
+                  currentUserId={currentUserId}
+                  onUsernameChanged={(userId, newUsername) =>
+                    onUsernameChanged(userId, newUsername)
+                  }
+                >
+                  <MenuItem icon={<EditIcon />}>Change username</MenuItem>
+                </ModalChangeUsername>
+
                 <ModalChangeSpacename
                   space={space}
                   onSpacenameChanged={(newSpacename) =>

@@ -6,7 +6,7 @@ export interface User {
   isAdmin?: boolean;
   username: string;
   _id: string;
-  isDeleted: boolean
+  isDeleted: boolean;
 }
 
 export interface Task {
@@ -64,6 +64,15 @@ const useSpace = () => {
     return () => controller.abort();
   }, []);
 
+  const onUsernameChanged = (currentUserId: string, newUsername: string) => {
+    setSpace({
+      ...space,
+      users: space.users.map((u) =>
+        u._id === currentUserId ? { ...u, username: newUsername } : u
+      ),
+    });
+  };
+
   const onSpacenameChanged = (newSpacename: string) => {
     setSpace({ ...space, spacename: newSpacename });
   };
@@ -105,6 +114,7 @@ const useSpace = () => {
 
   return {
     space,
+    onUsernameChanged,
     onSpacenameChanged,
     onUserAdded,
     onUserKicked,

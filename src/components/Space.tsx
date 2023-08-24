@@ -11,8 +11,7 @@ import { useState } from "react";
 import Ranking from "./Ranking";
 import Tasks from "./Tasks";
 import Summary from "./Summary";
-
-import useSpace, { User } from "../hooks/useSpace";
+import useSpace from "../hooks/useSpace";
 import { useNavigate } from "react-router-dom";
 
 const Space = () => {
@@ -20,6 +19,7 @@ const Space = () => {
   
   const {
     space,
+    onUsernameChanged,
     onSpacenameChanged,
     onUserAdded,
     onUserKicked,
@@ -28,7 +28,6 @@ const Space = () => {
     onTaskDone,
     onTaskDoneDeleted
   } = useSpace();
-
 
   const [tabIndex, setTabIndex] = useState(0);
   const currentUserId =`${localStorage.getItem("userId")}`
@@ -41,6 +40,7 @@ const Space = () => {
       <SpaceNavBar
         space={space}
         currentUserId={currentUserId}
+        onUsernameChanged={(userId, newUsername) => onUsernameChanged(userId, newUsername)}
         onSpacenameChanged={(newSpacename) => onSpacenameChanged(newSpacename)}
       />
       <Tabs

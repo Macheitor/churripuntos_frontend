@@ -32,5 +32,9 @@ class userService {
 
     return { request, cancel };
   }
+
+  changeUsername(userId: string, newUsername: string) {
+    return apiClient.put(`/users/${userId}/`, { newUsername });
+  }
 }
 export default new userService();
