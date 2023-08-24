@@ -112,6 +112,14 @@ const useSpace = () => {
     });
   };
 
+  const onAdminUpgraded = (user: User) => {
+    setSpace({...space, users:space.users.map(u => u._id === user._id ? {...u, isAdmin:true}: u)})
+  };
+
+  const onAdminDowngraded = (user: User) => {
+    setSpace({...space, users:space.users.map(u => u._id === user._id ? {...u, isAdmin:false}: u)})
+  };
+
   return {
     space,
     onUsernameChanged,
@@ -122,6 +130,8 @@ const useSpace = () => {
     onTaskDeleted,
     onTaskDone,
     onTaskDoneDeleted,
+    onAdminUpgraded,
+    onAdminDowngraded,
   };
 };
 

@@ -37,5 +37,13 @@ class spaceService {
   deleteTaskDone(space: Space, taskDone: Activity) {
     return apiClient.delete(`/spaces/${space._id}/activities/${taskDone._id}`);
   }
+
+  makeAdmin(space: Space, userId: string) {
+    return apiClient.post(`/spaces/${space._id}/admins`,{userId});
+  }
+
+  removeAdmin(space: Space, userId: string) {
+    return apiClient.delete(`/spaces/${space._id}/admins/${userId}`);
+  }
 }
 export default new spaceService();

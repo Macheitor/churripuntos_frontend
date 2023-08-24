@@ -16,7 +16,7 @@ import { useNavigate } from "react-router-dom";
 
 const Space = () => {
   const navigate = useNavigate();
-  
+
   const {
     space,
     onUsernameChanged,
@@ -26,21 +26,25 @@ const Space = () => {
     onTaskCreated,
     onTaskDeleted,
     onTaskDone,
-    onTaskDoneDeleted
+    onTaskDoneDeleted,
+    onAdminUpgraded,
+    onAdminDowngraded,
   } = useSpace();
 
   const [tabIndex, setTabIndex] = useState(0);
-  const currentUserId =`${localStorage.getItem("userId")}`
+  const currentUserId = `${localStorage.getItem("userId")}`;
 
-  if (space.users.find(user => user._id === currentUserId)?.isDeleted) navigate("/spaces");
-
+  if (space.users.find((user) => user._id === currentUserId)?.isDeleted)
+    navigate("/spaces");
 
   return (
     <Stack mr={1} ml={1} height="100vh">
       <SpaceNavBar
         space={space}
         currentUserId={currentUserId}
-        onUsernameChanged={(userId, newUsername) => onUsernameChanged(userId, newUsername)}
+        onUsernameChanged={(userId, newUsername) =>
+          onUsernameChanged(userId, newUsername)
+        }
         onSpacenameChanged={(newSpacename) => onSpacenameChanged(newSpacename)}
       />
       <Tabs
@@ -65,6 +69,8 @@ const Space = () => {
               currentUserId={currentUserId}
               onUserAdded={(user) => onUserAdded(user)}
               onUserKicked={(user) => onUserKicked(user)}
+              onAdminUpgraded={(user) => onAdminUpgraded(user)}
+              onAdminDowngraded={(user) => onAdminDowngraded(user)}
             />
           </TabPanel>
           <TabPanel>
