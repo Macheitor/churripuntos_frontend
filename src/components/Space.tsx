@@ -34,7 +34,7 @@ const Space = () => {
   const [tabIndex, setTabIndex] = useState(
     parseInt(localStorage.getItem("currentTab") || "0")
   );
-  const currentUserId = `${localStorage.getItem("userId")}`;
+  const currentUserId = localStorage.getItem("userId") || "";
 
   if (space.users.find((user) => user._id === currentUserId)?.isDeleted)
     navigate("/spaces");
