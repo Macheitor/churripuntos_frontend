@@ -36,9 +36,14 @@ const Space = () => {
   );
   const currentUserId = localStorage.getItem("userId") || "";
 
-  if (space.users.find((user) => user._id === currentUserId)?.isDeleted)
-    navigate("/spaces");
-  
+  useEffect(() => {
+    if (
+      !currentUserId ||
+      space.users.find((user) => user._id === currentUserId)?.isDeleted
+    )
+      return navigate("/spaces");
+  }, []);
+
   return (
     <Stack mr={1} ml={1} height="100vh">
       <SpaceNavBar
