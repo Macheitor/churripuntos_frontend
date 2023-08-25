@@ -28,6 +28,15 @@ const Tasks = ({
         <Heading size={"lg"}>TASKS LIST</Heading>
       </Center>
 
+      <HStack justify={"right"} p={1}>
+        <ModalCreateTask
+          space={space}
+          onTaskCreated={(task) => onTaskCreated(task)}
+        >
+          <Button colorScheme="blue">Create task</Button>
+        </ModalCreateTask>
+      </HStack>
+
       {tasks.map((task) => (
         <HStack key={task._id}>
           <Box w={"100%"} p={1} m={1} bg={"gray.700"} borderRadius={10}>
@@ -49,15 +58,6 @@ const Tasks = ({
           </Box>
         </HStack>
       ))}
-
-      <HStack justify={"right"} p={1}>
-        <ModalCreateTask
-          space={space}
-          onTaskCreated={(task) => onTaskCreated(task)}
-        >
-          <Button colorScheme="blue">Create task</Button>
-        </ModalCreateTask>
-      </HStack>
     </>
   );
 };

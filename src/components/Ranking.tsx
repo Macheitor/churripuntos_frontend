@@ -41,6 +41,12 @@ const Ranking = ({
         <Heading size={"lg"}>RANKING</Heading>
       </Center>
 
+      <HStack justify={"right"} p={1}>
+        <ModalAddUser space={space} onUserAdded={(user) => onUserAdded(user)}>
+          <Button colorScheme="blue">Add user</Button>
+        </ModalAddUser>
+      </HStack>
+
       {ranking.map((rank, index) => (
         <HStack key={rank._id} p={1}>
           <Box w="100%" bg={"gray.700"} borderRadius={10}>
@@ -64,20 +70,14 @@ const Ranking = ({
                   )}
                 </HStack>
                 <HStack>
-                <Text>{rank.points} points</Text>
-                <ChevronRightIcon boxSize={7} />
+                  <Text>{rank.points} points</Text>
+                  <ChevronRightIcon boxSize={7} />
                 </HStack>
               </HStack>
             </DrawerRanking>
           </Box>
         </HStack>
       ))}
-
-      <HStack justify={"right"} p={1}>
-        <ModalAddUser space={space} onUserAdded={(user) => onUserAdded(user)}>
-          <Button colorScheme="blue">Add user</Button>
-        </ModalAddUser>
-      </HStack>
     </>
   );
 };
