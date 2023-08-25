@@ -1,11 +1,9 @@
 import { Button, Center, Heading, HStack, Text, Box } from "@chakra-ui/react";
-import { useState } from "react";
-import { DeleteIcon } from "@chakra-ui/icons";
+import { ChevronRightIcon } from "@chakra-ui/icons";
 
-import { Activity, Space, Task, User } from "../hooks/useSpace";
+import { Activity, Space, Task } from "../hooks/useSpace";
 import ModalCreateTask from "./modals/ModalCreateTask";
-import ModalDeleteTask from "./modals/ModalDeleteTask";
-import ModalTaskDone from "./modals/ModalTaskDone";
+import DrawerTasks from "./drawers/DrawerTasks";
 
 interface Props {
   space: Space;
@@ -24,19 +22,6 @@ const Tasks = ({
 }: Props) => {
   const tasks = space.tasks;
 
-  const [showDeleteIcon, setShowDeleteIcon] = useState(false);
-  const [deleteBtn, setDeleteBtn] = useState("Delete");
-
-  const toggleDeleteBtn = () => {
-    if (deleteBtn === "Delete") {
-      setShowDeleteIcon(true);
-      setDeleteBtn("Cancel");
-    } else {
-      setShowDeleteIcon(false);
-      setDeleteBtn("Delete");
-    }
-  };
-
   return (
     <>
       <Center>
@@ -46,34 +31,22 @@ const Tasks = ({
       {tasks.map((task) => (
         <HStack key={task._id}>
           <Box w={"100%"} p={1} m={1} bg={"gray.700"} borderRadius={10}>
-            <ModalTaskDone
+            <DrawerTasks
               space={space}
-              task={task}
+              taskSelected={task}
               currentUserId={currentUserId}
-              onTaskDone={(activity) => onTaskDone(activity)}
-              key={task._id}
-            >
-              <HStack
-                justify={"space-between"}
-                onClick={() => {
-                  setShowDeleteIcon(false);
-                  setDeleteBtn("Delete");
-                }}
-              >
-                <Text>{task.taskname}</Text>
-                <Text marginRight={3}>{task.points} points</Text>
-              </HStack>
-            </ModalTaskDone>
-          </Box>
-          {showDeleteIcon && (
-            <ModalDeleteTask
-              space={space}
-              task={task}
               onTaskDeleted={() => onTaskDeleted(task)}
+              onTaskDone={(activity) => onTaskDone(activity)}
             >
-              <DeleteIcon color="red" />
-            </ModalDeleteTask>
-          )}
+              <HStack justify={"space-between"}>
+                <Text>{task.taskname}</Text>
+                <HStack>
+                  <Text>{task.points} points</Text>
+                  <ChevronRightIcon boxSize={7} />
+                </HStack>
+              </HStack>
+            </DrawerTasks>
+          </Box>
         </HStack>
       ))}
 
@@ -82,28 +55,8 @@ const Tasks = ({
           space={space}
           onTaskCreated={(task) => onTaskCreated(task)}
         >
-          <Button
-            colorScheme="blue"
-            onClick={() => {
-              setShowDeleteIcon(false);
-              setDeleteBtn("Delete");
-            }}
-          >
-            Create task
-          </Button>
+          <Button colorScheme="blue">Create task</Button>
         </ModalCreateTask>
-
-        {tasks.length > 0 && (
-          <Button
-            variant="outline"
-            colorScheme="red"
-            onClick={() => {
-              toggleDeleteBtn();
-            }}
-          >
-            {deleteBtn}
-          </Button>
-        )}
       </HStack>
     </>
   );
