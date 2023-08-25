@@ -81,10 +81,12 @@ const useSpace = () => {
     setSpace({ ...space, users: [...space.users, user] });
   };
 
-  const onUserKicked = (user: User) => {
+  const onUserRemoved = (user: User) => {
     setSpace({
       ...space,
-      users: space.users.filter((u) => u._id !== user._id),
+      users: space.users.map((u) =>
+        u._id === user._id ? { ...u, isAdmin: false, isDeleted: true } : u
+      ),
     });
   };
 
@@ -113,11 +115,21 @@ const useSpace = () => {
   };
 
   const onAdminUpgraded = (user: User) => {
-    setSpace({...space, users:space.users.map(u => u._id === user._id ? {...u, isAdmin:true}: u)})
+    setSpace({
+      ...space,
+      users: space.users.map((u) =>
+        u._id === user._id ? { ...u, isAdmin: true } : u
+      ),
+    });
   };
 
   const onAdminDowngraded = (user: User) => {
-    setSpace({...space, users:space.users.map(u => u._id === user._id ? {...u, isAdmin:false}: u)})
+    setSpace({
+      ...space,
+      users: space.users.map((u) =>
+        u._id === user._id ? { ...u, isAdmin: false } : u
+      ),
+    });
   };
 
   return {
@@ -125,7 +137,7 @@ const useSpace = () => {
     onUsernameChanged,
     onSpacenameChanged,
     onUserAdded,
-    onUserKicked,
+    onUserRemoved,
     onTaskCreated,
     onTaskDeleted,
     onTaskDone,

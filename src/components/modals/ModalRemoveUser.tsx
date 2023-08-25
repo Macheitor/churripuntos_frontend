@@ -9,23 +9,31 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { ReactNode } from "react";
+import { CanceledError } from "../../services/api-client";
+import { Space, User } from "../../hooks/useSpace";
+import spaceService from "../../services/space-service";
 
 interface Props {
   children: ReactNode;
-  title: string;
-  cancelText?: string;
-  acceptText?: string;
-  onAccept: () => void;
+  space: Space;
+  user: User;
+  onUserRemoved: () => void;
 }
 
-const ModalAcceptCancel = ({
-  children,
-  title,
-  cancelText = "Cancel",
-  acceptText = "Accept",
-  onAccept,
-}: Props) => {
+const ModalRemoveUser = ({ children, space, user, onUserRemoved }: Props) => {
   const { onOpen, onClose, isOpen } = useDisclosure();
+
+  const kickOutUser = (user: User) => {
+    spaceService
+      .removeUser(space, user._id)
+      .then(() => {
+        onUserRemoved();
+      })
+      .catch((err) => {
+        if (err instanceof CanceledError) return;
+        console.log(err.response.data.message);
+      });
+  };
 
   return (
     <>
@@ -35,9 +43,11 @@ const ModalAcceptCancel = ({
         <ModalOverlay />
 
         <ModalContent>
-          <ModalHeader>{title}</ModalHeader>
+          <ModalHeader>Delete user</ModalHeader>
 
-          <ModalBody></ModalBody>
+          <ModalBody>
+            {`Are you sure you want to kick out ${user.username} from ${space.spacename}?`}
+          </ModalBody>
 
           <ModalFooter>
             <Button
@@ -47,16 +57,16 @@ const ModalAcceptCancel = ({
                 onClose();
               }}
             >
-              {cancelText}
+              Cancel
             </Button>
             <Button
               onClick={() => {
-                onAccept();
+                kickOutUser(user);
                 onClose();
               }}
               colorScheme="red"
             >
-              {acceptText}
+              Kick out
             </Button>
           </ModalFooter>
         </ModalContent>
@@ -65,4 +75,4 @@ const ModalAcceptCancel = ({
   );
 };
 
-export default ModalAcceptCancel;
+export default ModalRemoveUser;

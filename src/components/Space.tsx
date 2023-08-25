@@ -22,7 +22,7 @@ const Space = () => {
     onUsernameChanged,
     onSpacenameChanged,
     onUserAdded,
-    onUserKicked,
+    onUserRemoved,
     onTaskCreated,
     onTaskDeleted,
     onTaskDone,
@@ -68,7 +68,7 @@ const Space = () => {
               space={space}
               currentUserId={currentUserId}
               onUserAdded={(user) => onUserAdded(user)}
-              onUserKicked={(user) => onUserKicked(user)}
+              onUserRemoved={(user) => onUserRemoved(user)}
               onAdminUpgraded={(user) => onAdminUpgraded(user)}
               onAdminDowngraded={(user) => onAdminDowngraded(user)}
             />
