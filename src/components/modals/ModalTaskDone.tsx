@@ -14,7 +14,6 @@ import { Activity, Space, Task, User } from "../../hooks/useSpace";
 import { CanceledError } from "../../services/api-client";
 import spaceService from "../../services/space-service";
 
-
 interface Props {
   children: ReactNode;
   space: Space;
@@ -73,19 +72,18 @@ const ModalTaskDone = ({
           <ModalHeader>Who did task "{task.taskname}"?</ModalHeader>
           <ModalBody>
             <Select
-            value={currentUserId}
+              value={userIdSelected}
               onChange={(choice) => {
                 setUserIdSelected(choice.target.value);
               }}
             >
-              {users.filter(u => !u.isDeleted).map((user) => (
-                <option
-                  key={user._id}
-                  value={user._id}
-                >
-                  {user.username}
-                </option>
-              ))}
+              {users
+                .filter((u) => !u.isDeleted)
+                .map((user) => (
+                  <option key={user._id} value={user._id}>
+                    {user.username}
+                  </option>
+                ))}
             </Select>
           </ModalBody>
           <ModalFooter>
