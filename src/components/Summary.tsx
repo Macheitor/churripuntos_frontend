@@ -4,13 +4,11 @@ import {
   HStack,
   Heading,
   Text,
-  Button,
   Stack,
 } from "@chakra-ui/react";
 import { Activity, Space } from "../hooks/useSpace";
-import { DeleteIcon } from "@chakra-ui/icons";
-import { useState } from "react";
-import ModalDeleteTaskDone from "./modals/ModalDeleteTaskDone";
+import { ChevronRightIcon } from "@chakra-ui/icons";
+import DrawerSummary from "./drawers/DrawerSummary";
 
 interface Props {
   space: Space;
@@ -43,9 +41,6 @@ const months = [
 const Summary = ({ space, onTaskDoneDeleted }: Props) => {
   const tasksDone = space.activities;
 
-  const [showDeleteIcon, setShowDeleteIcon] = useState(false);
-  const [deleteBtn, setDeleteBtn] = useState("Delete");
-
   let lastDate = "";
 
   const getMyDate = (taskDateDB: string) => {
@@ -72,26 +67,17 @@ const Summary = ({ space, onTaskDoneDeleted }: Props) => {
     return result;
   };
 
-  const toggleDeleteBtn = () => {
-    if (deleteBtn === "Delete") {
-      setShowDeleteIcon(true);
-      setDeleteBtn("Cancel");
-    } else {
-      setShowDeleteIcon(false);
-      setDeleteBtn("Delete");
-    }
-  };
-
-  const findUsername = (userId: string) => space.users.find(u => u._id === userId)?.username
+  const findUsername = (userId: string) =>
+    space.users.find((u) => u._id === userId)?.username;
 
   return (
     <>
       <Center>
         <Heading size={"lg"}>SUMMARY</Heading>
       </Center>
-      {[...tasksDone].reverse().map((t) => {
+      {[...tasksDone].reverse().map((taskDone) => {
         let printDate = false;
-        let date = getMyDate(t.date);
+        let date = getMyDate(taskDone.date);
 
         if (lastDate !== date) {
           lastDate = date;
@@ -99,44 +85,31 @@ const Summary = ({ space, onTaskDoneDeleted }: Props) => {
         }
 
         return (
-          <Stack key={t._id}>
+          <Stack key={taskDone._id}>
             {printDate && <Heading size={"md"}>{date}</Heading>}
             <HStack p={1}>
               <Box w="100%" bg={"gray.700"} borderRadius={10}>
-                <HStack justify={"space-between"} p={2}>
-                  <Text>{t.taskname}</Text>
-                  <Text>{t.points} points</Text>
-                  <Text>{findUsername(t.userId)}</Text>
-                </HStack>
-              </Box>
-              {showDeleteIcon && (
-                <ModalDeleteTaskDone
+                <DrawerSummary
                   space={space}
-                  taskDone={t}
-                  onTaskDoneDeleted={(taskDone) => onTaskDoneDeleted(taskDone)}
+                  taskDoneSelected={taskDone}
+                  onTaskDoneDeleted={(taskDone: Activity) =>
+                    onTaskDoneDeleted(taskDone)
+                  }
                 >
-                  <DeleteIcon
-                    color="red"
-                  />
-                </ModalDeleteTaskDone>
-              )}
+                  <HStack justify={"space-between"} p={2}>
+                    <Text>{taskDone.taskname}</Text>
+                    <Text>{taskDone.points} points</Text>
+                    <HStack>
+                      <Text>{findUsername(taskDone.userId)}</Text>
+                      <ChevronRightIcon boxSize={7} />
+                    </HStack>
+                  </HStack>
+                </DrawerSummary>
+              </Box>
             </HStack>
           </Stack>
         );
       })}
-      {tasksDone.length > 0 && (
-        <HStack justify={"right"} p={1}>
-          <Button
-            variant="outline"
-            colorScheme="red"
-            onClick={() => {
-              toggleDeleteBtn();
-            }}
-          >
-            {deleteBtn}
-          </Button>
-        </HStack>
-      )}
     </>
   );
 };

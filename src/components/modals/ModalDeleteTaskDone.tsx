@@ -41,6 +41,9 @@ const ModalDeleteTaskDone = ({
       });
   };
 
+  const findUsername = (userId: string) =>
+    space.users.find((u) => u._id === userId)?.username;
+
   return (
     <>
       <div onClick={onOpen}>{children}</div>
@@ -52,7 +55,9 @@ const ModalDeleteTaskDone = ({
           <ModalHeader>Delete task</ModalHeader>
 
           <ModalBody>
-            {`Are you sure you want to delete task "${taskDone.taskname}" from space "${space.spacename}"?`}
+            {`Are you sure you want to delete "${
+              taskDone.taskname
+            }" done by "${findUsername(taskDone.userId)}"?`}
           </ModalBody>
 
           <ModalFooter>
