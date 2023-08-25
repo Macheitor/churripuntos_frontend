@@ -7,7 +7,7 @@ import {
   Tabs,
 } from "@chakra-ui/react";
 import SpaceNavBar from "./SpaceNavBar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Ranking from "./Ranking";
 import Tasks from "./Tasks";
 import Summary from "./Summary";
@@ -31,12 +31,14 @@ const Space = () => {
     onAdminDowngraded,
   } = useSpace();
 
-  const [tabIndex, setTabIndex] = useState(0);
+  const [tabIndex, setTabIndex] = useState(
+    parseInt(localStorage.getItem("currentTab") || "0")
+  );
   const currentUserId = `${localStorage.getItem("userId")}`;
 
   if (space.users.find((user) => user._id === currentUserId)?.isDeleted)
     navigate("/spaces");
-
+  
   return (
     <Stack mr={1} ml={1} height="100vh">
       <SpaceNavBar
@@ -53,6 +55,7 @@ const Space = () => {
         index={tabIndex}
         onChange={(index) => {
           setTabIndex(index);
+          localStorage.setItem("currentTab", index.toString())
         }}
         variant="enclosed"
       >
