@@ -4,9 +4,9 @@ import {
   ModalContent,
   ModalHeader,
   ModalFooter,
-  ModalBody,
   Button,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
 import { ReactNode } from "react";
 import { CanceledError } from "../../services/api-client";
@@ -22,16 +22,28 @@ interface Props {
 
 const ModalRemoveUser = ({ children, space, user, onUserRemoved }: Props) => {
   const { onOpen, onClose, isOpen } = useDisclosure();
-
+  const toast = useToast();
+  
   const kickOutUser = (user: User) => {
     spaceService
       .removeUser(space, user._id)
       .then(() => {
         onUserRemoved();
+        toast({
+          title: `${user.username} removed from "${space.spacename}".`,
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
       })
       .catch((err) => {
         if (err instanceof CanceledError) return;
-        console.log(err.response.data.message);
+        toast({
+          title: err.response.data.message,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        })
       });
   };
 
@@ -48,11 +60,7 @@ const ModalRemoveUser = ({ children, space, user, onUserRemoved }: Props) => {
         <ModalOverlay />
 
         <ModalContent>
-          <ModalHeader>Delete user</ModalHeader>
-
-          <ModalBody>
-            {`Are you sure you want to kick out ${user.username} from ${space.spacename}?`}
-          </ModalBody>
+          <ModalHeader>{`Remove ${user.username} from "${space.spacename}"?`}</ModalHeader>
 
           <ModalFooter>
             <Button
@@ -71,7 +79,7 @@ const ModalRemoveUser = ({ children, space, user, onUserRemoved }: Props) => {
               }}
               colorScheme="red"
             >
-              Kick out
+              Remove
             </Button>
           </ModalFooter>
         </ModalContent>

@@ -1,21 +1,17 @@
 import {
   Drawer,
   DrawerBody,
-  DrawerFooter,
-  DrawerHeader,
   DrawerOverlay,
   DrawerContent,
-  DrawerCloseButton,
   useDisclosure,
-  Button,
   Stack,
+  useToast,
 } from "@chakra-ui/react";
 import { ReactNode } from "react";
 import { Space, User } from "../../hooks/useSpace";
-import ModalAdminUpgrade from "../modals/ModalAdminUpgrade";
-import ModalAdminDowngrade from "../modals/ModalAdminDowngrade";
 import ModalRemoveUser from "../modals/ModalRemoveUser";
-import ModalAlert from "../modals/ModalAlert";
+import spaceService from "../../services/space-service";
+import { CanceledError } from "../../services/api-client";
 
 interface Props {
   children: ReactNode;
@@ -36,6 +32,7 @@ const DrawerRanking = ({
   onUserRemoved,
 }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const toast = useToast();
 
   const IsCurrentUserAdmin = space.users.find(
     (u) => u._id === currentUserId && u.isAdmin
@@ -45,48 +42,100 @@ const DrawerRanking = ({
     (u) => u._id === userSelected._id && u.isAdmin
   );
 
+  const adminDowngrade = () => {
+    spaceService
+      .removeAdmin(space, userSelected._id)
+      .then(() => {
+        onAdminDowngraded();
+        toast({
+          title: `${userSelected.username} removed from admins.`,
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+      })
+      .catch((err) => {
+        if (err instanceof CanceledError) return;
+        toast({
+          title: err.response.data.message,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      });
+  };
+
+  const adminUpgrade = () => {
+    spaceService
+      .makeAdmin(space, userSelected._id)
+      .then(() => {
+        onAdminUpgraded();
+        toast({
+          title: `${userSelected.username} added to admins.`,
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+      })
+      .catch((err) => {
+        if (err instanceof CanceledError) return;
+        toast({
+          title: err.response.data.message,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      });
+  };
+
   return (
     <>
-
-
-      {!IsCurrentUserAdmin && (
-        <ModalAlert title="You are not admin">
-          <div>{children}</div>
-        </ModalAlert>
+      {IsCurrentUserAdmin ? (
+        <div onClick={onOpen}>{children}</div>
+      ) : (
+        <div
+          onClick={() =>
+            toast({
+              title: "You are not admin.",
+              description: "Only admins can perform actions on users.",
+              status: "warning",
+              duration: 3000,
+              isClosable: true,
+            })
+          }
+        >
+          {children}
+        </div>
       )}
-      {IsCurrentUserAdmin && <div onClick={onOpen}>{children}</div>}
 
-      <Drawer isOpen={isOpen} placement="bottom" onClose={onClose}>
+      <Drawer
+        isOpen={isOpen}
+        placement="bottom"
+        onClose={onClose}
+        returnFocusOnClose={false}
+      >
         <DrawerOverlay />
         <DrawerContent>
           <DrawerBody>
             <Stack align={"center"}>
-              {!IsCurrentUserAdmin && <p>You are not admin</p>}
-
-              {IsCurrentUserAdmin && isUserSelectedAdmin && (
-                <ModalAdminDowngrade
-                  space={space}
-                  user={userSelected}
-                  onAdminDowngraded={() => {
+              {isUserSelectedAdmin ? (
+                <p
+                  onClick={() => {
                     onClose();
-                    onAdminDowngraded();
+                    adminDowngrade();
                   }}
                 >
-                  <p>Remove {userSelected.username} from admins</p>
-                </ModalAdminDowngrade>
-              )}
-
-              {IsCurrentUserAdmin && !isUserSelectedAdmin && (
-                <ModalAdminUpgrade
-                  space={space}
-                  user={userSelected}
-                  onAdminUpgraded={() => {
+                  Remove {userSelected.username} from admins
+                </p>
+              ) : (
+                <p
+                  onClick={() => {
                     onClose();
-                    onAdminUpgraded();
+                    adminUpgrade();
                   }}
                 >
-                  <p>Make {userSelected.username} admin</p>
-                </ModalAdminUpgrade>
+                  Make {userSelected.username} admin
+                </p>
               )}
 
               {IsCurrentUserAdmin && (

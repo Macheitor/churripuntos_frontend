@@ -12,6 +12,7 @@ import {
   Button,
   ModalFooter,
   ModalBody,
+  useToast,
 } from "@chakra-ui/react";
 import { ReactNode } from "react";
 import { Space, User } from "../../hooks/useSpace";
@@ -29,6 +30,8 @@ interface Props {
 const ModalAddUser = ({ children, space, onUserAdded }: Props) => {
   const { onOpen, onClose, isOpen } = useDisclosure();
   const { register, handleSubmit, reset } = useForm();
+  
+  const toast = useToast();
 
   const onCloseModal = () => {
     onClose();
@@ -40,12 +43,24 @@ const ModalAddUser = ({ children, space, onUserAdded }: Props) => {
       .addUser(space, data.email)
       .then((res) => {
         onUserAdded(res.data.user);
-        onCloseModal();
+        
+        toast({
+          title: `user ${res.data.user.username} added to "${space.spacename}".`,
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
       })
       .catch((err) => {
         if (err instanceof CanceledError) return;
-        console.log(err.response.data.message);
+        toast({
+          title: err.response.data.message,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        })
       });
+      onCloseModal();
   };
 
   return (

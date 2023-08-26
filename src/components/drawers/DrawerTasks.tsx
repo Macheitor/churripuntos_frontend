@@ -33,7 +33,12 @@ const DrawerTasks = ({
     <>
       <div onClick={onOpen}>{children}</div>
 
-      <Drawer isOpen={isOpen} placement="bottom" onClose={onClose}>
+      <Drawer
+        isOpen={isOpen}
+        placement="bottom"
+        onClose={onClose}
+        returnFocusOnClose={false}
+      >
         <DrawerOverlay />
         <DrawerContent>
           <DrawerBody>
