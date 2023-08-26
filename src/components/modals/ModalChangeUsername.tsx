@@ -72,7 +72,10 @@ const ModalChangeUsername = ({
               <Stack spacing={4} p={1}>
                 <FormControl>
                   <Input
-                    {...register("newUsername")}
+                    {...register("newUsername", {
+                      required: true,
+                      maxLength: 12,
+                    })}
                     type="text"
                     placeholder={
                       space.users.find((user) => user._id === currentUserId)

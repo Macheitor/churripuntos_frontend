@@ -76,7 +76,10 @@ const ModalAddUser = ({ children, onSpaceCreated }: Props) => {
                     />
 
                     <Input
-                      {...register("spacename")}
+                      {...register("spacename", {
+                        required: true,
+                        maxLength: 12,
+                      })}
                       type="text"
                       placeholder="Spacename"
                     />

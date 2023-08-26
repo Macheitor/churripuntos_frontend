@@ -74,7 +74,10 @@ const Register = () => {
                     children={<CFaUserAlt color="gray.300" />}
                   />
                   <Input
-                    {...register("username")}
+                    {...register("username", {
+                      required: true,
+                      maxLength: 12,
+                    })}
                     type="text"
                     placeholder="First name"
                     required
@@ -88,7 +91,9 @@ const Register = () => {
                     children={<MdEmail color="gray.300" />}
                   />
                   <Input
-                    {...register("email")}
+                    {...register("email", {
+                      required: true,
+                    })}
                     type="email"
                     placeholder="Email address"
                     required
@@ -103,7 +108,9 @@ const Register = () => {
                     children={<CFaLock color="gray.300" />}
                   />
                   <Input
-                    {...register("password")}
+                    {...register("password", {
+                      required: true,
+                    })}
                     type="password"
                     placeholder="Password"
                     required

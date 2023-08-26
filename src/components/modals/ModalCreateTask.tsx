@@ -105,7 +105,10 @@ const ModalCreateTask = ({ children, space, onTaskCreated }: Props) => {
                       children={<EditIcon color="gray.300" />}
                     />
                     <Input
-                      {...register("taskname")}
+                      {...register("taskname", {
+                        required: true,
+                        maxLength: 12,
+                      })}
                       type="text"
                       placeholder="Task name"
                     />
@@ -119,7 +122,10 @@ const ModalCreateTask = ({ children, space, onTaskCreated }: Props) => {
                       children={<CBiSolidBullseye color="gray.300" />}
                     />
                     <Input
-                      {...register("points", { valueAsNumber: true })}
+                      {...register("points", {
+                        required: true,
+                        valueAsNumber: true,
+                      })}
                       type="number"
                       placeholder="Points"
                     />

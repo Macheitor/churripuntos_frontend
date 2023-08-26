@@ -69,7 +69,10 @@ const ModalChangeSpacename = ({
               <Stack spacing={4} p={1}>
                 <FormControl>
                   <Input
-                    {...register("newSpacename")}
+                    {...register("newSpacename", {
+                      required: true,
+                      maxLength: 12,
+                    })}
                     type="text"
                     placeholder={space.spacename}
                   />

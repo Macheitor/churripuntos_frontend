@@ -77,7 +77,9 @@ const Login = () => {
                     children={<CFaUserAlt color="gray.300" />}
                   />
                   <Input
-                    {...register("email")}
+                    {...register("email", {
+                      required: true,
+                    })}
                     type="text"
                     placeholder="Email address"
                     required
@@ -92,7 +94,9 @@ const Login = () => {
                     children={<CFaLock color="gray.300" />}
                   />
                   <Input
-                    {...register("password")}
+                    {...register("password", {
+                      required: true,
+                    })}
                     type="password"
                     placeholder="Password"
                     required
