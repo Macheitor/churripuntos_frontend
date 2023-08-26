@@ -12,14 +12,12 @@ import {
   Avatar,
   FormControl,
   FormHelperText,
-  Text,
-  Center,
+  useToast,
 } from "@chakra-ui/react";
 import { FieldValues, useForm } from "react-hook-form";
 import { FaUserAlt, FaLock } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
 import { CanceledError } from "axios";
 import registerService, { RegisterRequest } from "../services/register-service";
 
@@ -27,9 +25,9 @@ const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
 
 const Register = () => {
-  const [error, setError] = useState("");
   const navigate = useNavigate();
   const { register, handleSubmit, reset } = useForm();
+  const toast = useToast();
 
   const onSubmit = (data: FieldValues) => {
     const registerRequest: RegisterRequest = {
@@ -40,10 +38,23 @@ const Register = () => {
 
     registerService
       .register(registerRequest)
-      .then(() => navigate("/login"))
+      .then(() => {
+        navigate("/login");
+        toast({
+          title: `Register successful`,
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+      })
       .catch((err) => {
         if (err instanceof CanceledError) return;
-        setError(err.response.data.message);
+        toast({
+          title: err.response.data.message,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
       });
     reset();
   };
@@ -116,13 +127,6 @@ const Register = () => {
                     required
                   />
                 </InputGroup>
-                <Center>
-                  {error && (
-                    <Text as="i" color="red">
-                      {error}
-                    </Text>
-                  )}
-                </Center>
                 <FormHelperText textAlign="right">
                   <Link>Forgot password?</Link>
                 </FormHelperText>

@@ -4,11 +4,9 @@ import {
   ModalContent,
   useDisclosure,
   ModalHeader,
-  ModalBody,
   ModalFooter,
   Button,
-  Center,
-  Text,
+  useToast,
 } from "@chakra-ui/react";
 import { ReactNode, useState } from "react";
 import spaceService from "../../services/space-service";
@@ -24,15 +22,10 @@ interface Props {
 
 const ModalLeaveSpace = ({ children, space, currentUserId }: Props) => {
   const { onOpen, onClose, isOpen } = useDisclosure();
-  const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-
+  const toast = useToast();
   const navigate = useNavigate();
 
-  const onCloseModal = () => {
-    setError(null);
-    onClose();
-  };
 
   const handleLeaveSpace = () => {
     setIsLoading(true);
@@ -40,14 +33,25 @@ const ModalLeaveSpace = ({ children, space, currentUserId }: Props) => {
       .removeUser(space, currentUserId)
       .then(() => {
         setIsLoading(false);
-        onCloseModal();
         navigate("/spaces");
+        toast({
+          title: `You left space "${space.spacename}"`,
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
       })
       .catch((err) => {
         if (err instanceof CanceledError) return;
         setIsLoading(false);
-        setError(err.response.data.message);
+        toast({
+          title: err.response.data.message,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
       });
+      onClose()
   };
 
   return (
@@ -56,27 +60,16 @@ const ModalLeaveSpace = ({ children, space, currentUserId }: Props) => {
 
       <Modal
         isOpen={isOpen}
-        onClose={onCloseModal}
+        onClose={onClose}
         isCentered
         returnFocusOnClose={false}
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Leave this space</ModalHeader>
-
-          <ModalBody>
-            <p>{`Are you sure you want to leave space ${space.spacename}?`}</p>
-            <Center>
-              {error && (
-                <Text as="i" color="red">
-                  {error}
-                </Text>
-              )}
-            </Center>
-          </ModalBody>
+          <ModalHeader>{`Are you sure you want to leave space ${space.spacename}?`}</ModalHeader>
 
           <ModalFooter>
-            <Button variant="outline" mr={3} onClick={onCloseModal}>
+            <Button variant="outline" mr={3} onClick={onClose}>
               Cancel
             </Button>
             <Button

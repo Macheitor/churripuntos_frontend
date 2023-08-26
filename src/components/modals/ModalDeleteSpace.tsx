@@ -7,8 +7,7 @@ import {
   ModalBody,
   ModalFooter,
   Button,
-  Center,
-  Text,
+  useToast,
 } from "@chakra-ui/react";
 import { ReactNode, useState } from "react";
 import spaceService from "../../services/space-service";
@@ -23,15 +22,11 @@ interface Props {
 
 const ModalAddUser = ({ children, space }: Props) => {
   const { onOpen, onClose, isOpen } = useDisclosure();
-  const [error, setError] = useState(null);
+
   const [isLoading, setIsLoading] = useState(false);
+  const toast = useToast();
 
   const navigate = useNavigate();
-
-  const onCloseModal = () => {
-    setError(null);
-    onClose();
-  };
 
   const handleDeleteSpace = () => {
     setIsLoading(true);
@@ -39,14 +34,25 @@ const ModalAddUser = ({ children, space }: Props) => {
       .delete(space._id)
       .then(() => {
         setIsLoading(false);
-        onCloseModal();
         navigate("/spaces");
+        toast({
+          title: `Space "${space.spacename}" deleted.`,
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
       })
       .catch((err) => {
         if (err instanceof CanceledError) return;
         setIsLoading(false);
-        setError(err.response.data.message);
+        toast({
+          title: err.response.data.message,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
       });
+    onClose();
   };
 
   return (
@@ -55,7 +61,7 @@ const ModalAddUser = ({ children, space }: Props) => {
 
       <Modal
         isOpen={isOpen}
-        onClose={onCloseModal}
+        onClose={onClose}
         isCentered
         returnFocusOnClose={false}
       >
@@ -65,17 +71,10 @@ const ModalAddUser = ({ children, space }: Props) => {
 
           <ModalBody>
             <p>{`Are you sure you want to delete space ${space.spacename}?`}</p>
-            <Center>
-              {error && (
-                <Text as="i" color="red">
-                  {error}
-                </Text>
-              )}
-            </Center>
           </ModalBody>
 
           <ModalFooter>
-            <Button variant="outline" mr={3} onClick={onCloseModal}>
+            <Button variant="outline" mr={3} onClick={onClose}>
               Cancel
             </Button>
             <Button

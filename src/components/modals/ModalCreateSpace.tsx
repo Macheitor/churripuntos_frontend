@@ -12,6 +12,7 @@ import {
   InputGroup,
   InputLeftElement,
   Stack,
+  useToast,
 } from "@chakra-ui/react";
 import { ReactNode } from "react";
 import { useForm, FieldValues } from "react-hook-form";
@@ -28,6 +29,7 @@ interface Props {
 const ModalAddUser = ({ children, onSpaceCreated }: Props) => {
   const { onOpen, onClose, isOpen } = useDisclosure();
   const { register, handleSubmit, reset } = useForm();
+  const toast = useToast();
 
   const onCloseModal = () => {
     onClose();
@@ -41,10 +43,21 @@ const ModalAddUser = ({ children, onSpaceCreated }: Props) => {
       .create(spacename)
       .then((res) => {
         onSpaceCreated(res.data.space);
+        toast({
+          title: `Space "${spacename}" created.`,
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
       })
       .catch((err) => {
         if (err instanceof CanceledError) return;
-        console.log(err.response.data.message);
+        toast({
+          title: err.response.data.message,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
       });
 
     onCloseModal();

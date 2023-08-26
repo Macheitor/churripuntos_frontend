@@ -10,6 +10,7 @@ import {
   ModalFooter,
   Button,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
 import { ReactNode } from "react";
 import { Space } from "../../hooks/useSpace";
@@ -31,6 +32,7 @@ const ModalChangeUsername = ({
 }: Props) => {
   const { onOpen, onClose, isOpen } = useDisclosure();
   const { register, handleSubmit, reset } = useForm();
+  const toast = useToast();
 
   const onCloseModal = () => {
     onClose();
@@ -44,12 +46,23 @@ const ModalChangeUsername = ({
       .changeUsername(userId, newUsername)
       .then(() => {
         onUsernameChanged(userId, newUsername);
-        onCloseModal();
+        toast({
+          title: `Username changed`,
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
       })
       .catch((err) => {
         if (err instanceof CanceledError) return;
-        console.log(err.response.data.message);
+        toast({
+          title: err.response.data.message,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
       });
+    onCloseModal();
   };
 
   return (
