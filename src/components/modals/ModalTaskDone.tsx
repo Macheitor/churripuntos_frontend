@@ -47,7 +47,7 @@ const ModalTaskDone = ({
           setUserIdSelected(currentUserId);
 
           toast({
-            title: `"${task.taskname}" done by ${user.username} added.`,
+            title: `Task "${task.taskname}" done by ${user.username} added.`,
             status: "success",
             duration: 3000,
             isClosable: true,
