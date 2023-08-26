@@ -35,7 +35,6 @@ const ModalLeaveSpace = ({ children, space, currentUserId }: Props) => {
   };
 
   const handleLeaveSpace = () => {
-
     setIsLoading(true);
     spaceService
       .removeUser(space, currentUserId)
@@ -55,7 +54,12 @@ const ModalLeaveSpace = ({ children, space, currentUserId }: Props) => {
     <>
       <div onClick={onOpen}>{children}</div>
 
-      <Modal isOpen={isOpen} onClose={onCloseModal} isCentered>
+      <Modal
+        isOpen={isOpen}
+        onClose={onCloseModal}
+        isCentered
+        returnFocusOnClose={false}
+      >
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Leave this space</ModalHeader>

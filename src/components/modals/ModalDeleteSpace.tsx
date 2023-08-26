@@ -18,7 +18,7 @@ import { Space } from "../../hooks/useSpace";
 
 interface Props {
   children: ReactNode;
-  space: Space
+  space: Space;
 }
 
 const ModalAddUser = ({ children, space }: Props) => {
@@ -53,7 +53,12 @@ const ModalAddUser = ({ children, space }: Props) => {
     <>
       <div onClick={onOpen}>{children}</div>
 
-      <Modal isOpen={isOpen} onClose={onCloseModal} isCentered>
+      <Modal
+        isOpen={isOpen}
+        onClose={onCloseModal}
+        isCentered
+        returnFocusOnClose={false}
+      >
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Delete space</ModalHeader>

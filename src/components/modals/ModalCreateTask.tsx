@@ -56,8 +56,6 @@ const ModalCreateTask = ({ children, space, onTaskCreated }: Props) => {
         if (err instanceof CanceledError) return;
         console.log(err.response.data.message);
       });
-
-
   };
 
   return (
@@ -76,6 +74,7 @@ const ModalCreateTask = ({ children, space, onTaskCreated }: Props) => {
           onCloseModal();
         }}
         isCentered
+        returnFocusOnClose={false}
       >
         <ModalOverlay />
 

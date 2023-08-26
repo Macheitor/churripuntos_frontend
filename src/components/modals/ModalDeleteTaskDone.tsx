@@ -48,7 +48,12 @@ const ModalDeleteTaskDone = ({
     <>
       <div onClick={onOpen}>{children}</div>
 
-      <Modal isOpen={isOpen} onClose={onClose} isCentered>
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        isCentered
+        returnFocusOnClose={false}
+      >
         <ModalOverlay />
 
         <ModalContent>

@@ -23,7 +23,12 @@ interface Props {
   currentUserId: string;
   onUsernameChanged: (userId: string, newUsername: string) => void;
 }
-const ModalChangeUsername = ({ children, space, currentUserId, onUsernameChanged }: Props) => {
+const ModalChangeUsername = ({
+  children,
+  space,
+  currentUserId,
+  onUsernameChanged,
+}: Props) => {
   const { onOpen, onClose, isOpen } = useDisclosure();
   const { register, handleSubmit, reset } = useForm();
 
@@ -33,7 +38,7 @@ const ModalChangeUsername = ({ children, space, currentUserId, onUsernameChanged
   };
 
   const onSubmit = (data: FieldValues) => {
-    const userId = currentUserId
+    const userId = currentUserId;
     const newUsername = data.newUsername;
     userService
       .changeUsername(userId, newUsername)
@@ -51,7 +56,12 @@ const ModalChangeUsername = ({ children, space, currentUserId, onUsernameChanged
     <>
       <div onClick={onOpen}>{children}</div>
 
-      <Modal isOpen={isOpen} onClose={onCloseModal} isCentered>
+      <Modal
+        isOpen={isOpen}
+        onClose={onCloseModal}
+        isCentered
+        returnFocusOnClose={false}
+      >
         <ModalOverlay />
 
         <ModalContent>
@@ -64,7 +74,10 @@ const ModalChangeUsername = ({ children, space, currentUserId, onUsernameChanged
                   <Input
                     {...register("newUsername")}
                     type="text"
-                    placeholder={space.users.find((user) => user._id === currentUserId)?.username}
+                    placeholder={
+                      space.users.find((user) => user._id === currentUserId)
+                        ?.username
+                    }
                   />
                 </FormControl>
               </Stack>

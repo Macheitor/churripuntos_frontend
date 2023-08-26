@@ -22,7 +22,11 @@ interface Props {
   space: Space;
   onSpacenameChanged: (newSpacename: string) => void;
 }
-const ModalChangeSpacename = ({ children, space, onSpacenameChanged }: Props) => {
+const ModalChangeSpacename = ({
+  children,
+  space,
+  onSpacenameChanged,
+}: Props) => {
   const { onOpen, onClose, isOpen } = useDisclosure();
   const { register, handleSubmit, reset } = useForm();
 
@@ -32,12 +36,12 @@ const ModalChangeSpacename = ({ children, space, onSpacenameChanged }: Props) =>
   };
 
   const onSubmit = (data: FieldValues) => {
-    const newSpacename = data.newSpacename
+    const newSpacename = data.newSpacename;
     spaceService
       .changeSpacename(space, newSpacename)
       .then(() => {
-        onSpacenameChanged(newSpacename)
-        onCloseModal()
+        onSpacenameChanged(newSpacename);
+        onCloseModal();
       })
       .catch((err) => {
         if (err instanceof CanceledError) return;
@@ -49,7 +53,12 @@ const ModalChangeSpacename = ({ children, space, onSpacenameChanged }: Props) =>
     <>
       <div onClick={onOpen}>{children}</div>
 
-      <Modal isOpen={isOpen} onClose={onCloseModal} isCentered>
+      <Modal
+        isOpen={isOpen}
+        onClose={onCloseModal}
+        isCentered
+        returnFocusOnClose={false}
+      >
         <ModalOverlay />
 
         <ModalContent>

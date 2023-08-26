@@ -35,7 +35,7 @@ const ModalAddUser = ({ children, space, onUserAdded }: Props) => {
     reset();
   };
 
-  const addUser = (data:FieldValues) => { 
+  const addUser = (data: FieldValues) => {
     spaceService
       .addUser(space, data.email)
       .then((res) => {
@@ -46,7 +46,6 @@ const ModalAddUser = ({ children, space, onUserAdded }: Props) => {
         if (err instanceof CanceledError) return;
         console.log(err.response.data.message);
       });
-
   };
 
   return (
@@ -59,7 +58,12 @@ const ModalAddUser = ({ children, space, onUserAdded }: Props) => {
         {children}
       </div>
 
-      <Modal isOpen={isOpen} onClose={onCloseModal} isCentered>
+      <Modal
+        isOpen={isOpen}
+        onClose={onCloseModal}
+        isCentered
+        returnFocusOnClose={false}
+      >
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Add user</ModalHeader>
@@ -76,12 +80,10 @@ const ModalAddUser = ({ children, space, onUserAdded }: Props) => {
                       {...register("email")}
                       type="email"
                       placeholder="email"
-                      />
-                        
+                    />
                   </InputGroup>
                 </FormControl>
               </form>
-  
             </Stack>
           </ModalBody>
 
@@ -89,11 +91,7 @@ const ModalAddUser = ({ children, space, onUserAdded }: Props) => {
             <Button variant="outline" mr={3} onClick={onCloseModal}>
               Cancel
             </Button>
-            <Button
-              type="submit"
-              form="formAddUser"
-              colorScheme="blue"
-            >
+            <Button type="submit" form="formAddUser" colorScheme="blue">
               Add user
             </Button>
           </ModalFooter>

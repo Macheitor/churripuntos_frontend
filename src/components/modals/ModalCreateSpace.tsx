@@ -35,18 +35,17 @@ const ModalAddUser = ({ children, onSpaceCreated }: Props) => {
   };
 
   const onSubmit = (data: FieldValues) => {
-    const spacename = data.spacename
+    const spacename = data.spacename;
 
-      spaceService
-        .create(spacename)
-        .then((res) => {
-          onSpaceCreated(res.data.space)
-        })
-        .catch((err) => {
-          if (err instanceof CanceledError) return;
-          console.log(err.response.data.message);
-        });
-
+    spaceService
+      .create(spacename)
+      .then((res) => {
+        onSpaceCreated(res.data.space);
+      })
+      .catch((err) => {
+        if (err instanceof CanceledError) return;
+        console.log(err.response.data.message);
+      });
 
     onCloseModal();
   };
@@ -55,7 +54,12 @@ const ModalAddUser = ({ children, onSpaceCreated }: Props) => {
     <>
       <div onClick={onOpen}>{children}</div>
 
-      <Modal isOpen={isOpen} onClose={onCloseModal} isCentered>
+      <Modal
+        isOpen={isOpen}
+        onClose={onCloseModal}
+        isCentered
+        returnFocusOnClose={false}
+      >
         <ModalOverlay />
 
         <ModalContent>
