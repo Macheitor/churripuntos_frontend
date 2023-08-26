@@ -4,9 +4,9 @@ import {
   ModalContent,
   ModalHeader,
   ModalFooter,
-  ModalBody,
   Button,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
 import { ReactNode } from "react";
 import { Activity, Space } from "../../hooks/useSpace";
@@ -27,18 +27,32 @@ const ModalDeleteTaskDone = ({
   onTaskDoneDeleted,
 }: Props) => {
   const { onOpen, onClose, isOpen } = useDisclosure();
+  const toast = useToast();
 
   const deleteTaskDone = () => {
     spaceService
       .deleteTaskDone(space, taskDone)
       .then(() => {
         onTaskDoneDeleted(taskDone);
-        onClose();
+        toast({
+          title: `Task "${taskDone.taskname}" done by ${findUsername(
+            taskDone.userId
+          )} deleted.`,
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
       })
       .catch((err) => {
         if (err instanceof CanceledError) return;
-        console.log(err.response.data.message);
+        toast({
+          title: err.response.data.message,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
       });
+    onClose();
   };
 
   const findUsername = (userId: string) =>
@@ -57,13 +71,11 @@ const ModalDeleteTaskDone = ({
         <ModalOverlay />
 
         <ModalContent>
-          <ModalHeader>Delete task</ModalHeader>
-
-          <ModalBody>
-            {`Are you sure you want to delete "${
-              taskDone.taskname
-            }" done by "${findUsername(taskDone.userId)}"?`}
-          </ModalBody>
+          <ModalHeader>
+            {`Delete "${taskDone.taskname}" done by ${findUsername(
+              taskDone.userId
+            )}?`}
+          </ModalHeader>
 
           <ModalFooter>
             <Button
