@@ -4,9 +4,9 @@ import {
   ModalContent,
   ModalHeader,
   ModalFooter,
-  ModalBody,
   Button,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
 import { ReactNode } from "react";
 import { CanceledError } from "../../services/api-client";
@@ -22,18 +22,31 @@ interface Props {
 
 const ModalDeleteTask = ({ children, space, task, onTaskDeleted }: Props) => {
   const { onOpen, onClose, isOpen } = useDisclosure();
+  const toast = useToast();
 
   const deleteTask = (task: Task) => {
     spaceService
       .deleteTask(space, task)
       .then(() => {
         onTaskDeleted();
-        onClose();
+        
+        toast({
+          title: `Task "${task.taskname}" deleted.`,
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
       })
       .catch((err) => {
         if (err instanceof CanceledError) return;
-        console.log(err.response.data.message);
+        toast({
+          title: err.response.data.message,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
       });
+      onClose();
   };
 
   return (
@@ -49,11 +62,7 @@ const ModalDeleteTask = ({ children, space, task, onTaskDeleted }: Props) => {
         <ModalOverlay />
 
         <ModalContent>
-          <ModalHeader>Delete task</ModalHeader>
-
-          <ModalBody>
-            {`Are you sure you want to delete task "${task.taskname}" from space "${space.spacename}"?`}
-          </ModalBody>
+          <ModalHeader>{`Are you sure you want to delete task "${task.taskname}"?`}</ModalHeader>
 
           <ModalFooter>
             <Button

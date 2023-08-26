@@ -13,6 +13,7 @@ import {
   ModalHeader,
   Stack,
   chakra,
+  useToast,
 } from "@chakra-ui/react";
 import { ReactNode } from "react";
 import { Space, Task } from "../../hooks/useSpace";
@@ -33,6 +34,7 @@ interface Props {
 const ModalCreateTask = ({ children, space, onTaskCreated }: Props) => {
   const { onOpen, onClose, isOpen } = useDisclosure();
   const { register, handleSubmit, reset } = useForm();
+  const toast = useToast();
 
   const onCloseModal = () => {
     reset();
@@ -50,12 +52,24 @@ const ModalCreateTask = ({ children, space, onTaskCreated }: Props) => {
       .createTask(space, task)
       .then((res) => {
         onTaskCreated(res.data.task);
-        onCloseModal();
+        toast({
+          title: `Task "${task.taskname}" created.`,
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
       })
       .catch((err) => {
         if (err instanceof CanceledError) return;
-        console.log(err.response.data.message);
+        toast({
+          title: err.response.data.message,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
       });
+
+    onCloseModal();
   };
 
   return (
