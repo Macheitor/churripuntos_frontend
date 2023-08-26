@@ -15,6 +15,7 @@ import { Space, User } from "../../hooks/useSpace";
 import ModalAdminUpgrade from "../modals/ModalAdminUpgrade";
 import ModalAdminDowngrade from "../modals/ModalAdminDowngrade";
 import ModalRemoveUser from "../modals/ModalRemoveUser";
+import ModalAlert from "../modals/ModalAlert";
 
 interface Props {
   children: ReactNode;
@@ -46,7 +47,14 @@ const DrawerRanking = ({
 
   return (
     <>
-      <div onClick={onOpen}>{children}</div>
+
+
+      {!IsCurrentUserAdmin && (
+        <ModalAlert title="You are not admin">
+          <div>{children}</div>
+        </ModalAlert>
+      )}
+      {IsCurrentUserAdmin && <div onClick={onOpen}>{children}</div>}
 
       <Drawer isOpen={isOpen} placement="bottom" onClose={onClose}>
         <DrawerOverlay />
