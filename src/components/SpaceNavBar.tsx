@@ -18,13 +18,13 @@ import {
   EditIcon,
   HamburgerIcon,
 } from "@chakra-ui/icons";
-import { Space } from "../../hooks/useSpace";
+import { Space } from "../hooks/useSpace";
 import { ImExit } from "react-icons/im";
-import GenericModal from "../modals/GenericModal";
+import GenericModal from "./modals/GenericModal";
 import { FieldValues } from "react-hook-form";
-import spaceService from "../../services/space-service";
-import { CanceledError } from "../../services/api-client";
-import userService from "../../services/user-service";
+import spaceService from "../services/space-service";
+import { CanceledError } from "../services/api-client";
+import userService from "../services/user-service";
 
 const CImExit = chakra(ImExit);
 

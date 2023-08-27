@@ -6,7 +6,7 @@ import {
   TabPanels,
   Tabs,
 } from "@chakra-ui/react";
-import SpaceNavBar from "./NavBars/SpaceNavBar";
+import SpaceNavBar from "./SpaceNavBar";
 import { useEffect, useState } from "react";
 import Ranking from "./Ranking";
 import Tasks from "./Tasks";
@@ -60,7 +60,7 @@ const Space = () => {
         index={tabIndex}
         onChange={(index) => {
           setTabIndex(index);
-          sessionStorage.setItem("currentTab", index.toString());
+          sessionStorage.setItem("currentTab", index.toString())
         }}
         variant="enclosed"
       >
