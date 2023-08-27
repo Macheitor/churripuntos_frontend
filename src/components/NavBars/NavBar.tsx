@@ -1,16 +1,20 @@
 import {
+  HStack,
   Icon,
   IconButton,
+  Image,
   Menu,
   MenuButton,
   MenuItem,
   MenuList,
+  Text,
 } from "@chakra-ui/react";
-import apiClient from "../services/api-client";
-import { useNavigate } from "react-router-dom";
+import logo from "../assets/logo.webp";
 import { AiOutlineUser } from "react-icons/ai";
+import { useNavigate } from "react-router-dom";
+import apiClient from "../../services/api-client";
 
-const UserMenu = () => {
+const NavBar = () => {
   const navigate = useNavigate();
 
   const logout = () => {
@@ -29,7 +33,9 @@ const UserMenu = () => {
   };
 
   return (
-    <>
+    <HStack justify={"space-between"} padding={2}>
+      <Image src={logo} boxSize="60px" />
+      <Text>Churripuntos</Text>
       <Menu>
         <MenuButton
           as={IconButton}
@@ -43,8 +49,8 @@ const UserMenu = () => {
           <MenuItem onClick={logout}>Logout</MenuItem>
         </MenuList>
       </Menu>
-    </>
+    </HStack>
   );
 };
 
-export default UserMenu;
+export default NavBar;

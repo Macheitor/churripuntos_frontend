@@ -10,7 +10,7 @@ import {
   Text,
   useToast,
 } from "@chakra-ui/react";
-import NavBar from "./NavBar";
+import NavBar from "./NavBars/NavBar";
 import { useNavigate } from "react-router-dom";
 import useUserSpaces from "../hooks/useUserSpaces";
 import { Space } from "../hooks/useSpace";
@@ -56,8 +56,8 @@ const UserSpaces = () => {
 
   // At user spaces default tab is always the first one "Ranking"
   useEffect(() => {
-    sessionStorage.setItem("currentTab", "0")
-  }, [])
+    sessionStorage.setItem("currentTab", "0");
+  }, []);
 
   return (
     <Flex
