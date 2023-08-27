@@ -32,7 +32,7 @@ const Space = () => {
   } = useSpace();
 
   const [tabIndex, setTabIndex] = useState(
-    parseInt(localStorage.getItem("currentTab") || "0")
+    parseInt(sessionStorage.getItem("currentTab") || "0")
   );
   const currentUserId = localStorage.getItem("userId") || "";
 
@@ -60,7 +60,7 @@ const Space = () => {
         index={tabIndex}
         onChange={(index) => {
           setTabIndex(index);
-          localStorage.setItem("currentTab", index.toString())
+          sessionStorage.setItem("currentTab", index.toString())
         }}
         variant="enclosed"
       >
