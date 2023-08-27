@@ -19,9 +19,7 @@ import {
   HamburgerIcon,
 } from "@chakra-ui/icons";
 import { Space } from "../hooks/useSpace";
-import ModalDeleteSpace from "./modals/ModalDeleteSpace";
 import { ImExit } from "react-icons/im";
-import ModalLeaveSpace from "./modals/ModalLeaveSpace";
 import GenericModal from "./modals/GenericModal";
 import { FieldValues } from "react-hook-form";
 import spaceService from "../services/space-service";
@@ -126,6 +124,29 @@ const SpaceNavBar = ({
       });
   };
 
+  const leaveSpace = () => {
+    spaceService
+      .removeUser(space, currentUserId)
+      .then(() => {
+        navigate("/spaces");
+        toast({
+          title: `You left space "${space.spacename}"`,
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+      })
+      .catch((err) => {
+        if (err instanceof CanceledError) return;
+        toast({
+          title: err.response.data.message,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      });
+  };
+
   return (
     <>
       <Stack>
@@ -168,9 +189,14 @@ const SpaceNavBar = ({
                   <MenuItem icon={<EditIcon />}>Change spacename</MenuItem>
                 </GenericModal>
 
-                <ModalLeaveSpace space={space} currentUserId={currentUserId}>
+                <GenericModal
+                  title={`Leave space "${space.spacename}" ?`}
+                  dismissBtn="Cancel"
+                  actionBtn="Leave space"
+                  onAction={leaveSpace}
+                >
                   <MenuItem icon={<CImExit />}>Leave space</MenuItem>
-                </ModalLeaveSpace>
+                </GenericModal>
 
                 <GenericModal
                   title={`Delete space "${space.spacename}" ?`}
