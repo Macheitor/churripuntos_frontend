@@ -10,7 +10,6 @@ import {
 } from "@chakra-ui/react";
 import { Space, User } from "../hooks/useSpace";
 import useRanking from "../hooks/useRanking";
-import ModalAddUser from "./modals/ModalAddUser";
 import DrawerRanking from "./drawers/DrawerRanking";
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import GenericModal from "./modals/GenericModal";
