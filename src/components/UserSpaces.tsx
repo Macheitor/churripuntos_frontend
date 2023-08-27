@@ -18,6 +18,7 @@ import GenericModal from "./modals/GenericModal";
 import { FieldValues } from "react-hook-form";
 import spaceService from "../services/space-service";
 import { CanceledError } from "../services/api-client";
+import { useEffect } from "react";
 
 const UserSpaces = () => {
   // Hook for navigate between pages
@@ -52,6 +53,11 @@ const UserSpaces = () => {
         });
       });
   };
+
+  // At user spaces default tab is always the first one "Ranking"
+  useEffect(() => {
+    sessionStorage.setItem("currentTab", "0")
+  }, [])
 
   return (
     <Flex
