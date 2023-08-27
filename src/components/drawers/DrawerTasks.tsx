@@ -5,11 +5,16 @@ import {
   DrawerContent,
   useDisclosure,
   Stack,
+  Text,
+  useToast,
 } from "@chakra-ui/react";
 import { ReactNode } from "react";
 import { Activity, Space, Task } from "../../hooks/useSpace";
-import ModalTaskDone from "../modals/ModalTaskDone";
 import ModalDeleteTask from "../modals/ModalDeleteTask";
+import GenericModal from "../modals/GenericModal";
+import spaceService from "../../services/space-service";
+import { CanceledError } from "../../services/api-client";
+import { FieldValues } from "react-hook-form";
 
 interface Props {
   children: ReactNode;
@@ -28,6 +33,42 @@ const DrawerTasks = ({
   onTaskDone,
 }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const toast = useToast();
+
+  const taskDone = (data: FieldValues) => {
+    const user = space.users.find((user) => user._id === data.userId);
+
+    if (user) {
+      spaceService
+        .taskDone(space, taskSelected, user)
+        .then((res) => {
+          onTaskDone(res.data.activity);
+
+          toast({
+            title: `Task "${taskSelected.taskname}" done by ${user.username} added.`,
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+          });
+        })
+        .catch((err) => {
+          if (err instanceof CanceledError) return;
+          toast({
+            title: err.response.data.message,
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+          });
+        });
+    } else {
+      toast({
+        title: "user not found",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
 
   return (
     <>
@@ -43,17 +84,19 @@ const DrawerTasks = ({
         <DrawerContent>
           <DrawerBody>
             <Stack align={"center"}>
-              <ModalTaskDone
+              <GenericModal
+                title={`Who did task "${taskSelected.taskname}" ?`}
                 space={space}
-                task={taskSelected}
                 currentUserId={currentUserId}
-                onTaskDone={(activity) => {
-                  onClose();
-                  onTaskDone(activity);
+                userSelector
+                dismissBtn="Cancel"
+                actionBtn="Task done"
+                onAction={(data?: FieldValues) => {
+                  data && taskDone(data)
                 }}
               >
-                Mark task as done
-              </ModalTaskDone>
+                <Text>Mark task as done</Text>
+              </GenericModal>
 
               <ModalDeleteTask
                 space={space}

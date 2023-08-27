@@ -17,15 +17,14 @@ import {
   chakra,
   useDisclosure,
 } from "@chakra-ui/react";
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import { FieldValues, RegisterOptions, useForm } from "react-hook-form";
 import { Space } from "../../hooks/useSpace";
 import { BiSolidBullseye } from "react-icons/bi";
-import { FaUserAlt, FaLock } from "react-icons/fa";
+import { FaUserAlt } from "react-icons/fa";
 
 const CBiSolidBullseye = chakra(BiSolidBullseye);
 const CFaUserAlt = chakra(FaUserAlt);
-const CFaLock = chakra(FaLock);
 
 interface Props {
   children: ReactNode;
@@ -59,12 +58,19 @@ const GenericModal = ({
   onAction,
 }: Props) => {
   const { onOpen, onClose, isOpen } = useDisclosure();
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit, reset, setValue } = useForm();
+
+  // TODO: Find another way of setting this value
+  useEffect(() => {
+    setValue("userId", currentUserId);
+  }, []);
+
+  const users = space?.users;
 
   const isFormRequired =
-    emailForm || usernameForm || tasknameForm || taskpointsForm;
+    emailForm || usernameForm || tasknameForm || taskpointsForm || userSelector;
 
-  const isBodyRequired = body || userSelector || isFormRequired;
+  const isBodyRequired = body || isFormRequired;
 
   const onCloseModal = () => {
     onClose();
@@ -129,23 +135,6 @@ const GenericModal = ({
             <ModalBody>
               {body && <Text>{body}</Text>}
 
-              {/* {userSelector && (
-                <Select
-                  value={userIdSelected}
-                  onChange={(choice) => {
-                    setUserIdSelected(choice.target.value);
-                  }}
-                >
-                  {users
-                    .filter((u) => !u.isDeleted)
-                    .map((user) => (
-                      <option key={user._id} value={user._id}>
-                        {user.username}
-                      </option>
-                    ))}
-                </Select>
-              )} */}
-
               {isFormRequired && (
                 <form id="genericForm" onSubmit={handleSubmit(onSubmit)}>
                   <Stack spacing={4} p={1} boxShadow="md">
@@ -171,6 +160,18 @@ const GenericModal = ({
                         required: true,
                         valueAsNumber: true,
                       })}
+
+                    {userSelector && (
+                      <Select {...register("userId")}>
+                        {users
+                          ?.filter((u) => !u.isDeleted)
+                          .map((user) => (
+                            <option key={user._id} value={user._id}>
+                              {user.username}
+                            </option>
+                          ))}
+                      </Select>
+                    )}
                   </Stack>
                 </form>
               )}
