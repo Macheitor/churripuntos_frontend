@@ -1,4 +1,4 @@
-import { EmailIcon } from "@chakra-ui/icons";
+import { EditIcon, EmailIcon } from "@chakra-ui/icons";
 import {
   Button,
   FormControl,
@@ -14,11 +14,18 @@ import {
   Select,
   Stack,
   Text,
+  chakra,
   useDisclosure,
 } from "@chakra-ui/react";
 import { ReactNode } from "react";
 import { FieldValues, RegisterOptions, useForm } from "react-hook-form";
 import { Space } from "../../hooks/useSpace";
+import { BiSolidBullseye } from "react-icons/bi";
+import { FaUserAlt, FaLock } from "react-icons/fa";
+
+const CBiSolidBullseye = chakra(BiSolidBullseye);
+const CFaUserAlt = chakra(FaUserAlt);
+const CFaLock = chakra(FaLock);
 
 interface Props {
   children: ReactNode;
@@ -73,13 +80,27 @@ const GenericModal = ({
     type: string,
     registerParams: RegisterOptions
   ) => {
+    let icon;
+    switch (name) {
+      case "email":
+        icon = <EmailIcon color="gray.300" />;
+        break;
+      case "username":
+        icon = <CFaUserAlt color="gray.300" />;
+        break;
+      case "taskname":
+        icon = <EditIcon color="gray.300" />;
+        break;
+      case "points":
+        icon = <CBiSolidBullseye color="gray.300" />;
+        break;
+      default:
+        icon = null;
+    }
     return (
       <FormControl isRequired>
         <InputGroup>
-          <InputLeftElement
-            pointerEvents="none"
-            children={<EmailIcon color="gray.300" />}
-          />
+          <InputLeftElement pointerEvents="none" children={icon} />
           <Input
             {...register(`${name}`, registerParams)}
             type={type}
@@ -146,7 +167,7 @@ const GenericModal = ({
                       })}
 
                     {taskpointsForm &&
-                      genericForm("taskpoints", "number", {
+                      genericForm("points", "number", {
                         required: true,
                         valueAsNumber: true,
                       })}
@@ -157,7 +178,7 @@ const GenericModal = ({
           )}
           <ModalFooter>
             {dismissBtn && (
-              <Button variant="outline" mr={3} onClick={onClose}>
+              <Button variant="outline" mr={3} onClick={onCloseModal}>
                 {dismissBtn}
               </Button>
             )}

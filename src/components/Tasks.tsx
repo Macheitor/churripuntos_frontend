@@ -1,9 +1,19 @@
-import { Button, Center, Heading, HStack, Text, Box } from "@chakra-ui/react";
+import {
+  Button,
+  Center,
+  Heading,
+  HStack,
+  Text,
+  Box,
+  useToast,
+} from "@chakra-ui/react";
 import { ChevronRightIcon } from "@chakra-ui/icons";
-
 import { Activity, Space, Task } from "../hooks/useSpace";
-import ModalCreateTask from "./modals/ModalCreateTask";
 import DrawerTasks from "./drawers/DrawerTasks";
+import GenericModal from "./modals/GenericModal";
+import { FieldValues } from "react-hook-form";
+import spaceService from "../services/space-service";
+import { CanceledError } from "../services/api-client";
 
 interface Props {
   space: Space;
@@ -21,6 +31,36 @@ const Tasks = ({
   onTaskDone,
 }: Props) => {
   const tasks = space.tasks;
+  const toast = useToast();
+
+  const createTask = (data: FieldValues) => {
+    const task: Task = {
+      taskname: data.taskname,
+      points: data.points,
+      _id: "",
+    };
+
+    spaceService
+      .createTask(space, task)
+      .then((res) => {
+        onTaskCreated(res.data.task);
+        toast({
+          title: `Task "${task.taskname}" created.`,
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+      })
+      .catch((err) => {
+        if (err instanceof CanceledError) return;
+        toast({
+          title: err.response.data.message,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      });
+  };
 
   return (
     <>
@@ -29,12 +69,18 @@ const Tasks = ({
       </Center>
 
       <HStack justify={"right"} p={1}>
-        <ModalCreateTask
-          space={space}
-          onTaskCreated={(task) => onTaskCreated(task)}
+        <GenericModal
+          title="Create new task"
+          tasknameForm
+          taskpointsForm
+          dismissBtn="Cancel"
+          actionBtn="Create"
+          onAction={(data?: FieldValues) => {
+            data && createTask(data);
+          }}
         >
           <Button colorScheme="blue">Create task</Button>
-        </ModalCreateTask>
+        </GenericModal>
       </HStack>
 
       {tasks.map((task) => (
