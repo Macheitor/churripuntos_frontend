@@ -6,6 +6,7 @@ import {
   HStack,
   Heading,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 import { Space, User } from "../hooks/useSpace";
 import useRanking from "../hooks/useRanking";
@@ -13,6 +14,9 @@ import ModalAddUser from "./modals/ModalAddUser";
 import DrawerRanking from "./drawers/DrawerRanking";
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import GenericModal from "./modals/GenericModal";
+import { FieldValues } from "react-hook-form";
+import spaceService from "../services/space-service";
+import { CanceledError } from "../services/api-client";
 
 interface Props {
   space: Space;
@@ -33,8 +37,31 @@ const Ranking = ({
 }: Props) => {
   const users = space.users;
   const activities = space.activities;
-
   const { ranking } = useRanking(users, activities);
+  const toast = useToast();
+
+  const addUser = (data: FieldValues) => {
+    spaceService
+      .addUser(space, data.email)
+      .then((res) => {
+        onUserAdded(res.data.user);
+        toast({
+          title: `user ${res.data.user.username} added to "${space.spacename}".`,
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+      })
+      .catch((err) => {
+        if (err instanceof CanceledError) return;
+        toast({
+          title: err.response.data.message,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      });
+  };
 
   return (
     <>
@@ -43,9 +70,17 @@ const Ranking = ({
       </Center>
 
       <HStack justify={"right"} p={1}>
-        <ModalAddUser space={space} onUserAdded={(user) => onUserAdded(user)}>
+        <GenericModal
+          title="Add User"
+          emailForm
+          dismissBtn="Cancel"
+          actionBtn="Add user"
+          onAction={(data?: FieldValues) => {
+            data && addUser(data);
+          }}
+        >
           <Button colorScheme="blue">Add user</Button>
-        </ModalAddUser>
+        </GenericModal>
       </HStack>
 
       {ranking.map((rank, index) => (
