@@ -8,6 +8,7 @@ import {
   MenuItem,
   MenuList,
   chakra,
+  useToast,
 } from "@chakra-ui/react";
 
 import { useNavigate } from "react-router-dom";
@@ -18,12 +19,14 @@ import {
   HamburgerIcon,
 } from "@chakra-ui/icons";
 import { Space } from "../hooks/useSpace";
-import ModalChangeSpacename from "./modals/ModalChangeSpacename";
 import ModalDeleteSpace from "./modals/ModalDeleteSpace";
-
 import { ImExit } from "react-icons/im";
 import ModalLeaveSpace from "./modals/ModalLeaveSpace";
 import ModalChangeUsername from "./modals/ModalChangeUsername";
+import GenericModal from "./modals/GenericModal";
+import { FieldValues } from "react-hook-form";
+import spaceService from "../services/space-service";
+import { CanceledError } from "../services/api-client";
 
 const CImExit = chakra(ImExit);
 
@@ -40,10 +43,37 @@ const SpaceNavBar = ({
   onSpacenameChanged,
 }: Props) => {
   const navigate = useNavigate();
+  const toast = useToast();
 
   const logout = () => {
     localStorage.clear();
     navigate("/login");
+  };
+
+  const changeSpacename = (data: FieldValues) => {
+    const newSpacename = data.spacename;
+
+    spaceService
+      .changeSpacename(space, newSpacename)
+      .then(() => {
+        onSpacenameChanged(newSpacename);
+
+        toast({
+          title: `Spacename changed.`,
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+      })
+      .catch((err) => {
+        if (err instanceof CanceledError) return;
+        toast({
+          title: err.response.data.message,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      });
   };
 
   return (
@@ -75,14 +105,18 @@ const SpaceNavBar = ({
                   <MenuItem icon={<EditIcon />}>Change username</MenuItem>
                 </ModalChangeUsername>
 
-                <ModalChangeSpacename
-                  space={space}
-                  onSpacenameChanged={(newSpacename) =>
-                    onSpacenameChanged(newSpacename)
-                  }
+                <GenericModal
+                  title="Change spacename"
+                  spacenameForm
+                  dismissBtn="Cancel"
+                  actionBtn="Change spacename"
+                  onAction={(data?: FieldValues) => {
+                    data && changeSpacename(data);
+                  }}
                 >
                   <MenuItem icon={<EditIcon />}>Change spacename</MenuItem>
-                </ModalChangeSpacename>
+                </GenericModal>
+
                 <ModalLeaveSpace space={space} currentUserId={currentUserId}>
                   <MenuItem icon={<CImExit />}>Leave space</MenuItem>
                 </ModalLeaveSpace>

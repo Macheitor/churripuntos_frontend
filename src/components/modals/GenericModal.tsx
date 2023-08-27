@@ -18,7 +18,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { ReactNode, useEffect } from "react";
-import { FieldValues, RegisterOptions, useForm } from "react-hook-form";
+import { FieldValues, useForm } from "react-hook-form";
 import { Space } from "../../hooks/useSpace";
 import { BiSolidBullseye } from "react-icons/bi";
 import { FaUserAlt } from "react-icons/fa";
@@ -26,6 +26,7 @@ import { FaUserAlt } from "react-icons/fa";
 const CBiSolidBullseye = chakra(BiSolidBullseye);
 const CFaUserAlt = chakra(FaUserAlt);
 
+// TODO: Study this way of doing modal: https://the-guild.dev/blog/coolest-underrated-design-pattern-in-react
 interface Props {
   children: ReactNode;
   space?: Space;
@@ -37,6 +38,7 @@ interface Props {
   userSelector?: boolean;
   tasknameForm?: boolean;
   taskpointsForm?: boolean;
+  spacenameForm?: boolean;
   dismissBtn?: string;
   actionBtn?: string;
   onAction: (data?: FieldValues) => void;
@@ -53,6 +55,7 @@ const GenericModal = ({
   userSelector,
   tasknameForm,
   taskpointsForm,
+  spacenameForm,
   dismissBtn,
   actionBtn,
   onAction,
@@ -68,7 +71,12 @@ const GenericModal = ({
   const users = space?.users;
 
   const isFormRequired =
-    emailForm || usernameForm || tasknameForm || taskpointsForm || userSelector;
+    emailForm ||
+    usernameForm ||
+    tasknameForm ||
+    taskpointsForm ||
+    userSelector ||
+    spacenameForm;
 
   const isBodyRequired = body || isFormRequired;
 
@@ -81,35 +89,53 @@ const GenericModal = ({
     onCloseModal();
     onAction(data);
   };
-  const genericForm = (
-    name: string,
-    type: string,
-    registerParams: RegisterOptions
-  ) => {
+
+  // TODO: Find the right way of settings input props
+  const genericForm = (name: string) => {
     let icon;
+    let type;
+    let registerOptions;
+    let maxLength = 254;
     switch (name) {
       case "email":
         icon = <EmailIcon color="gray.300" />;
+        type = "email";
         break;
+
       case "username":
         icon = <CFaUserAlt color="gray.300" />;
+        type = "text";
+        maxLength = 12;
         break;
+
       case "taskname":
+      case "spacename":
         icon = <EditIcon color="gray.300" />;
+        type = "text";
+        maxLength = 12;
         break;
+
       case "points":
         icon = <CBiSolidBullseye color="gray.300" />;
+        type = "number";
+        registerOptions = { valueAsNumber: true };
         break;
+
       default:
-        icon = null;
+        icon = undefined;
+        type = undefined;
+        registerOptions = undefined;
+        maxLength = 254;
     }
     return (
       <FormControl isRequired>
         <InputGroup>
           <InputLeftElement pointerEvents="none" children={icon} />
           <Input
-            {...register(`${name}`, registerParams)}
+            {...register(`${name}`, registerOptions)}
             type={type}
+            required
+            maxLength={maxLength}
             placeholder={name}
           />
         </InputGroup>
@@ -138,28 +164,15 @@ const GenericModal = ({
               {isFormRequired && (
                 <form id="genericForm" onSubmit={handleSubmit(onSubmit)}>
                   <Stack spacing={4} p={1} boxShadow="md">
-                    {emailForm &&
-                      genericForm("email", "email", {
-                        required: true,
-                      })}
+                    {emailForm && genericForm("email")}
 
-                    {usernameForm &&
-                      genericForm("username", "text", {
-                        required: true,
-                        maxLength: 12,
-                      })}
+                    {usernameForm && genericForm("username")}
 
-                    {tasknameForm &&
-                      genericForm("taskname", "text", {
-                        required: true,
-                        maxLength: 12,
-                      })}
+                    {tasknameForm && genericForm("taskname")}
 
-                    {taskpointsForm &&
-                      genericForm("points", "number", {
-                        required: true,
-                        valueAsNumber: true,
-                      })}
+                    {taskpointsForm && genericForm("points")}
+
+                    {spacenameForm && genericForm("spacename")}
 
                     {userSelector && (
                       <Select {...register("userId")}>
