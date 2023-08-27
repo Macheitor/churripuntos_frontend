@@ -22,11 +22,11 @@ import { Space } from "../hooks/useSpace";
 import ModalDeleteSpace from "./modals/ModalDeleteSpace";
 import { ImExit } from "react-icons/im";
 import ModalLeaveSpace from "./modals/ModalLeaveSpace";
-import ModalChangeUsername from "./modals/ModalChangeUsername";
 import GenericModal from "./modals/GenericModal";
 import { FieldValues } from "react-hook-form";
 import spaceService from "../services/space-service";
 import { CanceledError } from "../services/api-client";
+import userService from "../services/user-service";
 
 const CImExit = chakra(ImExit);
 
@@ -76,6 +76,32 @@ const SpaceNavBar = ({
       });
   };
 
+  const changeUsername = (data: FieldValues) => {
+    const userId = currentUserId;
+    const newUsername = data.username;
+
+    userService
+      .changeUsername(userId, newUsername)
+      .then(() => {
+        onUsernameChanged(userId, newUsername);
+        toast({
+          title: `Username changed`,
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+      })
+      .catch((err) => {
+        if (err instanceof CanceledError) return;
+        toast({
+          title: err.response.data.message,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      });
+  };
+
   return (
     <>
       <Stack>
@@ -95,16 +121,17 @@ const SpaceNavBar = ({
               />
 
               <MenuList>
-                <ModalChangeUsername
-                  space={space}
-                  currentUserId={currentUserId}
-                  onUsernameChanged={(userId, newUsername) =>
-                    onUsernameChanged(userId, newUsername)
-                  }
+                <GenericModal
+                  title="Change username"
+                  usernameForm
+                  dismissBtn="Cancel"
+                  actionBtn="Change username"
+                  onAction={(data?: FieldValues) => {
+                    data && changeUsername(data);
+                  }}
                 >
                   <MenuItem icon={<EditIcon />}>Change username</MenuItem>
-                </ModalChangeUsername>
-
+                </GenericModal>
                 <GenericModal
                   title="Change spacename"
                   spacenameForm
