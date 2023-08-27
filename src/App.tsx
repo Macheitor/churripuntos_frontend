@@ -1,11 +1,11 @@
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
-import Login from "./components/Login";
-import Register from "./components/Register";
+import Login from "./components/login/Login";
+import Register from "./components/register/Register";
 import { useEffect } from "react";
 import apiClient from "./services/api-client";
 import { CanceledError } from "axios";
 import UserSpaces from "./components/UserSpaces";
-import Space from "./components/Space";
+import Space from "./components/space/Space";
 import { Text } from "@chakra-ui/react";
 
 function App() {

@@ -19,7 +19,9 @@ import { FaUserAlt, FaLock } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { CanceledError } from "axios";
-import registerService, { RegisterRequest } from "../services/register-service";
+import registerService, {
+  RegisterRequest,
+} from "../../services/register-service";
 
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);

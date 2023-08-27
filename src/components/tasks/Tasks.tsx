@@ -8,12 +8,12 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { ChevronRightIcon } from "@chakra-ui/icons";
-import { Activity, Space, Task } from "../hooks/useSpace";
-import DrawerTasks from "./drawers/DrawerTasks";
-import GenericModal from "./modals/GenericModal";
+import { Activity, Space, Task } from "../../hooks/useSpace";
+import DrawerTasks from "./DrawerTasks";
+import GenericModal from "../modals/GenericModal";
 import { FieldValues } from "react-hook-form";
-import spaceService from "../services/space-service";
-import { CanceledError } from "../services/api-client";
+import spaceService from "../../services/space-service";
+import { CanceledError } from "../../services/api-client";
 
 interface Props {
   space: Space;

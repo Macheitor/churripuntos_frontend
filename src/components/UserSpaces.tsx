@@ -10,7 +10,7 @@ import {
   Text,
   useToast,
 } from "@chakra-ui/react";
-import NavBar from "./NavBars/NavBar";
+import NavBar from "./navbars/NavBar";
 import { useNavigate } from "react-router-dom";
 import useUserSpaces from "../hooks/useUserSpaces";
 import { Space } from "../hooks/useSpace";
