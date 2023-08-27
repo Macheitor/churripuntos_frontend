@@ -10,7 +10,6 @@ import {
 } from "@chakra-ui/react";
 import { ReactNode } from "react";
 import { Activity, Space, Task } from "../../hooks/useSpace";
-import ModalDeleteTask from "../modals/ModalDeleteTask";
 import GenericModal from "../modals/GenericModal";
 import spaceService from "../../services/space-service";
 import { CanceledError } from "../../services/api-client";
@@ -70,6 +69,30 @@ const DrawerTasks = ({
     }
   };
 
+  const deleteTask = () => {
+    spaceService
+      .deleteTask(space, taskSelected)
+      .then(() => {
+        onTaskDeleted(taskSelected);
+
+        toast({
+          title: `Task "${taskSelected.taskname}" deleted.`,
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+      })
+      .catch((err) => {
+        if (err instanceof CanceledError) return;
+        toast({
+          title: err.response.data.message,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      });
+  };
+
   return (
     <>
       <div onClick={onOpen}>{children}</div>
@@ -92,22 +115,20 @@ const DrawerTasks = ({
                 dismissBtn="Cancel"
                 actionBtn="Task done"
                 onAction={(data?: FieldValues) => {
-                  data && taskDone(data)
+                  data && taskDone(data);
                 }}
               >
                 <Text>Mark task as done</Text>
               </GenericModal>
 
-              <ModalDeleteTask
-                space={space}
-                task={taskSelected}
-                onTaskDeleted={() => {
-                  onClose();
-                  onTaskDeleted(taskSelected);
-                }}
+              <GenericModal
+                title={`Delete task "${taskSelected.taskname}" ?`}
+                dismissBtn="Cancel"
+                actionBtn="Delete task"
+                onAction={deleteTask}
               >
-                Delete task
-              </ModalDeleteTask>
+                <Text>Delete task</Text>
+              </GenericModal>
 
               <p onClick={onClose}>Cancel</p>
             </Stack>
