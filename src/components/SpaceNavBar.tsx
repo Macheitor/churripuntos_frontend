@@ -102,6 +102,30 @@ const SpaceNavBar = ({
       });
   };
 
+  const deleteSpace = () => {
+    spaceService
+      .delete(space._id)
+      .then(() => {
+        navigate("/spaces");
+        toast({
+          title: `Space "${space.spacename}" deleted.`,
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+      })
+      .catch((err) => {
+        if (err instanceof CanceledError) return;
+
+        toast({
+          title: err.response.data.message,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      });
+  };
+
   return (
     <>
       <Stack>
@@ -148,9 +172,15 @@ const SpaceNavBar = ({
                   <MenuItem icon={<CImExit />}>Leave space</MenuItem>
                 </ModalLeaveSpace>
 
-                <ModalDeleteSpace space={space}>
+                <GenericModal
+                  title={`Delete space "${space.spacename}" ?`}
+                  dismissBtn="Cancel"
+                  actionBtn="Delete space"
+                  onAction={deleteSpace}
+                >
                   <MenuItem icon={<DeleteIcon />}>Delete space</MenuItem>
-                </ModalDeleteSpace>
+                </GenericModal>
+
                 <MenuItem icon={<CImExit />} onClick={logout}>
                   Logout
                 </MenuItem>
