@@ -1,7 +1,14 @@
-import { Box, Center, HStack, Heading, Text, Stack } from "@chakra-ui/react";
-import { Activity, Space } from "../../hooks/useSpace";
+import {
+  Box,
+  Center,
+  HStack,
+  Heading,
+  Text,
+  Stack,
+} from "@chakra-ui/react";
+import { Activity, Space } from "../hooks/useSpace";
 import { ChevronRightIcon } from "@chakra-ui/icons";
-import DrawerSummary from "./DrawerSummary";
+import DrawerSummary from "./drawers/DrawerSummary";
 
 interface Props {
   space: Space;

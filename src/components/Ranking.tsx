@@ -8,14 +8,14 @@ import {
   Text,
   useToast,
 } from "@chakra-ui/react";
-import { Space, User } from "../../hooks/useSpace";
-import useRanking from "./hooks/useRanking";
-import DrawerRanking from "./DrawerRanking";
+import { Space, User } from "../hooks/useSpace";
+import useRanking from "../hooks/useRanking";
+import DrawerRanking from "./drawers/DrawerRanking";
 import { ChevronRightIcon } from "@chakra-ui/icons";
-import GenericModal from "../modals/GenericModal";
+import GenericModal from "./modals/GenericModal";
 import { FieldValues } from "react-hook-form";
-import spaceService from "../../services/space-service";
-import { CanceledError } from "../../services/api-client";
+import spaceService from "../services/space-service";
+import { CanceledError } from "../services/api-client";
 
 interface Props {
   space: Space;

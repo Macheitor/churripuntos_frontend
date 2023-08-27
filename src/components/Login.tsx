@@ -17,8 +17,8 @@ import {
 import { FieldValues, useForm } from "react-hook-form";
 import { FaUserAlt, FaLock } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { CanceledError } from "../../services/api-client";
-import loginService, { LoginRequest } from "../../services/login-service";
+import { CanceledError } from "../services/api-client";
+import loginService, { LoginRequest } from "./../services/login-service";
 
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);

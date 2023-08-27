@@ -6,12 +6,12 @@ import {
   TabPanels,
   Tabs,
 } from "@chakra-ui/react";
-import SpaceNavBar from "../navbars/SpaceNavBar";
+import SpaceNavBar from "./NavBars/SpaceNavBar";
 import { useEffect, useState } from "react";
-import Ranking from "../Ranking/Ranking";
-import Tasks from "../tasks/Tasks";
-import Summary from "../summary/Summary";
-import useSpace from "../../hooks/useSpace";
+import Ranking from "./Ranking";
+import Tasks from "./Tasks";
+import Summary from "./Summary";
+import useSpace from "../hooks/useSpace";
 import { useNavigate } from "react-router-dom";
 
 const Space = () => {
