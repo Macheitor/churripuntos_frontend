@@ -8,12 +8,16 @@ import {
   HStack,
   SimpleGrid,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 import NavBar from "./NavBar";
 import { useNavigate } from "react-router-dom";
 import useUserSpaces from "../hooks/useUserSpaces";
 import { Space } from "../hooks/useSpace";
-import ModalCreateSpace from "./modals/ModalCreateSpace";
+import GenericModal from "./modals/GenericModal";
+import { FieldValues } from "react-hook-form";
+import spaceService from "../services/space-service";
+import { CanceledError } from "../services/api-client";
 
 const UserSpaces = () => {
   // Hook for navigate between pages
@@ -21,6 +25,33 @@ const UserSpaces = () => {
 
   // Custom hook user spaces
   const { spaces, spacesError, onSpaceCreated } = useUserSpaces();
+
+  const toast = useToast();
+
+  const createSpace = (data: FieldValues) => {
+    const spacename = data.spacename;
+
+    spaceService
+      .create(spacename)
+      .then((res) => {
+        onSpaceCreated(res.data.space);
+        toast({
+          title: `Space "${spacename}" created.`,
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+      })
+      .catch((err) => {
+        if (err instanceof CanceledError) return;
+        toast({
+          title: err.response.data.message,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      });
+  };
 
   return (
     <Flex
@@ -43,13 +74,20 @@ const UserSpaces = () => {
           </GridItem>
 
           {/* Button for creating spaces */}
-          <ModalCreateSpace
-            onSpaceCreated={(space: Space) => onSpaceCreated(space)}
+
+          <GenericModal
+            title="Create new space"
+            spacenameForm
+            dismissBtn="Cancel"
+            actionBtn="Create space"
+            onAction={(data?: FieldValues) => {
+              data && createSpace(data);
+            }}
           >
             <HStack justify={"right"} mr={2}>
               <Button colorScheme="blue">Create space</Button>
             </HStack>
-          </ModalCreateSpace>
+          </GenericModal>
 
           <Center>
             <GridItem area="main">
