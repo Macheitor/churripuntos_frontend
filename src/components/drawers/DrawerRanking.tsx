@@ -9,9 +9,9 @@ import {
 } from "@chakra-ui/react";
 import { ReactNode } from "react";
 import { Space, User } from "../../hooks/useSpace";
-import ModalRemoveUser from "../modals/ModalRemoveUser";
 import spaceService from "../../services/space-service";
 import { CanceledError } from "../../services/api-client";
+import GenericModal from "../modals/GenericModal";
 
 interface Props {
   children: ReactNode;
@@ -88,6 +88,29 @@ const DrawerRanking = ({
       });
   };
 
+  const removeUser = (user: User) => {
+    spaceService
+      .removeUser(space, user._id)
+      .then(() => {
+        onUserRemoved();
+        toast({
+          title: `${user.username} removed from "${space.spacename}".`,
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+      })
+      .catch((err) => {
+        if (err instanceof CanceledError) return;
+        toast({
+          title: err.response.data.message,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        })
+      });
+  };
+
   return (
     <>
       {IsCurrentUserAdmin ? (
@@ -139,13 +162,14 @@ const DrawerRanking = ({
               )}
 
               {IsCurrentUserAdmin && (
-                <ModalRemoveUser
-                  space={space}
-                  user={userSelected}
-                  onUserRemoved={onUserRemoved}
+                <GenericModal
+                  title={`Remove ${userSelected.username} from "${space.spacename}"?`}
+                  dismissBtn="Cancel"
+                  actionBtn="Remove"
+                  onAction={() => removeUser(userSelected)}
                 >
                   <p>Remove {userSelected.username}</p>
-                </ModalRemoveUser>
+                </GenericModal>
               )}
 
               <p onClick={onClose}>Cancel</p>
