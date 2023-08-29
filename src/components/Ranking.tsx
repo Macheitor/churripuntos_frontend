@@ -16,6 +16,7 @@ import GenericModal from "./modals/GenericModal";
 import { FieldValues } from "react-hook-form";
 import spaceService from "../services/space-service";
 import { CanceledError } from "../services/api-client";
+import Chart from "./Chart";
 
 interface Props {
   space: Space;
@@ -113,6 +114,7 @@ const Ranking = ({
           </Box>
         </HStack>
       ))}
+      <Chart space={space}/>
     </>
   );
 };
