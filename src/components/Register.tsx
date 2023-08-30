@@ -11,7 +11,6 @@ import {
   Link,
   Avatar,
   FormControl,
-  FormHelperText,
   useToast,
 } from "@chakra-ui/react";
 import { FieldValues, useForm } from "react-hook-form";
