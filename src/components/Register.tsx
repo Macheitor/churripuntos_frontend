@@ -127,9 +127,6 @@ const Register = () => {
                     required
                   />
                 </InputGroup>
-                <FormHelperText textAlign="right">
-                  <Link>Forgot password?</Link>
-                </FormHelperText>
               </FormControl>
               <Button type="submit" colorScheme="teal">
                 Register
