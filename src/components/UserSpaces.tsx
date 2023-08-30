@@ -84,6 +84,8 @@ const UserSpaces = () => {
           <GenericModal
             title="Create new space"
             spacenameForm
+            passwordForm
+            repasswordForm
             dismissBtn="Cancel"
             actionBtn="Create space"
             onAction={(data?: FieldValues) => {

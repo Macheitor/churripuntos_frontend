@@ -55,6 +55,7 @@ const useSpace = () => {
       .get<FetchGetSpaceResponse>(`/spaces/${spaceId}`, { signal })
       .then((res) => {
         setSpace(res.data.space);
+        console.log(res.data.space);
       })
       .catch((err) => {
         if (err instanceof CanceledError) return;

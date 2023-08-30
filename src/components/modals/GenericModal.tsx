@@ -21,10 +21,11 @@ import { ReactNode, useEffect } from "react";
 import { FieldValues, useForm } from "react-hook-form";
 import { Space } from "../../hooks/useSpace";
 import { BiSolidBullseye } from "react-icons/bi";
-import { FaUserAlt } from "react-icons/fa";
+import { FaUserAlt, FaLock } from "react-icons/fa";
 
 const CBiSolidBullseye = chakra(BiSolidBullseye);
 const CFaUserAlt = chakra(FaUserAlt);
+const CFaLock = chakra(FaLock);
 
 // TODO: Study this way of doing modal: https://the-guild.dev/blog/coolest-underrated-design-pattern-in-react
 interface Props {
@@ -39,6 +40,8 @@ interface Props {
   tasknameForm?: boolean;
   taskpointsForm?: boolean;
   spacenameForm?: boolean;
+  passwordForm?: boolean;
+  repasswordForm?: boolean;
   dismissBtn?: string;
   actionBtn?: string;
   onAction: (data?: FieldValues) => void;
@@ -56,6 +59,8 @@ const GenericModal = ({
   tasknameForm,
   taskpointsForm,
   spacenameForm,
+  passwordForm,
+  repasswordForm,
   dismissBtn,
   actionBtn,
   onAction,
@@ -120,6 +125,12 @@ const GenericModal = ({
         type = "number";
         registerOptions = { valueAsNumber: true };
         break;
+        
+      case "password":
+      case "repassword":
+        icon = <CFaLock color="gray.300" />;
+        type = "password";
+        break;
 
       default:
         icon = undefined;
@@ -164,15 +175,19 @@ const GenericModal = ({
               {isFormRequired && (
                 <form id="genericForm" onSubmit={handleSubmit(onSubmit)}>
                   <Stack spacing={4} p={1} boxShadow="md">
-                    {emailForm && genericForm("email")}
-
                     {usernameForm && genericForm("username")}
+
+                    {emailForm && genericForm("email")}
 
                     {tasknameForm && genericForm("taskname")}
 
                     {taskpointsForm && genericForm("points")}
 
                     {spacenameForm && genericForm("spacename")}
+
+                    {passwordForm && genericForm("password")}
+
+                    {repasswordForm && genericForm("repassword")}
 
                     {userSelector && (
                       <Select {...register("userId")}>
