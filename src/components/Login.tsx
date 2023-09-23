@@ -38,8 +38,11 @@ const Login = () => {
       .login(loginRequest)
       .then(({ data: loginInfo }) => {
         localStorage.setItem("userId", loginInfo.user._id);
+        localStorage.setItem("email", loginInfo.user.email);
+        localStorage.setItem("username", loginInfo.user.username);
         localStorage.setItem("accessToken", loginInfo.user.accessToken);
-        navigate("/spaces");
+        if (loginInfo.user.validated) navigate("/spaces");
+        else navigate("/EmailValidation")
       })
       .catch((err) => {
         if (err instanceof CanceledError) return;

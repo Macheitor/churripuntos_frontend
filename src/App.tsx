@@ -7,6 +7,7 @@ import { CanceledError } from "axios";
 import UserSpaces from "./components/UserSpaces";
 import Space from "./components/Space";
 import { Text } from "@chakra-ui/react";
+import EmailValidation from "./components/EmailValidation";
 
 function App() {
   const navigate = useNavigate();
@@ -40,6 +41,7 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/Login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/emailValidation" element={<EmailValidation />} />
         <Route path="/spaces" element={<UserSpaces />} />
         <Route path="/spaces/:spaceId" element={<Space />} />
         <Route path="*" element={<Text>404 PAGE NOT</Text>} />

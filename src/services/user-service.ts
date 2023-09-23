@@ -36,5 +36,9 @@ class userService {
   changeUsername(userId: string, newUsername: string) {
     return apiClient.put(`/users/${userId}/`, { newUsername });
   }
+
+  sendEmailValidation(userId: string) {
+    return apiClient.get(`/users/${userId}/sendValidationEmail`)
+  }
 }
 export default new userService();

@@ -14,8 +14,6 @@ const useUserSpaces = () => {
   const [spacesError, setSpacesError] = useState("");
 
   useEffect(() => {
-    console.log("getting spaces");
-
     const controller = new AbortController();
 
     apiClient

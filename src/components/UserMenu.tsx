@@ -19,7 +19,6 @@ const UserMenu = () => {
   };
 
   const getSpaces = () => {
-    console.log("get spaces");
     apiClient
       .get(`/users/${localStorage.getItem("userId")}`)
       .then((res) => {
