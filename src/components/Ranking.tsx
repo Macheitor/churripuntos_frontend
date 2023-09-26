@@ -5,6 +5,7 @@ import {
   Center,
   HStack,
   Heading,
+  Switch,
   Text,
   useToast,
 } from "@chakra-ui/react";
@@ -17,6 +18,7 @@ import { FieldValues } from "react-hook-form";
 import spaceService from "../services/space-service";
 import { CanceledError } from "../services/api-client";
 import Chart from "./Chart";
+import { useState } from "react";
 
 interface Props {
   space: Space;
@@ -38,6 +40,7 @@ const Ranking = ({
   const users = space.users;
   const activities = space.activities;
   const { ranking } = useRanking(users, activities);
+  const [cumulative, setCumulative] = useState(true)
   const toast = useToast();
 
   const addUser = (data: FieldValues) => {
@@ -114,7 +117,8 @@ const Ranking = ({
           </Box>
         </HStack>
       ))}
-      <Chart space={space}/>
+      <Switch colorScheme="blue"  onChange={() => setCumulative(!cumulative)} />
+      <Chart space={space} cumulative={cumulative}/>
     </>
   );
 };
