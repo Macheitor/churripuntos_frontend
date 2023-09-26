@@ -12,11 +12,78 @@ import {
 import NavBar from "./NavBar";
 import userService from "../services/user-service";
 import { CanceledError } from "../services/api-client";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 const EmailValidation = () => {
   const toast = useToast();
-  const userId = localStorage.getItem("userId") || "";
+  const navigate = useNavigate();
+  const userId = localStorage.getItem("userId");
   const username = localStorage.getItem("username") || "";
+  const { emailId, token } = useParams(); // emailId === userId
+  const [btnText, setBtnText] = useState("Resend Email");
+
+  const sendConfirmation = () => {
+    console.log(emailId)
+    console.log(token)
+    if (!emailId || !token) {
+      return;
+    }
+
+    const { request, cancel } = userService.validateEmail(emailId, token);
+
+    request
+      .then(() => {
+        toast({
+          title: "Email confirmed",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+        navigate("/spaces");
+      })
+      .catch((err) => {
+        if (err instanceof CanceledError) return;
+        toast({
+          title: err.response.data.message,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      });
+    return () => cancel();
+  };
+
+  const checkConfirmation = () => {
+    if (!userId || !username) {
+      // if there is no userId stored close session and go back to login
+      localStorage.clear();
+      navigate("/login");
+      return;
+    }
+
+    const { request, cancel } = userService.getUser(userId);
+
+    request
+      .then((res) => {
+        if (res.data.user.validated) navigate("/spaces");
+      })
+      .catch((err) => {
+        if (err instanceof CanceledError) return;
+        toast({
+          title: err.response.data.message,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      });
+    return () => cancel();
+  }
+
+  useEffect(() => {
+    sendConfirmation()
+    checkConfirmation()
+  }, []);
 
   return (
     <Flex
@@ -52,28 +119,35 @@ const EmailValidation = () => {
                   colorScheme="blue"
                   m={5}
                   onClick={() => {
-                    userService
-                      .sendEmailValidation(userId)
-                      .then(() => {
-                        toast({
-                          title: `Email sent`,
-                          status: "success",
-                          duration: 3000,
-                          isClosable: true,
-                        });
-                      })
-                      .catch((err) => {
-                        if (err instanceof CanceledError) return;
-                        toast({
-                          title: err.response.data.message,
-                          status: "error",
-                          duration: 3000,
-                          isClosable: true,
-                        });
-                      });
+                    if (btnText === "Resend Email") {
+                      setBtnText("Refresh");
+                      userId &&
+                        userService
+
+                          .sendEmailValidation(userId)
+                          .then(() => {
+                            toast({
+                              title: `Email sent`,
+                              status: "success",
+                              duration: 3000,
+                              isClosable: true,
+                            });
+                          })
+                          .catch((err) => {
+                            if (err instanceof CanceledError) return;
+                            toast({
+                              title: err.response.data.message,
+                              status: "error",
+                              duration: 3000,
+                              isClosable: true,
+                            });
+                          });
+                    } else {
+                      navigate(0);
+                    }
                   }}
                 >
-                  Resend email
+                  {btnText}
                 </Button>
               </Center>
             </GridItem>

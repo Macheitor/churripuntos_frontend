@@ -8,12 +8,12 @@ interface FetchGetUserSpacesResponse {
 }
 
 class userService {
-  getAllUsers() {
+  getUser(userId: string) {
     const controller = new AbortController();
     const signal = controller.signal;
     const cancel = () => controller.abort();
 
-    const request = apiClient.get(`/users`, { signal });
+    const request = apiClient.get(`/users/${userId}`, { signal });
 
     return { request, cancel };
   }
@@ -37,8 +37,22 @@ class userService {
     return apiClient.put(`/users/${userId}/`, { newUsername });
   }
 
+  validateEmail(userId: string, emailValidationToken: string) {
+    const controller = new AbortController();
+    const signal = controller.signal;
+    const cancel = () => controller.abort();
+    console.log("here")
+    const request = apiClient.get(
+      `/emails/${userId}/token/${emailValidationToken}`,
+      { signal }
+    );
+
+    return { request, cancel };
+  }
+
+  // TODO: rewrite this as above
   sendEmailValidation(userId: string) {
-    return apiClient.get(`/users/${userId}/sendValidationEmail`)
+    return apiClient.get(`/users/${userId}/sendValidationEmail`);
   }
 }
 export default new userService();
