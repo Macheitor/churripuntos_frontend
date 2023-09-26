@@ -45,14 +45,68 @@ const Chart = ({ space }: Props) => {
   };
 
   // Helper function to get a random color
-  const randomColor = () => {
+  const randomColor = (index: number) => {
     const randomBetween = (min: number, max: number) =>
       min + Math.floor(Math.random() * (max - min + 1));
 
-    const r = randomBetween(0, 255);
-    const g = randomBetween(0, 255);
-    const b = randomBetween(0, 255);
-    const rgb = `rgb(${r},${g},${b})`; // Collect all to a css color string
+    let rgb;
+
+    switch (index) {
+      case 0:
+        rgb = "(0,0,0)"
+        break;
+      case 1:
+        rgb = "rgb(255,255,255)";
+        break;
+      case 2:
+        rgb = "rgb(255,0,0)";
+        break;
+      case 3:
+        rgb = "rgb(0,255,0)";
+        break;
+      case 4:
+        rgb = "rgb(0,0,255)";
+        break;
+      case 5:
+        rgb = "rgb(255,255,0)";
+        break;
+      case 6:
+        rgb = "rgb(0,255,255)";
+        break;
+      case 7:
+        rgb = "rgb(255,0,255)";
+        break;
+      case 8:
+        rgb = "rgb(192,192,192)";
+        break;
+      case 9:
+        rgb = "rgb(128,128,128)";
+        break;
+      case 10:
+        rgb = "rgb(128,0,0)";
+        break;
+      case 11:
+        rgb = "rgb(128,128,0)";
+        break;
+      case 12:
+        rgb = "rgb(0,128,0)";
+        break;
+      case 13:
+        rgb = "rgb(128,0,128)";
+        break;
+      case 14:
+        rgb = "rgb(0,128,128)";
+        break;
+      case 15:
+        rgb = "rgb(0,0,128)";
+        break;
+
+      default:
+        const r = randomBetween(0, 255);
+        const g = randomBetween(0, 255);
+        const b = randomBetween(0, 255);
+        rgb = `rgb(${r},${g},${b})`; // Collect all to a css color string
+    }
     return rgb;
   };
 
@@ -107,8 +161,8 @@ const Chart = ({ space }: Props) => {
 
   const datasets = space.users
     .filter((u) => !u.isDeleted)
-    .map((u) => {
-      const color = randomColor();
+    .map((u, index) => {
+      const color = randomColor(index);
       return {
         label: u.username,
         data: cumulativeAllPoints[u._id],
