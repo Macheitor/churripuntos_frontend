@@ -117,7 +117,9 @@ const Ranking = ({
           </Box>
         </HStack>
       ))}
-      <Switch colorScheme="blue"  onChange={() => setCumulative(!cumulative)} />
+      <HStack>
+      <Text>Cumulative</Text><Switch colorScheme="green" defaultChecked={cumulative} onChange={() => setCumulative(!cumulative)} />
+      </HStack>
       <Chart space={space} cumulative={cumulative}/>
     </>
   );
