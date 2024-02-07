@@ -1,11 +1,11 @@
-import axios, {CanceledError} from "axios";
+import axios, { CanceledError } from "axios";
 
 const instance = axios.create({
-  baseURL: "http://192.168.1.170:8080"
+  baseURL: "http://churripuntosback-c344087cacf4.herokuapp.com",
 });
 
 instance.interceptors.request.use(
-  (config) => { 
+  (config) => {
     config.headers["Authorization"] = `Bearer ${localStorage.getItem(
       "accessToken"
     )}`;
@@ -18,4 +18,4 @@ instance.interceptors.request.use(
 
 export default instance;
 
-export {CanceledError};
+export { CanceledError };
