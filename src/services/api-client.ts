@@ -1,7 +1,7 @@
 import axios, { CanceledError } from "axios";
 
 const instance = axios.create({
-  baseURL: "http://churripuntosback-c344087cacf4.herokuapp.com",
+  baseURL: "https://churripuntosback-c344087cacf4.herokuapp.com",
 });
 
 instance.interceptors.request.use(
