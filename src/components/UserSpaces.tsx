@@ -99,7 +99,7 @@ const UserSpaces = () => {
             <GridItem area="main">
               {spacesError && <Text>{spacesError}</Text>}
               <SimpleGrid padding="10px" spacing={10}>
-                {spaces.map((space: Space) => (
+                {spaces && spaces.map((space: Space) => (
                   <Button
                     bg={"gray.700"}
                     borderRadius={10}
