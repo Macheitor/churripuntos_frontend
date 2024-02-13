@@ -40,7 +40,7 @@ const EmailValidation = () => {
           duration: 3000,
           isClosable: true,
         });
-        navigate("/spaces");
+        navigate("/login");
       })
       .catch((err) => {
         if (err instanceof CanceledError) return;
