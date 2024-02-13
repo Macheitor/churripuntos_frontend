@@ -117,7 +117,7 @@ const GenericModal = ({
       case "spacename":
         icon = <EditIcon color="gray.300" />;
         type = "text";
-        maxLength = 12;
+        maxLength = 20;
         break;
 
       case "points":
