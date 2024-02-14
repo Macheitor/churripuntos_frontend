@@ -151,7 +151,7 @@ const SpaceNavBar = ({
     <>
       <Stack>
         <HStack justify={"space-between"} padding={3}>
-          <ChevronLeftIcon boxSize={10} onClick={() => navigate(-1)} />
+          <ChevronLeftIcon boxSize={10} onClick={() => navigate("/spaces")} />
           <Heading fontSize="xl">{space.spacename}</Heading>
           <HStack>
             <p>
